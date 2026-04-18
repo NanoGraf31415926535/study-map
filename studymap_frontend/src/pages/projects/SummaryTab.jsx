@@ -33,15 +33,16 @@ export default function SummaryTab({ projectId }) {
 
   useEffect(() => {
     if (projectId) {
+      setCurrentSummary(null);
       fetchSummaries(projectId);
     }
-  }, [projectId, fetchSummaries]);
+  }, [projectId, fetchSummaries, setCurrentSummary]);
 
   useEffect(() => {
     if (projectSummaries.length > 0 && !currentSummary) {
       fetchSummary(projectId, projectSummaries[0].id);
     }
-  }, [projectSummaries, currentSummary]);
+  }, [projectSummaries, currentSummary, projectId, fetchSummary]);
 
   const handleSelectSummary = async (summary) => {
     await fetchSummary(projectId, summary.id);

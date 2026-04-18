@@ -135,23 +135,36 @@ export default function StudyModeTab({ projectId, onExit }) {
         </button>
       </div>
 
-      {(selectedDeck && currentCard) || (selectedQuiz && selectedQuiz.questions) ? (
+{(selectedDeck && currentCard) || (selectedQuiz && selectedQuiz.questions) ? (
         <div className="flex justify-center mb-6">
           <div className="flex bg-card rounded-xl p-1">
             <button
-              onClick={() => { setMode('flashcards'); setSelectedDeck(null); setCurrentIndex(0); setAnswers({}); setResults(null); }}
+              onClick={() => { 
+                if (mode !== 'flashcards') {
+                  setMode('flashcards'); 
+                  setSelectedDeck(projectDecks[0] || null);
+                  setCurrentIndex(0); 
+                }
+              }}
               className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
                 mode === 'flashcards' ? 'bg-primary text-white' : 'text-muted'
               }`}
->
+ >
                <FiTarget className="inline mr-1" /> Flashcards
              </button>
             <button
-              onClick={() => { setMode('quiz'); setSelectedQuiz(null); setCurrentIndex(0); setAnswers({}); setResults(null); }}
+              onClick={async () => { 
+                if (mode !== 'quiz' && projectQuizzes.length > 0) {
+                  const detail = await fetchQuizDetail(projectId, projectQuizzes[0].id);
+                  setMode('quiz');
+                  setSelectedQuiz(detail);
+                  setCurrentIndex(0);
+                }
+              }}
               className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
                 mode === 'quiz' ? 'bg-primary text-white' : 'text-muted'
               }`}
->
+ >
                <FiHelpCircle className="inline mr-1" /> Quiz
              </button>
           </div>

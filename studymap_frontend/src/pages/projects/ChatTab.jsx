@@ -52,9 +52,19 @@ export default function ChatTab({ projectId }) {
 
   useEffect(() => {
     if (projectId) {
+      setActiveSession(null);
       fetchSessions(projectId);
     }
-  }, [projectId, fetchSessions]);
+  }, [projectId, fetchSessions, setActiveSession]);
+
+  useEffect(() => {
+    if (projectSessions.length > 0 && !activeSession) {
+      const mostRecent = [...projectSessions].sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      )[0];
+      setActiveSession(mostRecent);
+    }
+  }, [projectId, projectSessions, activeSession, setActiveSession]);
 
   useEffect(() => {
     if (activeSession) {
