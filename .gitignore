@@ -49,3 +49,11 @@ Thumbs.db
 # Media/Static files (optional - depends on your setup)
 # media/
 # staticfiles/
+
+# Node/Frontend
+node_modules/
+dist/
+build/
+.next/
+output/
+.pnpm-store/
