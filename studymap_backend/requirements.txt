@@ -1,0 +1,12 @@
+django>=4.2
+djangorestframework
+djangorestframework-simplejwt
+django-cors-headers
+python-dotenv
+Pillow
+PyMuPDF
+python-docx
+python-pptx
+pytesseract
+openai
+requests
