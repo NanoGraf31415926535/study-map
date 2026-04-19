@@ -47,7 +47,7 @@ db.sqlite3-journal
 Thumbs.db
 
 # Media/Static files (optional - depends on your setup)
-# media/
+media/
 # staticfiles/
 
 # Node/Frontend

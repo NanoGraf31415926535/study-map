@@ -1,4 +1,6 @@
 import os
+import signal
+import threading
 from django.conf import settings
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -15,6 +17,49 @@ from .serializers import (
 from .parsers import DocumentParser
 
 parser = DocumentParser()
+
+PROCESSING_TIMEOUT = 30
+
+
+class TimeoutError(Exception):
+    pass
+
+
+def timeout_handler(signum, frame):
+    raise TimeoutError("Processing timed out")
+
+
+def parse_document_with_timeout(file_path, file_type):
+    result = {'raw_text': '', 'page_count': 0, 'error': None}
+
+    def parse():
+        try:
+            if file_type == 'pdf':
+                raw_text, page_count = parser.parse_pdf(file_path)
+                result['raw_text'] = raw_text
+                result['page_count'] = page_count
+            elif file_type == 'pptx':
+                raw_text, page_count = parser.parse_pptx(file_path)
+                result['raw_text'] = raw_text
+                result['page_count'] = page_count
+            else:
+                result['raw_text'] = parser.parse(file_path, file_type)
+        except Exception as e:
+            result['error'] = e
+
+    t = threading.Thread(target=parse)
+    t.daemon = True
+    t.start()
+    t.join(timeout=PROCESSING_TIMEOUT)
+
+    if t.is_alive():
+        result['error'] = TimeoutError("Processing timed out after {} seconds".format(PROCESSING_TIMEOUT))
+    elif result['error']:
+        if isinstance(result['error'], TimeoutError):
+            raise result['error']
+        raise result['error']
+
+    return result['raw_text'], result['page_count']
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -80,16 +125,8 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
         try:
             file_path = doc.file.path
-            if file_type == 'pdf':
-                raw_text, page_count = parser.parse_pdf(file_path)
-                doc.page_count = page_count
-            elif file_type == 'pptx':
-                raw_text, page_count = parser.parse_pptx(file_path)
-                doc.page_count = page_count
-            else:
-                raw_text = parser.parse(file_path, file_type)
-                if file_type in ['docx', 'txt']:
-                    doc.page_count = 0
+            raw_text, page_count = parse_document_with_timeout(file_path, file_type)
+            doc.page_count = page_count if file_type in ['pdf', 'pptx'] else 0
 
             doc.raw_text = raw_text
             doc.word_count = len(raw_text.split()) if raw_text else 0
@@ -113,6 +150,49 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    @action(detail=True, methods=['patch'])
+    def reprocess(self, request, pk=None):
+        doc = self.get_object()
+        try:
+            file_path = doc.file.path
+            file_type = doc.file_type
+
+            if file_type == 'pdf':
+                raw_text, page_count = parser.parse_pdf(file_path)
+                doc.page_count = page_count
+            elif file_type == 'pptx':
+                raw_text, page_count = parser.parse_pptx(file_path)
+                doc.page_count = page_count
+            else:
+                raw_text = parser.parse(file_path, file_type)
+                if file_type in ['docx', 'txt']:
+                    doc.page_count = 0
+
+            doc.raw_text = raw_text
+            doc.word_count = len(raw_text.split()) if raw_text else 0
+            doc.is_processed = True
+            doc.processing_error = ''
+            doc.save()
+            return Response({
+                'id': doc.id,
+                'title': doc.title,
+                'is_processed': True,
+                'word_count': doc.word_count,
+                'page_count': doc.page_count,
+            })
+
+        except Exception as e:
+            doc.raw_text = ''
+            doc.is_processed = False
+            doc.processing_error = str(e)
+            doc.save()
+            return Response({
+                'id': doc.id,
+                'title': doc.title,
+                'is_processed': False,
+                'processing_error': str(e),
+            }, status=207)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()

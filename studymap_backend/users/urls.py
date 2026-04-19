@@ -4,7 +4,7 @@ from rest_framework import permissions
 from .views import (
     RegisterView, LoginView, LogoutView, ProfileView,
     PasswordChangeView, AdminAnalyticsView, AdminUserListView,
-    AdminUserManagementView
+    AdminUserManagementView, AdminAPILogsView
 )
 
 class TokenRefreshViewNoAuth(TokenRefreshView):
@@ -20,4 +20,5 @@ urlpatterns = [
     path('admin/analytics/', AdminAnalyticsView.as_view(), name='admin-analytics'),
     path('admin/users/', AdminUserListView.as_view(), name='admin-users'),
     path('admin/users/<int:user_id>/', AdminUserManagementView.as_view(), name='admin-user-management'),
+    path('admin/api-logs/', AdminAPILogsView.as_view(), name='admin-api-logs'),
 ]

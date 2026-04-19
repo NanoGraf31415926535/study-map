@@ -1,8 +1,40 @@
 import os
 import json
 import re
+import time
 import requests
 from django.conf import settings
+
+logger = __import__('logging').getLogger(__name__)
+
+
+def with_retry(max_retries=3, base_delay=2):
+    """Decorator to retry API calls on 429/500/502/503/504 errors"""
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            for attempt in range(max_retries):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    error_str = str(e)
+                    should_retry = (
+                        '429' in error_str or
+                        '500' in error_str or
+                        '502' in error_str or
+                        '503' in error_str or
+                        '504' in error_str or
+                        'OpenRouter API' in error_str or
+                        'Connection error' in error_str or
+                        'Timeout' in error_str
+                    )
+                    if should_retry and attempt < max_retries - 1:
+                        delay = base_delay * (2 ** attempt)
+                        logger.warning(f"API error (attempt {attempt + 1}/{max_retries}), retrying in {delay}s: {error_str}")
+                        time.sleep(delay)
+                    else:
+                        raise
+        return wrapper
+    return decorator
 
 
 class OpenRouterService:
@@ -63,6 +95,7 @@ class OpenRouterService:
 
         return sources
 
+    @with_retry(max_retries=3, base_delay=2)
     def call_api(self, messages, system_prompt):
         headers = {
             'Authorization': f'Bearer {self.api_key}',

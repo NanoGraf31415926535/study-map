@@ -58,6 +58,8 @@ class DocumentParser:
 
             doc.close()
         except Exception as e:
+            if 'tesseract' in str(e).lower():
+                raise RuntimeError('OCR (tesseract) is not installed. Install with: brew install tesseract')
             raise RuntimeError(f'PDF parsing error: {str(e)}')
 
         full_text = '\n\n'.join(text_parts)

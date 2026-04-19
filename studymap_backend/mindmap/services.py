@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 def with_retry(max_retries=3, base_delay=2):
-    """Decorator to retry API calls on 500/502/503/504 errors"""
+    """Decorator to retry API calls on 429/500/502/503/504 errors"""
     def decorator(func):
         def wrapper(*args, **kwargs):
             for attempt in range(max_retries):
@@ -20,9 +20,10 @@ def with_retry(max_retries=3, base_delay=2):
                 except Exception as e:
                     error_str = str(e)
                     should_retry = (
-                        '500' in error_str or 
-                        '502' in error_str or 
-                        '503' in error_str or 
+                        '429' in error_str or
+                        '500' in error_str or
+                        '502' in error_str or
+                        '503' in error_str or
                         '504' in error_str or
                         'OpenRouter API error' in error_str or
                         'Connection error' in error_str or
@@ -74,7 +75,10 @@ class MindMapService:
                 timeout=180
             )
             response.raise_for_status()
-            return response.json()['choices'][0]['message']['content']
+            result = response.json()
+            if 'choices' not in result:
+                raise Exception(f"OpenRouter API error: {result.get('error', 'No choices in response')}")
+            return result['choices'][0]['message']['content']
         except requests.exceptions.RequestException as e:
             raise Exception(f"OpenRouter API error: {str(e)}")
 

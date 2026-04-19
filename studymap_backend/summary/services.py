@@ -74,7 +74,10 @@ class SummaryService:
                 timeout=180
             )
             response.raise_for_status()
-            return response.json()['choices'][0]['message']['content']
+            result = response.json()
+            if 'choices' not in result:
+                raise Exception(f"OpenRouter API error: {result.get('error', 'No choices in response')}")
+            return result['choices'][0]['message']['content']
         except requests.exceptions.RequestException as e:
             raise Exception(f"OpenRouter API error: {str(e)}")
 

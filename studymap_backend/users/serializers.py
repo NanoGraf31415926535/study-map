@@ -38,8 +38,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('id', 'username', 'email', 'avatar', 'avatar_url', 'bio', 'is_staff', 'date_joined', 'project_count', 'date_joined_formatted')
-        read_only_fields = ('id', 'is_staff', 'date_joined')
+        fields = ('id', 'username', 'email', 'avatar', 'avatar_url', 'bio', 'is_staff', 'is_blocked', 'date_joined', 'project_count', 'date_joined_formatted')
+        read_only_fields = ('id', 'is_staff', 'is_blocked', 'date_joined')
 
     def get_avatar_url(self, obj):
         if obj.avatar:

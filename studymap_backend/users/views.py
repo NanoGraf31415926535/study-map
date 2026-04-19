@@ -45,6 +45,12 @@ class LoginView(APIView):
                 status=status.HTTP_401_UNAUTHORIZED
             )
 
+        if user.is_blocked:
+            return Response(
+                {'error': 'Invalid credentials'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
         refresh = RefreshToken.for_user(user)
         profile_serializer = UserProfileSerializer(user, context={'request': request})
 
@@ -148,4 +154,54 @@ class AdminUserManagementView(APIView):
             user.save()
             return Response({'message': f'User {user.username} is now {"admin" if is_admin else "regular user"}'})
 
+        is_blocked = request.data.get('is_blocked')
+        if is_blocked is not None:
+            user.is_blocked = is_blocked
+            user.save()
+            return Response({'message': f'User {user.username} is now {"blocked" if is_blocked else "unblocked"}'})
+
         return Response({'error': 'No valid fields to update'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AdminAPILogsView(APIView):
+    permission_classes = [permissions.IsAdminUser]
+
+    def get(self, request):
+        from users.models import APILog
+
+        limit = int(request.query_params.get('limit', 100))
+        offset = int(request.query_params.get('offset', 0))
+        user_id = request.query_params.get('user_id')
+        endpoint = request.query_params.get('endpoint')
+        status_code = request.query_params.get('status_code')
+
+        logs = APILog.objects.all()
+
+        if user_id:
+            logs = logs.filter(user_id=user_id)
+        if endpoint:
+            logs = logs.filter(endpoint__icontains=endpoint)
+        if status_code:
+            logs = logs.filter(status_code=status_code)
+
+        total = logs.count()
+        logs = logs[offset:offset + limit]
+
+        return Response({
+            'logs': [
+                {
+                    'id': log.id,
+                    'username': log.username,
+                    'endpoint': log.endpoint,
+                    'method': log.method,
+                    'status_code': log.status_code,
+                    'response_time': log.response_time,
+                    'timestamp': log.timestamp.isoformat(),
+                    'ip_address': log.ip_address,
+                }
+                for log in logs
+            ],
+            'total': total,
+            'limit': limit,
+            'offset': offset,
+        })
