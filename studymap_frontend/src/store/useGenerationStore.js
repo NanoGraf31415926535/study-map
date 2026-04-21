@@ -170,7 +170,7 @@ export const useGenerationStore = create(
 
       exportFlashcards: async (projectId, deckId, format) => {
         const token = useAuthStore.getState().accessToken;
-        const url = `${import.meta.env.VITE_API_BASE_URL}/projects/${projectId}/decks/${deckId}/export/?format=${format}`;
+        const url = `${import.meta.env.VITE_API_BASE_URL}/projects/${projectId}/flashcards/${deckId}/export/?format=${format}`;
         try {
           const response = await fetch(url, {
             headers: { 'Authorization': `Bearer ${token}` },

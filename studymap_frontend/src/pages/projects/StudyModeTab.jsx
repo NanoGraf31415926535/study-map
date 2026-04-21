@@ -66,6 +66,10 @@ export default function StudyModeTab({ projectId, onExit }) {
 
   const handleReview = async (cardId, quality) => {
     try {
+      if (!isRunning) {
+        setIsRunning(true);
+        setElapsed(0);
+      }
       await reviewFlashcard(cardId, quality);
       setCurrentIndex(prev => prev + 1);
     } catch (error) {
@@ -74,6 +78,10 @@ export default function StudyModeTab({ projectId, onExit }) {
   };
 
   const handleAnswer = (questionId, answer) => {
+    if (!isRunning) {
+      setIsRunning(true);
+      setElapsed(0);
+    }
     setAnswers(prev => ({ ...prev, [questionId]: answer }));
   };
 
@@ -122,20 +130,17 @@ export default function StudyModeTab({ projectId, onExit }) {
 
   return (
     <div className="min-h-screen bg-surface -m-6 p-6">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <h1 className="text-xl font-bold text-text">StudyMap Study Mode</h1>
-          <StudyTimer isRunning={isRunning} onTick={handleTick} size="lg" />
-        </div>
+      <div className="text-center mb-2 relative">
+        <h1 className="text-xl font-bold text-text inline-block">Study Mode</h1>
         <button
           onClick={handleExit}
-          className="px-4 py-2 bg-surface hover:bg-gray-700 text-muted font-semibold rounded-xl"
+          className="absolute right-0 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-surface hover:bg-gray-700 text-muted text-sm font-semibold rounded-lg"
         >
           Exit
         </button>
       </div>
 
-{(selectedDeck && currentCard) || (selectedQuiz && selectedQuiz.questions) ? (
+      {(selectedDeck && currentCard) || (selectedQuiz && selectedQuiz.questions) ? (
         <div className="flex justify-center mb-6">
           <div className="flex bg-card rounded-xl p-1">
             <button
@@ -168,6 +173,12 @@ export default function StudyModeTab({ projectId, onExit }) {
                <FiHelpCircle className="inline mr-1" /> Quiz
              </button>
           </div>
+          {isRunning && (
+            <div className="flex items-center gap-2 bg-card rounded-lg px-3 py-2 ml-4">
+              <span className="text-muted text-sm">Time:</span>
+              <StudyTimer isRunning={isRunning} onTick={handleTick} size="md" />
+            </div>
+          )}
         </div>
       ) : null}
 

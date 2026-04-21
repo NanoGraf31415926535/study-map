@@ -1,13 +1,44 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiAward, FiTarget } from 'react-icons/fi';
+import { FiAward, FiTarget, FiDownload, FiFileText, FiFile, FiLayers } from 'react-icons/fi';
 import FlipCard from '../../components/FlipCard';
 import { useGenerationStore } from '../../store/useGenerationStore';
+import { useAuthStore } from '../../store/useAuthStore';
 
 export default function FlashcardsTab({ projectId }) {
   const { decks, isGenerating, generateFlashcards, fetchDecks, reviewFlashcard } = useGenerationStore();
+  const { token } = useAuthStore();
   const [selectedDeck, setSelectedDeck] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [reviewed, setReviewed] = useState(0);
+  const [showExport, setShowExport] = useState(false);
+
+  const handleExport = async (format) => {
+    if (!selectedDeck) return;
+    const url = `${import.meta.env.VITE_API_BASE_URL}/projects/${projectId}/flashcards/${selectedDeck.id}/export/?format=${format}`;
+    try {
+      const res = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error('Export error:', res.status, errText);
+        throw new Error(`Export failed: ${res.status}`);
+      }
+      const blob = await res.blob();
+      const ext = format === 'anki' ? 'csv' : format;
+      const filename = `${selectedDeck.title}.${ext}`;
+      const blobUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = filename;
+      a.click();
+      setTimeout(() => window.URL.revokeObjectURL(blobUrl), 1000);
+    } catch (err) {
+      console.error('Export failed:', err);
+      alert('Failed to export. Please try again.');
+    }
+    setShowExport(false);
+  };
 
   const projectDecks = decks[projectId] || [];
 
@@ -57,12 +88,44 @@ export default function FlashcardsTab({ projectId }) {
               Card {currentIndex + 1} of {totalCards} • Reviewed: {reviewed}
             </p>
           </div>
-          <button
-            onClick={() => { setSelectedDeck(null); setCurrentIndex(0); }}
-            className="px-4 py-2 bg-surface hover:bg-gray-700 text-muted font-semibold rounded-xl"
-          >
-            Back to Decks
-          </button>
+          <div className="flex gap-2">
+            <div className="relative">
+              <button
+                onClick={() => setShowExport(!showExport)}
+                className="px-4 py-2 bg-surface hover:bg-gray-700 text-muted font-semibold rounded-xl flex items-center gap-2"
+              >
+                <FiDownload size={16} /> Export
+              </button>
+              {showExport && (
+                <div className="absolute right-0 top-full mt-1 bg-card border border-gray-700 rounded-xl overflow-hidden z-10">
+                  <button
+                    onClick={() => handleExport('pdf')}
+                    className="w-full px-4 py-2 text-left text-sm text-text hover:bg-gray-700 flex items-center gap-2"
+                  >
+                    <FiFile size={14} /> PDF
+                  </button>
+                  <button
+                    onClick={() => handleExport('md')}
+                    className="w-full px-4 py-2 text-left text-sm text-text hover:bg-gray-700 flex items-center gap-2"
+                  >
+                    <FiFileText size={14} /> Markdown
+                  </button>
+                  <button
+                    onClick={() => handleExport('anki')}
+                    className="w-full px-4 py-2 text-left text-sm text-text hover:bg-gray-700 flex items-center gap-2"
+                  >
+                    <FiLayers size={14} /> Anki
+                  </button>
+                </div>
+              )}
+            </div>
+            <button
+              onClick={() => { setSelectedDeck(null); setCurrentIndex(0); }}
+              className="px-4 py-2 bg-surface hover:bg-gray-700 text-muted font-semibold rounded-xl"
+            >
+              Back to Decks
+            </button>
+          </div>
         </div>
 
         <div className="flex justify-center">

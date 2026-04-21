@@ -1,5 +1,7 @@
 import json
 import time
+import random
+import re
 import requests
 from django.conf import settings
 import os
@@ -10,15 +12,29 @@ from prompts import MINDMAP_PROMPT
 logger = logging.getLogger(__name__)
 
 
-def with_retry(max_retries=3, base_delay=2):
+def with_retry(max_retries=5, base_delay=2):
     """Decorator to retry API calls on 429/500/502/503/504 errors"""
     def decorator(func):
         def wrapper(*args, **kwargs):
+            last_error = None
             for attempt in range(max_retries):
                 try:
-                    return func(*args, **kwargs)
+                    result = func(*args, **kwargs)
+                    if attempt > 0:
+                        logger.info(f"Request succeeded after {attempt + 1} attempt(s)")
+                    return result
                 except Exception as e:
                     error_str = str(e)
+                    # Non-retryable errors - authentication/authorization failures
+                    non_retryable = (
+                        '401' in error_str or
+                        '403' in error_str or
+                        'Unauthorized' in error_str or
+                        'Forbidden' in error_str
+                    )
+                    if non_retryable:
+                        raise
+
                     should_retry = (
                         '429' in error_str or
                         '500' in error_str or
@@ -31,10 +47,22 @@ def with_retry(max_retries=3, base_delay=2):
                     )
                     if should_retry and attempt < max_retries - 1:
                         delay = base_delay * (2 ** attempt)
-                        logger.warning(f"API error (attempt {attempt + 1}/{max_retries}), retrying in {delay}s: {error_str}")
+
+                        # Try to parse Retry-After from error message
+                        retry_after_match = re.search(r'Retry-After.*?(\d+)', error_str, re.IGNORECASE)
+                        if retry_after_match:
+                            retry_after = int(retry_after_match.group(1))
+                            delay = min(retry_after, delay * 2)
+
+                        # Add jitter to avoid thundering herd (0-2 seconds)
+                        delay += random.uniform(0, 2)
+
+                        last_error = error_str
+                        logger.warning(f"API error (attempt {attempt + 1}/{max_retries}), retrying in {delay:.1f}s: {error_str[:100]}")
                         time.sleep(delay)
                     else:
                         raise
+            raise last_error
         return wrapper
     return decorator
 
@@ -79,6 +107,12 @@ class MindMapService:
             if 'choices' not in result:
                 raise Exception(f"OpenRouter API error: {result.get('error', 'No choices in response')}")
             return result['choices'][0]['message']['content']
+        except requests.exceptions.HTTPError as e:
+            retry_after = e.response.headers.get('Retry-After', '')
+            error_msg = str(e)
+            if retry_after:
+                error_msg = f"Retry-After: {retry_after} - {error_msg}"
+            raise Exception(f"OpenRouter API error: {error_msg}")
         except requests.exceptions.RequestException as e:
             raise Exception(f"OpenRouter API error: {str(e)}")
 

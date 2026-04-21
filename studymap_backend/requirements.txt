@@ -10,3 +10,4 @@ python-pptx
 pytesseract
 openai
 requests
+reportlab

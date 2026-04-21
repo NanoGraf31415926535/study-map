@@ -7,11 +7,7 @@ export default function StudyTimer({ isRunning = false, onTick, size = 'md' }) {
   useEffect(() => {
     if (isRunning) {
       intervalRef.current = setInterval(() => {
-        setSeconds(s => {
-          const newSeconds = s + 1;
-          onTick?.(newSeconds);
-          return newSeconds;
-        });
+        setSeconds(s => s + 1);
       }, 1000);
     } else {
       if (intervalRef.current) {
@@ -24,7 +20,11 @@ export default function StudyTimer({ isRunning = false, onTick, size = 'md' }) {
         clearInterval(intervalRef.current);
       }
     };
-  }, [isRunning, onTick]);
+  }, [isRunning]);
+
+  useEffect(() => {
+    onTick?.(seconds);
+  }, [seconds, onTick]);
 
   useEffect(() => {
     return () => {

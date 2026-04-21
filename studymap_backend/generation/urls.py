@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     GenerateFlashcardsView, GenerateQuizView, SubmitQuizView,
-    FlashcardSM2View, EnhanceNoteView, ExportQuizView, ExportFlashcardsView,
+    FlashcardSM2View, EnhanceNoteView, export_quiz, export_flashcards,
     FlashcardDeckListView, QuizListView, QuizDetailView
 )
 
@@ -16,6 +16,6 @@ urlpatterns = [
     path('projects/<int:project_id>/quiz/<int:quiz_id>/submit/', SubmitQuizView.as_view(), name='submit-quiz'),
     path('flashcards/<int:card_id>/review/', FlashcardSM2View.as_view(), name='flashcard-review'),
     path('projects/<int:project_id>/notes/<int:note_id>/ai-enhance/', EnhanceNoteView.as_view(), name='enhance-note'),
-    path('projects/<int:project_id>/quiz/<int:quiz_id>/export/', ExportQuizView.as_view(), name='export-quiz'),
-    path('projects/<int:project_id>/decks/<int:deck_id>/export/', ExportFlashcardsView.as_view(), name='export-flashcards'),
+    path('projects/<int:project_id>/quiz/<int:quiz_id>/export/', export_quiz, name='export-quiz'),
+    path('projects/<int:project_id>/flashcards/<int:deck_id>/export/', export_flashcards, name='export-flashcards'),
 ]

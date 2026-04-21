@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { FiList, FiBookOpen, FiTarget, FiAlertTriangle, FiTrendingUp, FiCheck, FiZap, FiDownload, FiCopy, FiHelpCircle, FiEdit } from 'react-icons/fi';
+import { FiList, FiBookOpen, FiTarget, FiAlertTriangle, FiTrendingUp, FiCheck, FiZap, FiDownload, FiCopy, FiHelpCircle, FiEdit, FiFileText, FiCode } from 'react-icons/fi';
+import ReactMarkdown from 'react-markdown';
 import { useSummaryStore } from '../../store/useSummaryStore';
 
 const SUMMARY_FORMATS = [
@@ -28,6 +29,7 @@ export default function SummaryTab({ projectId }) {
   const [selectedFormat, setSelectedFormat] = useState('study');
   const [copied, setCopied] = useState(false);
   const [showList, setShowList] = useState(false);
+  const [markdownMode, setMarkdownMode] = useState(false);
 
   const projectSummaries = summaries[projectId] || [];
 
@@ -84,7 +86,7 @@ export default function SummaryTab({ projectId }) {
         section.key_terms?.forEach((kt) => {
           md += `| ${kt.term} | ${kt.definition} |\n`;
         });
-        md += `\n> ${section.remember_this}\n\n`;
+        md += `\n> **Remember:** ${section.remember_this}\n\n`;
       });
       md += `## Overall Summary\n${summary.overall_summary}`;
       return md;
@@ -94,6 +96,8 @@ export default function SummaryTab({ projectId }) {
     }
     return JSON.stringify(summary, null, 2);
   };
+
+  const summaryMarkdown = currentSummary ? formatAsMarkdown(currentSummary) : '';
 
   const renderSummary = () => {
     if (!currentSummary) return null;
@@ -113,9 +117,11 @@ export default function SummaryTab({ projectId }) {
             </ol>
           </div>
           <div className="space-y-6">
-            <div className="bg-card rounded-xl p-6 border border-gray-800 whitespace-pre-wrap">
+            <div className="bg-card rounded-xl p-6 border border-gray-800">
               <h3 className="text-lg font-semibold text-text mb-4"><FiEdit className="inline mr-1" /> Main Notes</h3>
-              <p className="text-text">{currentSummary.main_notes}</p>
+              <div className="prose prose-invert max-w-none text-text">
+                <ReactMarkdown>{currentSummary.main_notes}</ReactMarkdown>
+              </div>
             </div>
             <div className="bg-accent/10 rounded-xl p-6 border border-accent/30">
               <h3 className="text-lg font-semibold text-accent mb-2"><FiList className="inline mr-1" /> Summary</h3>
@@ -235,7 +241,7 @@ export default function SummaryTab({ projectId }) {
                 : 'bg-card border-gray-800 hover:border-gray-700'
             }`}
           >
-            <div className="text-2xl mb-2">{format.icon}</div>
+            <div className="text-2xl mb-2">{format.icon()}</div>
             <div className="font-semibold text-text">{format.name}</div>
             <p className="text-sm text-muted mt-1">{format.description}</p>
           </button>
@@ -281,6 +287,14 @@ export default function SummaryTab({ projectId }) {
         <>
           <div className="flex gap-2">
             <button
+              onClick={() => setMarkdownMode(!markdownMode)}
+              className={`px-4 py-2 font-semibold rounded-xl ${
+                markdownMode ? 'bg-primary text-white' : 'bg-surface hover:bg-gray-700 text-muted'
+              }`}
+            >
+              {markdownMode ? <><FiCode className="inline mr-1" />Standard View</> : <><FiFileText className="inline mr-1" />Markdown View</>}
+            </button>
+            <button
               onClick={handleCopy}
               className="px-4 py-2 bg-surface hover:bg-gray-700 text-muted font-semibold rounded-xl"
             >
@@ -301,7 +315,13 @@ export default function SummaryTab({ projectId }) {
               <FiDownload className="inline mr-1" /> Download .md
             </button>
           </div>
-          {renderSummary()}
+          {markdownMode ? (
+            <div className="prose prose-invert max-w-none bg-card rounded-xl p-6 border border-gray-800">
+              <ReactMarkdown>{summaryMarkdown}</ReactMarkdown>
+            </div>
+          ) : (
+            renderSummary()
+          )}
         </>
       )}
     </div>
