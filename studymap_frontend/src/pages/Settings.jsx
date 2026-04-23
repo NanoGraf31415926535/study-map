@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
-import Navbar from '../components/Navbar';
+import { FiArrowLeft, FiCheck, FiAlertTriangle } from 'react-icons/fi';
 import api from '../api/axios';
+import '../styles/settings.css';
 
 export default function Settings() {
   const { user } = useAuthStore();
@@ -41,104 +42,107 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-surface flex">
-      <Navbar />
-      <div className="flex-1 ml-64 p-8">
-        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-muted hover:text-text mb-6 transition-colors">
-          <span>←</span> Back
-        </button>
+    <div className="settings-root relative min-h-screen bg-gray-950 text-gray-100">
+        <div className="flex">
+          <div className="flex-1 ml-64 p-8">
+            <button onClick={() => navigate(-1)} className="ghost-btn flex items-center gap-2 px-3 py-2 rounded-xl text-sm mb-6 fade-up">
+              <FiArrowLeft size={14} /> Back
+            </button>
 
-        <div className="max-w-2xl mx-auto">
-          <h1 className="text-3xl font-bold text-text mb-8">Settings</h1>
+            <div className="max-w-2xl mx-auto">
+              <h1 className="text-2xl font-bold text-gray-100 mb-8 fade-up">Settings</h1>
 
-          <div className="space-y-8">
-            <div className="bg-card rounded-2xl p-6">
-              <h2 className="text-xl font-bold text-text mb-4">Account</h2>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between py-3 border-b border-gray-700">
-                  <div>
-                    <div className="font-medium text-text">Email</div>
-                    <div className="text-sm text-muted">{user?.email}</div>
+              <div className="space-y-6">
+                <div className="settings-card rounded-2xl p-6 fade-up">
+                  <h2 className="text-lg font-bold text-gray-100 mb-4">Account</h2>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between py-3 border-b border-white/[0.07]">
+                      <div>
+                        <div className="font-medium text-gray-300">Email</div>
+                        <div className="text-sm text-gray-500">{user?.email}</div>
+                      </div>
+                      <span className="text-xs verified-badge px-2.5 py-1 rounded-lg">Verified</span>
+                    </div>
+                    <div className="flex items-center justify-between py-3 border-b border-white/[0.07]">
+                      <div>
+                        <div className="font-medium text-gray-300">Username</div>
+                        <div className="text-sm text-gray-500">{user?.username}</div>
+                      </div>
+                      <button onClick={() => navigate('/profile')} className="text-sm text-sky-400 hover:underline">
+                        Edit
+                      </button>
+                    </div>
                   </div>
-                  <span className="text-xs text-muted bg-surface px-2 py-1 rounded">Verified</span>
                 </div>
-                <div className="flex items-center justify-between py-3 border-b border-gray-700">
-                  <div>
-                    <div className="font-medium text-text">Username</div>
-                    <div className="text-sm text-muted">{user?.username}</div>
+
+                <div className="settings-card rounded-2xl p-6 fade-up">
+                  <h2 className="text-lg font-bold text-gray-100 mb-4">Change Password</h2>
+                  {passwordMessage && (
+                    <div className={`mb-4 p-3 rounded-xl text-sm ${passwordMessage.type === 'success' ? 'message-success' : 'message-error'}`}>
+                      {passwordMessage.text}
+                    </div>
+                  )}
+                  <form onSubmit={handlePasswordChange} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Current Password</label>
+                      <input
+                        type="password"
+                        value={passwordData.old_password}
+                        onChange={(e) => setPasswordData(prev => ({ ...prev, old_password: e.target.value }))}
+                        className="input-field w-full px-4 py-3 rounded-xl"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">New Password</label>
+                      <input
+                        type="password"
+                        value={passwordData.new_password}
+                        onChange={(e) => setPasswordData(prev => ({ ...prev, new_password: e.target.value }))}
+                        className="input-field w-full px-4 py-3 rounded-xl"
+                        required
+                        minLength={8}
+                      />
+                      <p className="text-xs text-gray-600 mt-1">Minimum 8 characters</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Confirm New Password</label>
+                      <input
+                        type="password"
+                        value={passwordData.new_password2}
+                        onChange={(e) => setPasswordData(prev => ({ ...prev, new_password2: e.target.value }))}
+                        className="input-field w-full px-4 py-3 rounded-xl"
+                        required
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={isChangingPassword}
+                      className="w-full py-3 glow-sky text-sm font-semibold rounded-xl transition-all hover:-translate-y-px disabled:opacity-40"
+                    >
+                      {isChangingPassword ? 'Changing Password...' : 'Change Password'}
+                    </button>
+                  </form>
+                </div>
+
+                <div className="danger-card rounded-2xl p-6 fade-up">
+                  <h2 className="text-lg font-bold text-red-400 mb-4 flex items-center gap-2">
+                    <FiAlertTriangle size={18} /> Danger Zone
+                  </h2>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-medium text-gray-300">Delete Account</div>
+                      <div className="text-sm text-gray-500">Permanently delete your account and all data</div>
+                    </div>
+                    <button className="danger-btn px-4 py-2 text-sm font-medium rounded-xl">
+                      Delete Account
+                    </button>
                   </div>
-                  <button onClick={() => navigate('/profile')} className="text-sm text-primary hover:underline">
-                    Edit
-                  </button>
                 </div>
-              </div>
-            </div>
-
-            <div className="bg-card rounded-2xl p-6">
-              <h2 className="text-xl font-bold text-text mb-4">Change Password</h2>
-              {passwordMessage && (
-                <div className={`mb-4 p-3 rounded-xl text-sm ${passwordMessage.type === 'success' ? 'bg-success/20 text-success' : 'bg-red-500/20 text-red-400'}`}>
-                  {passwordMessage.text}
-                </div>
-              )}
-              <form onSubmit={handlePasswordChange} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-text mb-2">Current Password</label>
-                  <input
-                    type="password"
-                    value={passwordData.old_password}
-                    onChange={(e) => setPasswordData(prev => ({ ...prev, old_password: e.target.value }))}
-                    className="w-full px-4 py-3 bg-surface border border-gray-700 rounded-xl text-text focus:outline-none focus:border-primary"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-text mb-2">New Password</label>
-                  <input
-                    type="password"
-                    value={passwordData.new_password}
-                    onChange={(e) => setPasswordData(prev => ({ ...prev, new_password: e.target.value }))}
-                    className="w-full px-4 py-3 bg-surface border border-gray-700 rounded-xl text-text focus:outline-none focus:border-primary"
-                    required
-                    minLength={8}
-                  />
-                  <p className="text-xs text-muted mt-1">Minimum 8 characters</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-text mb-2">Confirm New Password</label>
-                  <input
-                    type="password"
-                    value={passwordData.new_password2}
-                    onChange={(e) => setPasswordData(prev => ({ ...prev, new_password2: e.target.value }))}
-                    className="w-full px-4 py-3 bg-surface border border-gray-700 rounded-xl text-text focus:outline-none focus:border-primary"
-                    required
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={isChangingPassword}
-                  className="w-full py-3 bg-primary hover:bg-primary/90 disabled:opacity-50 text-white font-semibold rounded-xl transition-colors"
-                >
-                  {isChangingPassword ? 'Changing Password...' : 'Change Password'}
-                </button>
-              </form>
-            </div>
-
-            <div className="bg-card rounded-2xl p-6 border border-red-500/30">
-              <h2 className="text-xl font-bold text-red-400 mb-4">Danger Zone</h2>
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="font-medium text-text">Delete Account</div>
-                  <div className="text-sm text-muted">Permanently delete your account and all data</div>
-                </div>
-                <button className="px-4 py-2 border border-red-500 text-red-400 rounded-xl hover:bg-red-500/10 transition-colors">
-                  Delete Account
-                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
   );
 }

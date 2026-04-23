@@ -1,0 +1,114 @@
+.chat-root { font-family: 'Sora', sans-serif; }
+
+.chat-root::before {
+  content: '';
+  position: fixed;
+  top: -200px; left: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(99,179,237,0.055) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.25s ease both; }
+
+.session-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  transition: all 0.2s;
+}
+.session-card:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(99,179,237,0.15);
+}
+.session-card.active {
+  background: rgba(99,179,237,0.1);
+  border-color: rgba(99,179,237,0.3);
+}
+
+.glow-sky {
+  background: #63b3ed;
+  color: #0f172a;
+  box-shadow: 0 4px 14px rgba(99,179,237,0.3);
+}
+.glow-sky:hover {
+  background: #38bdf8;
+  transform: translateY(-1px);
+}
+
+.ghost-btn {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: all 0.2s;
+}
+.ghost-btn:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.14);
+}
+
+.chat-bubble-user {
+  background: linear-gradient(135deg, #63b3ed, #38bdf8);
+  color: #0f172a;
+}
+
+.chat-bubble-ai {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.input-field {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #e2e8f0;
+  transition: all 0.2s;
+}
+.input-field:focus {
+  border-color: #63b3ed;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(99,179,237,0.1);
+}
+.input-field::placeholder {
+  color: #64748b;
+}
+
+.mode-violet {
+  background: rgba(139,92,246,0.15);
+  color: #a78bfa;
+  border: 1px solid rgba(139,92,246,0.25);
+}
+.mode-sky {
+  background: rgba(56,189,248,0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56,189,248,0.25);
+}
+.mode-amber {
+  background: rgba(251,191,36,0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(251,191,36,0.25);
+}
+
+.mode-option {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  transition: all 0.2s;
+}
+.mode-option:hover {
+  border-color: rgba(99,179,237,0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.source-badge {
+  background: rgba(255,255,255,0.06);
+  color: #94a3b8;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.ai-insight {
+  background: rgba(251,191,36,0.08);
+  border: 1px solid rgba(251,191,36,0.2);
+  color: #fbbf24;
+}

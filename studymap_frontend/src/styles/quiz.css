@@ -1,0 +1,90 @@
+.quiz-root { font-family: 'Sora', sans-serif; }
+.font-mono-study { font-family: 'JetBrains Mono', monospace; }
+
+.quiz-root::before {
+  content: '';
+  position: fixed;
+  top: -200px; left: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(99,179,237,0.055) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+.quiz-root::after {
+  content: '';
+  position: fixed;
+  bottom: -200px; right: -200px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(104,211,145,0.045) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.35s ease both; }
+
+.quiz-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  transition: all 0.2s;
+}
+.quiz-card:hover {
+  border-color: rgba(104,211,145,0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.quiz-btn {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  transition: all 0.2s;
+}
+.quiz-btn:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.12);
+}
+
+.glow-sky {
+  background: #63b3ed;
+  color: #0f172a;
+  box-shadow: 0 4px 14px rgba(99,179,237,0.3);
+}
+.glow-sky:hover {
+  background: #38bdf8;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(99,179,237,0.4);
+}
+
+.glow-emerald {
+  background: #34d399;
+  color: #0f172a;
+  box-shadow: 0 4px 14px rgba(52,211,153,0.3);
+}
+.glow-emerald:hover {
+  background: #6ee7b7;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(52,211,153,0.4);
+}
+
+.quiz-option {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  transition: all 0.2s;
+}
+.quiz-option:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(99,179,237,0.2);
+}
+.quiz-option.selected {
+  background: rgba(99,179,237,0.1);
+  border-color: rgba(99,179,237,0.3);
+}
+.quiz-option.correct {
+  background: rgba(52,211,153,0.1);
+  border-color: rgba(52,211,153,0.3);
+}
+.quiz-option.incorrect {
+  background: rgba(248,113,113,0.1);
+  border-color: rgba(248,113,113,0.3);
+}

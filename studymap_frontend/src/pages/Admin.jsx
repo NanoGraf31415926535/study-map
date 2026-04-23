@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiAward, FiBarChart2, FiUsers, FiFolder, FiTrendingUp, FiActivity, FiShield, FiShieldOff } from 'react-icons/fi';
+import { FiAward, FiBarChart2, FiUsers, FiFolder, FiTrendingUp, FiActivity, FiArrowLeft, FiChevronDown } from 'react-icons/fi';
 import { useAuthStore } from '../store/useAuthStore';
-import Navbar from '../components/Navbar';
 import api from '../api/axios';
+import '../styles/admin.css';
 
 export default function Admin() {
   const { user } = useAuthStore();
@@ -103,248 +103,258 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen bg-surface flex">
-      <Navbar />
-      <div className="flex-1 ml-64 p-8">
-        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-muted hover:text-text mb-6 transition-colors">
-          <span>←</span> Back
-        </button>
+    <div className="admin-root relative min-h-screen bg-gray-950 text-gray-100">
+        <div className="flex">
+          <div className="flex-1 ml-64 p-8">
+            <button onClick={() => navigate(-1)} className="ghost-btn flex items-center gap-2 px-3 py-2 rounded-xl text-sm mb-6 fade-up">
+              <FiArrowLeft size={14} /> Back
+            </button>
 
-        <div className="flex items-center gap-4 mb-8">
-          <FiAward className="text-3xl" />
-          <h1 className="text-3xl font-bold text-text">Admin Panel</h1>
-        </div>
+            <div className="flex items-center gap-4 mb-8 fade-up">
+              <FiAward className="text-3xl text-amber-400" />
+              <h1 className="text-2xl font-bold text-gray-100">Admin Panel</h1>
+            </div>
 
-        {message && (
-          <div className={`mb-6 p-4 rounded-xl ${message.type === 'success' ? 'bg-success/20 text-success' : 'bg-red-500/20 text-red-400'}`}>
-            {message.text}
-          </div>
-        )}
-
-        <div className="flex gap-4 mb-8 border-b border-gray-700">
-          <button
-            onClick={() => setActiveTab('analytics')}
-            className={`px-4 py-3 font-medium transition-colors border-b-2 ${activeTab === 'analytics' ? 'text-primary border-primary' : 'text-muted border-transparent hover:text-text'}`}
-          >
-            <FiBarChart2 className="inline mr-1" /> Analytics
-          </button>
-          <button
-            onClick={() => setActiveTab('users')}
-            className={`px-4 py-3 font-medium transition-colors border-b-2 ${activeTab === 'users' ? 'text-primary border-primary' : 'text-muted border-transparent hover:text-text'}`}
-          >
-            <FiUsers className="inline mr-1" /> Users
-          </button>
-          <button
-            onClick={() => setActiveTab('api-logs')}
-            className={`px-4 py-3 font-medium transition-colors border-b-2 ${activeTab === 'api-logs' ? 'text-primary border-primary' : 'text-muted border-transparent hover:text-text'}`}
-          >
-            <FiActivity className="inline mr-1" /> API Logs
-          </button>
-        </div>
-
-        {isLoading ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          </div>
-        ) : (
-          <>
-            {activeTab === 'analytics' && analytics && (
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-card rounded-2xl p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <FiUsers className="text-3xl" />
-                    <div>
-                      <div className="text-3xl font-bold text-text">{analytics.total_users}</div>
-                      <div className="text-sm text-muted">Total Users</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-card rounded-2xl p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <FiFolder className="text-3xl" />
-                    <div>
-                      <div className="text-3xl font-bold text-text">{analytics.total_projects}</div>
-                      <div className="text-sm text-muted">Total Projects</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-card rounded-2xl p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <FiTrendingUp className="text-3xl" />
-                    <div>
-                      <div className="text-3xl font-bold text-success">+{analytics.new_users_week}</div>
-                      <div className="text-sm text-muted">New Users (7 days)</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-card rounded-2xl p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <FiAward className="text-3xl" />
-                    <div>
-                      <div className="text-3xl font-bold text-warning">{analytics.admin_count}</div>
-                      <div className="text-sm text-muted">Admins</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-span-2 lg:col-span-4 bg-card rounded-2xl p-6">
-                  <h3 className="text-lg font-bold text-text mb-4">Growth Overview</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-surface rounded-xl p-4">
-                      <div className="text-2xl font-bold text-primary">{analytics.new_users_week}</div>
-                      <div className="text-sm text-muted">New users this week</div>
-                    </div>
-                    <div className="bg-surface rounded-xl p-4">
-                      <div className="text-2xl font-bold text-success">{analytics.new_users_month}</div>
-                      <div className="text-sm text-muted">New users this month</div>
-                    </div>
-                  </div>
-                </div>
+            {message && (
+              <div className={`mb-6 p-4 rounded-xl text-sm ${message.type === 'success' ? 'message-success' : 'message-error'}`}>
+                {message.text}
               </div>
             )}
 
-            {activeTab === 'users' && (
-              <div className="bg-card rounded-2xl overflow-hidden">
-                <table className="w-full">
-                  <thead className="bg-surface">
-                    <tr>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-muted">User</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-muted">Email</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-muted">Projects</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-muted">Joined</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-muted">Status</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-muted">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-800">
-                    {users.map((u) => (
-                      <tr key={u.id} className="hover:bg-surface/50">
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-sm font-bold">
-                              {u.username?.charAt(0).toUpperCase()}
-                            </div>
-                            <span className="font-medium text-text">{u.username}</span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-muted">{u.email}</td>
-                        <td className="px-6 py-4 text-muted">{u.project_count}</td>
-                        <td className="px-6 py-4 text-muted">{u.date_joined_formatted}</td>
-                        <td className="px-6 py-4">
-                          <div className="flex flex-col gap-1">
-                            {u.is_staff ? (
-                              <span className="px-2 py-1 bg-warning/20 text-warning text-xs font-medium rounded-full w-fit">Admin</span>
-                            ) : (
-                              <span className="px-2 py-1 bg-surface text-muted text-xs font-medium rounded-full w-fit">User</span>
-                            )}
-                            {u.is_blocked && (
-                              <span className="px-2 py-1 bg-red-500/20 text-red-400 text-xs font-medium rounded-full w-fit">Blocked</span>
-                            )}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex gap-2">
-                            {u.id !== user?.id && (
-                              <>
-                                <button
-                                  onClick={() => toggleAdminStatus(u.id, u.is_staff)}
-                                  className={`px-3 py-1 text-xs font-medium rounded-lg transition-colors ${
-                                    u.is_staff
-                                      ? 'bg-surface hover:bg-gray-700 text-muted'
-                                      : 'bg-warning/20 hover:bg-warning/30 text-warning'
-                                  }`}
-                                >
-                                  {u.is_staff ? 'Remove Admin' : 'Make Admin'}
-                                </button>
-                                <button
-                                  onClick={() => toggleBlockStatus(u.id, u.is_blocked)}
-                                  className={`px-3 py-1 text-xs font-medium rounded-lg transition-colors ${
-                                    u.is_blocked
-                                      ? 'bg-success/20 hover:bg-success/30 text-success'
-                                      : 'bg-red-500/20 hover:bg-red-500/30 text-red-400'
-                                  }`}
-                                >
-                                  {u.is_blocked ? 'Unblock' : 'Block'}
-                                </button>
-                              </>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+            <div className="flex gap-4 mb-8 border-b border-white/[0.07] fade-up">
+              <button
+                onClick={() => setActiveTab('analytics')}
+                className={`tab-btn px-4 py-3 font-medium transition-colors ${activeTab === 'analytics' ? 'active' : ''}`}
+              >
+                <FiBarChart2 className="inline mr-1.5" size={14} /> Analytics
+              </button>
+              <button
+                onClick={() => setActiveTab('users')}
+                className={`tab-btn px-4 py-3 font-medium transition-colors ${activeTab === 'users' ? 'active' : ''}`}
+              >
+                <FiUsers className="inline mr-1.5" size={14} /> Users
+              </button>
+              <button
+                onClick={() => setActiveTab('api-logs')}
+                className={`tab-btn px-4 py-3 font-medium transition-colors ${activeTab === 'api-logs' ? 'active' : ''}`}
+              >
+                <FiActivity className="inline mr-1.5" size={14} /> API Logs
+              </button>
+            </div>
 
-            {activeTab === 'api-logs' && (
-              <div className="bg-card rounded-2xl overflow-hidden">
-                <div className="p-4 border-b border-gray-800">
-                  <span className="text-muted text-sm">Showing {apiLogs.length} of {logsTotal} logs</span>
-                </div>
-                <table className="w-full">
-                  <thead className="bg-surface">
-                    <tr>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-muted">Timestamp</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-muted">User</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-muted">Method</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-muted">Endpoint</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-muted">Status</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-muted">Time (ms)</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-muted">IP</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-800">
-                    {apiLogs.map((log, idx) => (
-                      <tr key={`${log.id}-${idx}`} className="hover:bg-surface/50">
-                        <td className="px-6 py-4 text-muted text-sm whitespace-nowrap">{formatTime(log.timestamp)}</td>
-                        <td className="px-6 py-4 text-text">{log.username || '-'}</td>
-                        <td className="px-6 py-4">
-                          <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                            log.method === 'GET' ? 'bg-blue-500/20 text-blue-400' :
-                            log.method === 'POST' ? 'bg-green-500/20 text-green-400' :
-                            log.method === 'PATCH' ? 'bg-yellow-500/20 text-yellow-400' :
-                            log.method === 'DELETE' ? 'bg-red-500/20 text-red-400' :
-                            'bg-gray-500/20 text-gray-400'
-                          }`}>
-                            {log.method}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-muted text-sm max-w-xs truncate">{log.endpoint}</td>
-                        <td className="px-6 py-4">
-                          <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                            log.status_code < 300 ? 'bg-green-500/20 text-green-400' :
-                            log.status_code < 400 ? 'bg-yellow-500/20 text-yellow-400' :
-                            'bg-red-500/20 text-red-400'
-                          }`}>
-                            {log.status_code}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-muted">{log.response_time}ms</td>
-                        <td className="px-6 py-4 text-muted text-sm">{log.ip_address || '-'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                {apiLogs.length < logsTotal && (
-                  <div className="p-4 border-t border-gray-800">
-                    <button
-                      onClick={() => fetchApiLogs(logsOffset + 50)}
-                      disabled={logsLoading}
-                      className="w-full py-2 bg-surface hover:bg-gray-700 text-muted rounded-lg transition-colors disabled:opacity-50"
-                    >
-                      {logsLoading ? 'Loading...' : 'Load More'}
-                    </button>
+            {isLoading ? (
+              <div className="flex items-center justify-center h-64">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-400"></div>
+              </div>
+            ) : (
+              <>
+                {activeTab === 'analytics' && analytics && (
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 fade-up">
+                    <div className="admin-card rounded-2xl p-5">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="stat-icon users">
+                          <FiUsers size={18} />
+                        </div>
+                        <div>
+                          <div className="text-2xl font-bold text-gray-100">{analytics.total_users}</div>
+                          <div className="text-xs text-gray-500">Total Users</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="admin-card rounded-2xl p-5">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="stat-icon projects">
+                          <FiFolder size={18} />
+                        </div>
+                        <div>
+                          <div className="text-2xl font-bold text-gray-100">{analytics.total_projects}</div>
+                          <div className="text-xs text-gray-500">Total Projects</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="admin-card rounded-2xl p-5">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="stat-icon growth">
+                          <FiTrendingUp size={18} />
+                        </div>
+                        <div>
+                          <div className="text-2xl font-bold text-emerald-400">+{analytics.new_users_week}</div>
+                          <div className="text-xs text-gray-500">New Users (7 days)</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="admin-card rounded-2xl p-5">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="stat-icon admins">
+                          <FiAward size={18} />
+                        </div>
+                        <div>
+                          <div className="text-2xl font-bold text-amber-400">{analytics.admin_count}</div>
+                          <div className="text-xs text-gray-500">Admins</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="col-span-2 lg:col-span-4 admin-card rounded-2xl p-5 fade-up">
+                      <h3 className="text-sm font-semibold text-gray-400 mb-4 uppercase tracking-wider">Growth Overview</h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-white/[0.03] rounded-xl p-4">
+                          <div className="text-xl font-bold text-sky-400 font-mono">{analytics.new_users_week}</div>
+                          <div className="text-xs text-gray-500 mt-1">New users this week</div>
+                        </div>
+                        <div className="bg-white/[0.03] rounded-xl p-4">
+                          <div className="text-xl font-bold text-emerald-400 font-mono">{analytics.new_users_month}</div>
+                          <div className="text-xs text-gray-500 mt-1">New users this month</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
-              </div>
+
+                {activeTab === 'users' && (
+                  <div className="admin-card rounded-2xl overflow-hidden fade-up">
+                    <table className="w-full">
+                      <thead className="table-head">
+                        <tr>
+                          <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">User</th>
+                          <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</th>
+                          <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Projects</th>
+                          <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Joined</th>
+                          <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                          <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/[0.06]">
+                        {users.map((u) => (
+                          <tr key={u.id} className="table-row hover:bg-white/[0.03]">
+                            <td className="px-5 py-4">
+                              <div className="flex items-center gap-3">
+                                <div className="avatar w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold">
+                                  {u.username?.charAt(0).toUpperCase()}
+                                </div>
+                                <span className="font-medium text-gray-200">{u.username}</span>
+                              </div>
+                            </td>
+                            <td className="px-5 py-4 text-gray-400 text-sm">{u.email}</td>
+                            <td className="px-5 py-4 text-gray-400 font-mono text-sm">{u.project_count}</td>
+                            <td className="px-5 py-4 text-gray-400 text-sm">{u.date_joined_formatted}</td>
+                            <td className="px-5 py-4">
+                              <div className="flex flex-col gap-1.5">
+                                {u.is_staff ? (
+                                  <span className="badge-admin px-2 py-1 text-xs font-medium rounded-lg w-fit">Admin</span>
+                                ) : (
+                                  <span className="badge-user px-2 py-1 text-xs font-medium rounded-lg w-fit">User</span>
+                                )}
+                                {u.is_blocked && (
+                                  <span className="badge-blocked px-2 py-1 text-xs font-medium rounded-lg w-fit">Blocked</span>
+                                )}
+                              </div>
+                            </td>
+                            <td className="px-5 py-4">
+                              <div className="flex gap-2">
+                                {u.id !== user?.id && (
+                                  <>
+                                    <button
+                                      onClick={() => toggleAdminStatus(u.id, u.is_staff)}
+                                      className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                                        u.is_staff
+                                          ? 'ghost-btn hover:text-gray-300'
+                                          : 'badge-admin hover:brightness-110'
+                                      }`}
+                                    >
+                                      {u.is_staff ? 'Remove Admin' : 'Make Admin'}
+                                    </button>
+                                    <button
+                                      onClick={() => toggleBlockStatus(u.id, u.is_blocked)}
+                                      className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                                        u.is_blocked
+                                          ? 'badge-admin text-emerald-400 hover:brightness-110'
+                                          : 'badge-blocked hover:brightness-110'
+                                      }`}
+                                    >
+                                      {u.is_blocked ? 'Unblock' : 'Block'}
+                                    </button>
+                                  </>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {activeTab === 'api-logs' && (
+                  <div className="admin-card rounded-2xl overflow-hidden fade-up">
+                    <div className="p-4 border-b border-white/[0.07]">
+                      <span className="text-gray-500 text-xs">Showing {apiLogs.length} of {logsTotal} logs</span>
+                    </div>
+                    <table className="w-full">
+                      <thead className="table-head">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Time</th>
+                          <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">User</th>
+                          <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Method</th>
+                          <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Endpoint</th>
+                          <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                          <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">ms</th>
+                          <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">IP</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/[0.06]">
+                        {apiLogs.map((log, idx) => (
+                          <tr key={`${log.id}-${idx}`} className="table-row hover:bg-white/[0.03]">
+                            <td className="px-4 py-3 text-gray-500 text-xs font-mono whitespace-nowrap">{formatTime(log.timestamp)}</td>
+                            <td className="px-4 py-3 text-gray-300 text-sm">{log.username || '-'}</td>
+                            <td className="px-4 py-3">
+                              <span className={`method-badge ${
+                                log.method === 'GET' ? 'method-get' :
+                                log.method === 'POST' ? 'method-post' :
+                                log.method === 'PATCH' ? 'method-patch' :
+                                log.method === 'DELETE' ? 'method-delete' :
+                                'method-default'
+                              }`}>
+                                {log.method}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3 text-gray-400 text-xs font-mono max-w-[200px] truncate">{log.endpoint}</td>
+                            <td className="px-4 py-3">
+                              <span className={`text-xs font-mono font-medium ${
+                                log.status_code < 300 ? 'status-2xx' :
+                                log.status_code < 400 ? 'status-3xx' :
+                                log.status_code < 500 ? 'status-4xx' :
+                                'status-5xx'
+                              }`}>
+                                {log.status_code}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3 text-gray-500 font-mono text-xs">{log.response_time}ms</td>
+                            <td className="px-4 py-3 text-gray-500 text-xs">{log.ip_address || '-'}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    {apiLogs.length < logsTotal && (
+                      <div className="p-4 border-t border-white/[0.07]">
+                        <button
+                          onClick={() => fetchApiLogs(logsOffset + 50)}
+                          disabled={logsLoading}
+                          className="w-full py-2 ghost-btn text-sm rounded-lg disabled:opacity-40"
+                        >
+                          {logsLoading ? 'Loading...' : 'Load More'}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </>
             )}
-          </>
-        )}
+          </div>
+        </div>
       </div>
-    </div>
   );
 }

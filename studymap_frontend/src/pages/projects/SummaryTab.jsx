@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { FiList, FiBookOpen, FiTarget, FiAlertTriangle, FiTrendingUp, FiCheck, FiZap, FiDownload, FiCopy, FiHelpCircle, FiEdit, FiFileText, FiCode } from 'react-icons/fi';
+import { FiList, FiBookOpen, FiTarget, FiAlertTriangle, FiTrendingUp, FiCheck, FiZap, FiDownload, FiCopy, FiHelpCircle, FiEdit, FiFileText, FiCode, FiFile, FiChevronDown, FiChevronUp, FiAlignLeft } from 'react-icons/fi';
 import ReactMarkdown from 'react-markdown';
 import { useSummaryStore } from '../../store/useSummaryStore';
+import '../../styles/summary.css';
 
 const SUMMARY_FORMATS = [
   {
@@ -228,102 +229,149 @@ export default function SummaryTab({ projectId }) {
     return <pre className="bg-card p-6 rounded-xl text-text overflow-x-auto">{JSON.stringify(currentSummary, null, 2)}</pre>;
   };
 
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-3 gap-4">
-        {SUMMARY_FORMATS.map((format) => (
-          <button
-            key={format.id}
-            onClick={() => setSelectedFormat(format.id)}
-            className={`p-4 rounded-xl text-left transition-all border ${
-              selectedFormat === format.id
-                ? 'bg-primary/20 border-primary'
-                : 'bg-card border-gray-800 hover:border-gray-700'
-            }`}
-          >
-            <div className="text-2xl mb-2">{format.icon()}</div>
-            <div className="font-semibold text-text">{format.name}</div>
-            <p className="text-sm text-muted mt-1">{format.description}</p>
-          </button>
-        ))}
-      </div>
-
-      <button
-        onClick={handleGenerate}
-        disabled={isGenerating}
-        className="px-6 py-3 bg-primary hover:bg-primary/90 disabled:opacity-50 text-white font-semibold rounded-xl transition-colors"
-      >
-        {isGenerating ? 'Generating...' : 'Generate Summary'}
-      </button>
-
-      {projectSummaries.length > 0 && (
-        <div className="space-y-3">
-          <h3 className="text-lg font-semibold text-text">Your Summaries</h3>
-          {projectSummaries.map((summary) => (
-            <button
-              key={summary.id}
-              onClick={() => handleSelectSummary(summary)}
-              className={`w-full p-4 rounded-xl flex items-center gap-4 border transition-colors text-left ${
-                currentSummary?.title === summary.title
-                  ? 'bg-primary/20 border-primary'
-                  : 'bg-card border-gray-800 hover:border-gray-700'
-              }`}
-            >
-              <span className="text-2xl">
-                {summary.type === 'cornell' ? <FiList /> : summary.type === 'study' ? <FiBookOpen /> : <FiTarget />}
-              </span>
-              <div className="flex-1">
-                <div className="font-medium text-text">{summary.title || summary.type}</div>
-                <div className="text-sm text-muted">
-                  {new Date(summary.generated_at).toLocaleDateString()}
-                </div>
-              </div>
-            </button>
-          ))}
-        </div>
-      )}
-
-      {currentSummary && (
-        <>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setMarkdownMode(!markdownMode)}
-              className={`px-4 py-2 font-semibold rounded-xl ${
-                markdownMode ? 'bg-primary text-white' : 'bg-surface hover:bg-gray-700 text-muted'
-              }`}
-            >
-              {markdownMode ? <><FiCode className="inline mr-1" />Standard View</> : <><FiFileText className="inline mr-1" />Markdown View</>}
-            </button>
-            <button
-              onClick={handleCopy}
-              className="px-4 py-2 bg-surface hover:bg-gray-700 text-muted font-semibold rounded-xl"
-            >
-              {copied ? (
-                <>
-                  <FiCheck className="inline mr-1" />Copied!
-                </>
-              ) : (
-                <>
-                  <FiCopy className="inline mr-1" />Copy as Markdown
-                </>
-              )}
-            </button>
-            <button
-              onClick={handleDownload}
-              className="px-4 py-2 bg-surface hover:bg-gray-700 text-muted font-semibold rounded-xl"
-            >
-              <FiDownload className="inline mr-1" /> Download .md
-            </button>
+return (
+    <div className="summary-root relative min-h-screen bg-gray-950 text-gray-100 -m-6 p-6 overflow-hidden">
+        <div className="relative z-10 max-w-3xl mx-auto">
+          <div className="flex items-center gap-2.5 mb-6">
+            <span className="block w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
+            <span className="text-xs font-semibold uppercase tracking-widest text-violet-400">
+              Summaries
+            </span>
           </div>
-          {markdownMode ? (
-            <div className="prose prose-invert max-w-none bg-card rounded-xl p-6 border border-gray-800">
-              <ReactMarkdown>{summaryMarkdown}</ReactMarkdown>
+
+          {projectSummaries.length > 0 && (
+            <div className="flex items-center gap-3 mb-6 fade-up">
+              <button
+                onClick={() => setShowList(!showList)}
+                className="ghost-btn px-4 py-2.5 rounded-xl text-xs font-semibold text-gray-400 flex items-center gap-2"
+              >
+                {showList ? <FiAlignLeft size={14} /> : <FiFileText size={14} />} {showList ? 'Hide List' : 'Show List'}
+                {showList ? <FiChevronUp size={12} /> : <FiChevronDown size={12} />}
+              </button>
+              <div className="flex-1" />
+              <button
+                onClick={handleGenerate}
+                disabled={isGenerating}
+                className="glow-violet px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-1.5 transition-all hover:-translate-y-px disabled:opacity-40"
+              >
+                <FiZap size={14} />
+                {isGenerating ? 'Generating...' : 'Generate Summary'}
+              </button>
             </div>
-          ) : (
-            renderSummary()
           )}
-        </>
-      )}
-    </div>
+
+          {showList && projectSummaries.length > 0 && (
+            <div className="grid grid-cols-3 gap-3 mb-6 fade-up">
+              {projectSummaries.map((summary) => (
+                <button
+                  key={summary.id}
+                  onClick={() => handleSelectSummary(summary)}
+                  className={`summary-card p-4 rounded-xl text-left ${
+                    currentSummary?.title === summary.title ? 'active' : ''
+                  }`}
+                >
+                  <div className="text-2xl mb-2 text-violet-400">
+                    {summary.type === 'cornell' ? <FiList /> : summary.type === 'study' ? <FiBookOpen /> : <FiTarget />}
+                  </div>
+                  <div className="font-medium text-gray-100 text-sm">{summary.title || summary.type}</div>
+                  <div className="text-xs text-gray-600 mt-1">
+                    {new Date(summary.generated_at).toLocaleDateString()}
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {!showList && projectSummaries.length > 0 && (
+            <div className="flex items-center gap-3 mb-6 fade-up">
+              <button
+                onClick={handleGenerate}
+                disabled={isGenerating}
+                className="glow-violet px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-1.5 transition-all hover:-translate-y-px disabled:opacity-40"
+              >
+                <FiZap size={14} />
+                {isGenerating ? 'Generating...' : 'Generate New Summary'}
+              </button>
+            </div>
+          )}
+
+          {projectSummaries.length === 0 && (
+            <div className="mb-6">
+              <p className="text-xs font-semibold uppercase tracking-widest text-gray-600 mb-3 flex items-center gap-2">
+                <FiList size={12} /> Choose Format
+              </p>
+              <div className="grid grid-cols-3 gap-3 fade-up">
+                {SUMMARY_FORMATS.map((format) => (
+                  <button
+                    key={format.id}
+                    onClick={() => setSelectedFormat(format.id)}
+                    className={`summary-card p-4 rounded-xl text-left ${
+                      selectedFormat === format.id ? 'active' : ''
+                    }`}
+                  >
+                    <format.icon className="text-2xl mb-2 text-violet-400" />
+                    <div className="font-medium text-gray-100 text-sm">{format.name}</div>
+                    <div className="text-xs text-gray-600 mt-1">{format.description}</div>
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={handleGenerate}
+                disabled={isGenerating}
+                className="w-full mt-4 glow-violet px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-1.5 transition-all hover:-translate-y-px disabled:opacity-40"
+              >
+                <FiZap size={14} />
+                {isGenerating ? 'Generating...' : 'Generate Summary'}
+              </button>
+            </div>
+          )}
+
+          {currentSummary && (
+            <>
+              <div className="flex items-center gap-2 mb-4 fade-up">
+                <button
+                  onClick={() => setMarkdownMode(!markdownMode)}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-medium transition-all ${
+                    markdownMode ? 'bg-violet-400 text-gray-950' : 'ghost-btn text-gray-400'
+                  }`}
+                >
+                  {markdownMode ? <><FiCode size={12} className="inline mr-1" />Standard</> : <><FiFileText size={12} className="inline mr-1" />Markdown</>}
+                </button>
+                <button
+                  onClick={handleCopy}
+                  className="ghost-btn px-3.5 py-2 rounded-xl text-xs font-medium text-gray-400 flex items-center gap-1.5"
+                >
+                  {copied ? <FiCheck size={12} /> : <FiCopy size={12} />}
+                  {copied ? 'Copied!' : 'Copy'}
+                </button>
+                <button
+                  onClick={handleDownload}
+                  className="ghost-btn px-3.5 py-2 rounded-xl text-xs font-medium text-gray-400 flex items-center gap-1.5"
+                >
+                  <FiDownload size={12} /> .md
+                </button>
+              </div>
+              {markdownMode ? (
+                <div className="output-box rounded-2xl p-6 fade-up">
+                  <pre className="font-mono-study text-sm text-gray-300 whitespace-pre-wrap">
+                    {summaryMarkdown}
+                  </pre>
+                </div>
+              ) : (
+                <div className="output-box rounded-2xl p-6 fade-up">
+                  {renderSummary()}
+                </div>
+              )}
+            </>
+          )}
+
+          {projectSummaries.length === 0 && !isGenerating && (
+            <div className="text-center py-16 fade-up">
+              <FiFileText className="text-5xl mx-auto mb-2 text-gray-700" />
+              <p className="text-gray-500">No summaries yet. Generate one from your documents.</p>
+            </div>
+          )}
+        </div>
+      </div>
   );
 }

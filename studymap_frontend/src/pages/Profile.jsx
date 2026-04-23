@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiCamera, FiAward } from 'react-icons/fi';
+import { FiCamera, FiAward, FiArrowLeft, FiSave } from 'react-icons/fi';
 import { useAuthStore } from '../store/useAuthStore';
-import Navbar from '../components/Navbar';
 import api from '../api/axios';
+import '../styles/profile.css';
 
 export default function Profile() {
   const { user, refreshUser } = useAuthStore();
@@ -79,110 +79,112 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-surface flex">
-      <Navbar />
-      <div className="flex-1 ml-64 p-8">
-        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-muted hover:text-text mb-6 transition-colors">
-          <span>←</span> Back
-        </button>
+    <div className="profile-root relative min-h-screen bg-gray-950 text-gray-100">
+        <div className="flex">
+          <div className="flex-1 ml-64 p-8">
+            <button onClick={() => navigate(-1)} className="ghost-btn flex items-center gap-2 px-3 py-2 rounded-xl text-sm mb-6 fade-up">
+              <FiArrowLeft size={14} /> Back
+            </button>
 
-        <div className="max-w-2xl mx-auto">
-          <h1 className="text-3xl font-bold text-text mb-8">Profile</h1>
+            <div className="max-w-2xl mx-auto">
+              <h1 className="text-2xl font-bold text-gray-100 mb-8 fade-up">Profile</h1>
 
-          {message && (
-            <div className={`mb-6 p-4 rounded-xl ${message.type === 'success' ? 'bg-success/20 text-success' : 'bg-red-500/20 text-red-400'}`}>
-              {message.text}
-            </div>
-          )}
-
-          <div className="bg-card rounded-2xl p-6">
-            <div className="flex items-center gap-6 mb-8">
-              <div className="relative">
-                {formData.avatar_url ? (
-                  <img
-                    src={formData.avatar_url}
-                    alt="Avatar"
-                    className="w-24 h-24 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="w-24 h-24 rounded-full bg-primary flex items-center justify-center text-white text-3xl font-bold">
-                    {formData.username?.charAt(0).toUpperCase()}
-                  </div>
-                )}
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  className="absolute bottom-0 right-0 w-8 h-8 bg-surface rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors"
-                >
-                  <FiCamera />
-                </button>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-xl font-bold text-text">{formData.username}</h2>
-                  {user?.is_staff && (
-                    <span className="px-2 py-0.5 bg-warning/20 text-warning text-xs font-medium rounded-full flex items-center gap-1">
-                      <FiAward /> Admin
-                    </span>
-                  )}
+              {message && (
+                <div className={`mb-6 p-4 rounded-xl ${message.type === 'success' ? 'message-success' : 'message-error'}`}>
+                  {message.text}
                 </div>
-                <p className="text-muted text-sm">{formData.email}</p>
+              )}
+
+              <div className="profile-card rounded-2xl p-6 fade-up">
+                <div className="flex items-center gap-6 mb-8">
+                  <div className="relative">
+                    {formData.avatar_url ? (
+                      <img
+                        src={formData.avatar_url}
+                        alt="Avatar"
+                        className="w-24 h-24 rounded-full object-cover border-2 border-white/10"
+                      />
+                    ) : (
+                      <div className="avatar-placeholder w-24 h-24 rounded-full flex items-center justify-center text-3xl font-bold">
+                        {formData.username?.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="avatar-upload-btn absolute bottom-0 right-0 w-8 h-8 rounded-full flex items-center justify-center"
+                    >
+                      <FiCamera size={14} />
+                    </button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="hidden"
+                    />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h2 className="text-xl font-bold text-gray-100">{formData.username}</h2>
+                      {user?.is_staff && (
+                        <span className="admin-badge px-2 py-0.5 text-xs font-medium rounded-full flex items-center gap-1">
+                          <FiAward size={10} /> Admin
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-gray-500 text-sm">{formData.email}</p>
+                  </div>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Username</label>
+                    <input
+                      type="text"
+                      name="username"
+                      value={formData.username}
+                      onChange={handleChange}
+                      className="input-field w-full px-4 py-3 rounded-xl"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      disabled
+                      className="input-field w-full px-4 py-3 rounded-xl opacity-50 cursor-not-allowed"
+                    />
+                    <p className="text-xs text-gray-600 mt-1">Email cannot be changed</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Bio</label>
+                    <textarea
+                      name="bio"
+                      value={formData.bio}
+                      onChange={handleChange}
+                      rows={4}
+                      placeholder="Tell us about yourself..."
+                      className="input-field w-full px-4 py-3 rounded-xl resize-none"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSaving}
+                    className="w-full py-3 glow-sky text-sm font-semibold rounded-xl transition-all hover:-translate-y-px disabled:opacity-40 flex items-center justify-center gap-1.5"
+                  >
+                    <FiSave size={16} />
+                    {isSaving ? 'Saving...' : 'Save Changes'}
+                  </button>
+                </form>
               </div>
             </div>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">Username</label>
-                <input
-                  type="text"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 bg-surface border border-gray-700 rounded-xl text-text focus:outline-none focus:border-primary"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  disabled
-                  className="w-full px-4 py-3 bg-surface/50 border border-gray-700 rounded-xl text-muted cursor-not-allowed"
-                />
-                <p className="text-xs text-muted mt-1">Email cannot be changed</p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">Bio</label>
-                <textarea
-                  name="bio"
-                  value={formData.bio}
-                  onChange={handleChange}
-                  rows={4}
-                  placeholder="Tell us about yourself..."
-                  className="w-full px-4 py-3 bg-surface border border-gray-700 rounded-xl text-text focus:outline-none focus:border-primary resize-none"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={isSaving}
-                className="w-full py-3 bg-primary hover:bg-primary/90 disabled:opacity-50 text-white font-semibold rounded-xl transition-colors"
-              >
-                {isSaving ? 'Saving...' : 'Save Changes'}
-              </button>
-            </form>
           </div>
         </div>
       </div>
-    </div>
   );
 }

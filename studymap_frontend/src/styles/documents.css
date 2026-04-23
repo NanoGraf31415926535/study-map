@@ -1,0 +1,58 @@
+.docs-root { font-family: 'Sora', sans-serif; }
+.font-mono-study { font-family: 'JetBrains Mono', monospace; }
+
+.docs-root::before {
+  content: '';
+  position: fixed;
+  top: -200px; left: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(99,179,237,0.055) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.35s ease both; }
+
+.doc-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  transition: all 0.2s;
+}
+.doc-card:hover {
+  border-color: rgba(99,179,237,0.2);
+  transform: translateY(-1px);
+}
+
+.drop-zone {
+  border: 2px dashed rgba(255,255,255,0.08);
+  transition: all 0.2s;
+}
+.drop-zone:hover, .drop-zone.dragging {
+  border-color: rgba(99,179,237,0.4);
+  background: rgba(99,179,237,0.05);
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, #63b3ed, #68d391);
+  box-shadow: 0 0 8px rgba(99,179,237,0.45);
+}
+
+.status-ready {
+  background: rgba(52,211,153,0.1);
+  color: #34d399;
+  border: 1px solid rgba(52,211,153,0.2);
+}
+
+.status-processing {
+  background: rgba(99,179,237,0.1);
+  color: #63b3ed;
+  border: 1px solid rgba(99,179,237,0.2);
+}
+
+.doc-icon {
+  background: rgba(99,179,237,0.1);
+  color: #63b3ed;
+}

@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiEdit, FiZap } from 'react-icons/fi';
+import { FiEdit, FiZap, FiPlus, FiTrash2 } from 'react-icons/fi';
 import api from '../../api/axios';
 import { useGenerationStore } from '../../store/useGenerationStore';
 import ReactMarkdown from 'react-markdown';
+import '../../styles/notes.css';
 
 export default function NotesTab({ projectId, notes: initialNotes, onRefresh }) {
   const [notes, setNotes] = useState(initialNotes || []);
@@ -76,130 +77,134 @@ export default function NotesTab({ projectId, notes: initialNotes, onRefresh }) 
   }, [projectId]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-text">Notes</h2>
-        {!isCreating && (
-          <button
-            onClick={() => setIsCreating(true)}
-            className="px-4 py-2 bg-primary hover:bg-primary/90 text-white font-semibold rounded-xl transition-colors"
-          >
-            + New Note
-          </button>
-        )}
-      </div>
-
-      {isCreating && (
-        <div className="bg-card rounded-xl p-6 border border-gray-700 space-y-4">
-          <input
-            type="text"
-            placeholder="Note title"
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-            className="w-full bg-surface border border-gray-700 rounded-lg px-4 py-2 text-text placeholder-muted focus:outline-none focus:border-primary"
-          />
-          <textarea
-            placeholder="Note content"
-            value={newContent}
-            onChange={(e) => setNewContent(e.target.value)}
-            rows={6}
-            className="w-full bg-surface border border-gray-700 rounded-lg px-4 py-2 text-text placeholder-muted focus:outline-none focus:border-primary resize-none"
-          />
-          <div className="flex gap-2">
-            <button
-              onClick={createNote}
-              className="px-4 py-2 bg-primary hover:bg-primary/90 text-white font-semibold rounded-xl transition-colors"
-            >
-              Save
-            </button>
-            <button
-              onClick={() => { setIsCreating(false); setNewTitle(''); setNewContent(''); }}
-              className="px-4 py-2 bg-surface hover:bg-gray-700 text-muted font-semibold rounded-xl transition-colors"
-            >
-              Cancel
-            </button>
+    <div className="notes-root relative min-h-screen bg-gray-950 text-gray-100 -m-6 p-6 overflow-hidden">
+        <div className="relative z-10">
+          <div className="flex items-center justify-between mb-7">
+            <h2 className="text-xl font-bold text-gray-100">Notes</h2>
+            {!isCreating && (
+              <button
+                onClick={() => setIsCreating(true)}
+                className="glow-btn flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:-translate-y-px"
+              >
+                <FiPlus size={14} /> New Note
+              </button>
+            )}
           </div>
-        </div>
-      )}
 
-      {notes.length > 0 ? (
-        <div className="space-y-4">
-          {notes.map((note) => (
-            <div key={note.id} className="bg-card rounded-xl p-5 border border-gray-800">
-              {editingId === note.id ? (
-                <div className="space-y-3">
-                  <input
-                    type="text"
-                    value={editTitle}
-                    onChange={(e) => setEditTitle(e.target.value)}
-                    className="w-full bg-surface border border-gray-700 rounded-lg px-4 py-2 text-text focus:outline-none focus:border-primary"
-                  />
-                  <textarea
-                    value={editContent}
-                    onChange={(e) => setEditContent(e.target.value)}
-                    rows={8}
-                    className="w-full bg-surface border border-gray-700 rounded-lg px-4 py-2 text-text focus:outline-none focus:border-primary resize-none"
-                  />
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => updateNote(note.id)}
-                      className="px-3 py-1.5 bg-primary hover:bg-primary/90 text-white text-sm font-semibold rounded-lg"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={() => setEditingId(null)}
-                      className="px-3 py-1.5 bg-surface hover:bg-gray-700 text-muted text-sm font-semibold rounded-lg"
-                    >
-                      Cancel
-                    </button>
-                  </div>
+          {isCreating && (
+            <div className="note-card rounded-2xl p-5 mb-5 fade-up">
+              <div className="space-y-3">
+                <input
+                  type="text"
+                  placeholder="Note title"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  className="input-field w-full rounded-xl px-4 py-2.5 text-sm placeholder-muted"
+                />
+                <textarea
+                  placeholder="Note content"
+                  value={newContent}
+                  onChange={(e) => setNewContent(e.target.value)}
+                  rows={6}
+                  className="input-field w-full rounded-xl px-4 py-2.5 text-sm placeholder-muted resize-none"
+                />
+                <div className="flex gap-2">
+                  <button
+                    onClick={createNote}
+                    className="glow-btn px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:-translate-y-px"
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={() => { setIsCreating(false); setNewTitle(''); setNewContent(''); }}
+                    className="note-btn px-4 py-2.5 rounded-xl text-sm font-medium text-gray-400"
+                  >
+                    Cancel
+                  </button>
                 </div>
-              ) : (
-                <div>
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className="font-semibold text-text">{note.title || 'Untitled'}</h3>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => enhanceNote(note.id)}
-                        disabled={enhanceLoading === note.id}
-                        className="px-2 py-1 text-xs text-accent hover:text-accent/80 disabled:opacity-50"
-                      >
-                        {enhanceLoading === note.id ? 'Enhancing...' : <><FiZap className="inline" /> Enhance</>}
-                      </button>
-                      <button
-                        onClick={() => { setEditingId(note.id); setEditTitle(note.title); setEditContent(note.content); }}
-                        className="px-2 py-1 text-xs text-muted hover:text-text"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => deleteNote(note.id)}
-                        className="px-2 py-1 text-xs text-red-400 hover:text-red-300"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                  <div className="prose prose-invert prose-sm max-w-none text-text">
-                    <ReactMarkdown>{note.content}</ReactMarkdown>
-                  </div>
-                  <p className="text-xs text-muted mt-3">
-                    {new Date(note.updated_at).toLocaleDateString()}
-                  </p>
-                </div>
-              )}
+              </div>
             </div>
-          ))}
+          )}
+
+          {notes.length > 0 ? (
+            <div className="space-y-3">
+              {notes.map((note) => (
+                <div key={note.id} className="note-card rounded-2xl p-5 fade-up">
+                  {editingId === note.id ? (
+                    <div className="space-y-3">
+                      <input
+                        type="text"
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        className="input-field w-full rounded-xl px-4 py-2.5 text-sm"
+                      />
+                      <textarea
+                        value={editContent}
+                        onChange={(e) => setEditContent(e.target.value)}
+                        rows={8}
+                        className="input-field w-full rounded-xl px-4 py-2.5 text-sm resize-none"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => updateNote(note.id)}
+                          className="glow-btn px-3 py-2 rounded-lg text-sm font-semibold"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={() => setEditingId(null)}
+                          className="note-btn px-3 py-2 rounded-lg text-sm font-medium text-gray-400"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <div className="flex items-start justify-between mb-3">
+                        <h3 className="font-semibold text-gray-100">{note.title || 'Untitled'}</h3>
+                        <div className="flex gap-1.5">
+                          <button
+                            onClick={() => enhanceNote(note.id)}
+                            disabled={enhanceLoading === note.id}
+                            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-sky-400 hover:bg-sky-400/10 transition-colors disabled:opacity-50"
+                          >
+                            {enhanceLoading === note.id ? 'Enhancing...' : <><FiZap size={11} /> Enhance</>}
+                          </button>
+                          <button
+                            onClick={() => { setEditingId(note.id); setEditTitle(note.title); setEditContent(note.content); }}
+                            className="note-btn px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-500 hover:text-gray-300"
+                          >
+                            <FiEdit size={11} />
+                          </button>
+                          <button
+                            onClick={() => deleteNote(note.id)}
+                            className="note-btn px-2.5 py-1.5 rounded-lg text-xs font-medium text-red-400 hover:text-red-300 hover:border-red-400/30"
+                          >
+                            <FiTrash2 size={11} />
+                          </button>
+                        </div>
+                      </div>
+                      <div className="prose prose-invert prose-sm max-w-none text-gray-300">
+                        <ReactMarkdown>{note.content}</ReactMarkdown>
+                      </div>
+                      <p className="text-xs text-gray-600 mt-3">
+                        {new Date(note.updated_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            !isCreating && (
+              <div className="text-center py-16 fade-up">
+                <FiEdit className="text-5xl mx-auto mb-3 text-gray-700" />
+                <p className="text-gray-500 text-sm">No notes yet. Create one to get started.</p>
+              </div>
+            )
+          )}
         </div>
-      ) : (
-        !isCreating && (
-          <div className="text-center py-12 text-muted">
-            <FiEdit className="text-4xl mb-2" />
-            <p>No notes yet. Create one to get started.</p>
-          </div>
-        )
-      )}
-    </div>
+      </div>
   );
 }

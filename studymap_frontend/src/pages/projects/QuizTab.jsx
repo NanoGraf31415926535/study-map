@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiCheck, FiX, FiHelpCircle, FiEdit, FiDownload, FiFileText, FiFile } from 'react-icons/fi';
+import { FiCheck, FiX, FiHelpCircle, FiEdit, FiDownload, FiFileText, FiFile, FiZap, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { useGenerationStore } from '../../store/useGenerationStore';
 import { useAuthStore } from '../../store/useAuthStore';
+import '../../styles/quiz.css';
 
 export default function QuizTab({ projectId, isStudyMode = false }) {
   const {
@@ -109,215 +110,265 @@ export default function QuizTab({ projectId, isStudyMode = false }) {
   const totalQuestions = selectedQuiz?.questions?.length || 0;
 
   if (showResults && results) {
+    const wrong = results.total - results.correct;
     return (
-      <div className="space-y-6">
-        <div className="text-center py-8">
-          <div className={`text-6xl font-bold mb-4 ${results.score >= 70 ? 'text-success' : results.score >= 50 ? 'text-warning' : 'text-red-400'}`}>
-            {results.score}%
-          </div>
-          <h2 className="text-2xl font-bold text-text">
-            {results.score >= 70 ? 'Great job!' : results.score >= 50 ? 'Good effort!' : 'Keep practicing!'}
-          </h2>
-          <p className="text-muted mt-2">
-            {results.correct} out of {results.total} correct
-          </p>
-        </div>
+      <div className="quiz-root relative min-h-screen bg-gray-950 text-gray-100 -m-6 p-6 overflow-hidden">
+          <div className="relative z-10 max-w-2xl mx-auto">
+            <div className="flex items-center justify-between mb-7">
+              <span className="text-xs font-semibold uppercase tracking-widest text-emerald-400 flex items-center gap-2">
+                <FiCheck size={12} /> Results
+              </span>
+              <button
+                onClick={() => { setSelectedQuiz(null); setCurrentQuestion(0); setAnswers({}); setResults(null); setShowResults(false); }}
+                className="quiz-btn px-4 py-2 rounded-xl text-xs font-medium text-gray-500"
+              >
+                Choose Another
+              </button>
+            </div>
+            <div className="text-center py-8 fade-up">
+              <div className={`text-6xl font-mono-study font-bold mb-4 ${results.score >= 70 ? 'text-emerald-400' : results.score >= 50 ? 'text-orange-400' : 'text-red-400'}`}>
+                {results.score}%
+              </div>
+              <h2 className="text-2xl font-bold text-gray-100 mb-2">
+                {results.score >= 70 ? 'Great job!' : results.score >= 50 ? 'Good effort!' : 'Keep practicing!'}
+              </h2>
+              <p className="text-gray-500 text-sm">
+                {results.correct} out of {results.total} correct
+              </p>
+            </div>
 
-        <div className="space-y-4">
-          {results.questions?.map((q, i) => (
-            <div key={q.id} className={`p-4 rounded-xl border ${q.is_correct ? 'bg-success/10 border-success/50' : 'bg-red-500/10 border-red-500/50'}`}>
-              <div className="flex items-start gap-3">
-                <span className={`text-xl ${q.is_correct ? 'text-success' : 'text-red-400'}`}>
-                  {q.is_correct ? <FiCheck /> : <FiX />}
-                </span>
-                <div className="flex-1">
-                  <p className="font-medium text-text mb-2">Q{i + 1}: {q.question_text}</p>
-                  <div className="text-sm text-muted">
-                    <p>Your answer: <span className={q.is_correct ? 'text-success' : 'text-red-400'}>{q.user_answer?.toUpperCase()}</span></p>
-                    {!q.is_correct && (
-                      <p>Correct: <span className="text-success">{q.correct_option.toUpperCase()}</span></p>
-                    )}
-                    {q.explanation && (
-                      <p className="mt-2 text-muted italic">{q.explanation}</p>
-                    )}
-                  </div>
-                </div>
+            <div className="flex gap-3 mb-7 fade-up justify-center">
+              <div className="px-6 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-center">
+                <div className="font-mono-study text-2xl font-bold text-emerald-400">{results.correct}</div>
+                <div className="text-xs text-gray-500 uppercase tracking-widest mt-1">Correct</div>
+              </div>
+              <div className="px-6 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-center">
+                <div className="font-mono-study text-2xl font-bold text-red-400">{wrong}</div>
+                <div className="text-xs text-gray-500 uppercase tracking-widest mt-1">Wrong</div>
+              </div>
+              <div className="px-6 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-center">
+                <div className="font-mono-study text-2xl font-bold text-sky-400">{results.total}</div>
+                <div className="text-xs text-gray-500 uppercase tracking-widest mt-1">Total</div>
               </div>
             </div>
-          ))}
-        </div>
 
-        <div className="flex gap-3">
-          <button
-            onClick={() => { setShowResults(false); setAnswers({}); setCurrentQuestion(0); }}
-            className="px-4 py-2 bg-surface hover:bg-gray-700 text-muted font-semibold rounded-xl"
-          >
-            Retake Quiz
-          </button>
-          <button
-            onClick={() => { setSelectedQuiz(null); setCurrentQuestion(0); setAnswers({}); setResults(null); setShowResults(false); }}
-            className="px-4 py-2 bg-primary hover:bg-primary/90 text-white font-semibold rounded-xl"
-          >
-            Choose Another Quiz
-          </button>
+            <div className="space-y-3">
+              {results.questions?.map((q, i) => (
+                <div key={q.id} className={`p-4 rounded-2xl border ${q.is_correct ? 'bg-emerald-400/5 border-emerald-400/20' : 'bg-red-400/5 border-red-400/20'}`}>
+                  <div className="flex items-start gap-3">
+                    <span className={`text-lg ${q.is_correct ? 'text-emerald-400' : 'text-red-400'}`}>
+                      {q.is_correct ? <FiCheck /> : <FiX />}
+                    </span>
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-100 mb-2">Q{i + 1}: {q.question_text}</p>
+                      <div className="text-sm text-gray-500">
+                        <p>Your answer: <span className={q.is_correct ? 'text-emerald-400' : 'text-red-400'}>{q.user_answer?.toUpperCase()}</span></p>
+                        {!q.is_correct && (
+                          <p>Correct: <span className="text-emerald-400">{q.correct_option.toUpperCase()}</span></p>
+                        )}
+                        {q.explanation && (
+                          <p className="mt-2 text-gray-600 italic">{q.explanation}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex gap-3 mt-7 justify-center">
+              <button
+                onClick={() => { setShowResults(false); setAnswers({}); setCurrentQuestion(0); }}
+                className="quiz-btn px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-400"
+              >
+                <FiZap size={14} className="inline mr-1.5" /> Retake Quiz
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
     );
   }
 
   if (selectedQuiz && totalQuestions > 0) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-bold text-text">{selectedQuiz.title}</h2>
-            <p className="text-sm text-muted">
-              Question {currentQuestion + 1} of {totalQuestions}
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <div className="relative">
-              <button
-                onClick={() => setShowExport(!showExport)}
-                className="px-4 py-2 bg-surface hover:bg-gray-700 text-muted font-semibold rounded-xl flex items-center gap-2"
-              >
-                <FiDownload size={16} /> Export
-              </button>
-              {showExport && (
-                <div className="absolute right-0 top-full mt-1 bg-card border border-gray-700 rounded-xl overflow-hidden z-10">
+      <div className="quiz-root relative min-h-screen bg-gray-950 text-gray-100 -m-6 p-6 overflow-hidden">
+          <div className="relative z-10 max-w-2xl mx-auto">
+            <div className="flex items-center justify-between mb-7">
+              <div>
+                <h2 className="text-lg font-bold text-gray-100">{selectedQuiz.title}</h2>
+                <p className="font-mono-study text-xs text-gray-500 mt-1">
+                  Question {currentQuestion + 1} of {totalQuestions}
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <div className="relative">
                   <button
-                    onClick={() => handleExport('pdf')}
-                    className="w-full px-4 py-2 text-left text-sm text-text hover:bg-gray-700 flex items-center gap-2"
+                    onClick={() => setShowExport(!showExport)}
+                    className="glow-btn px-3.5 py-2 rounded-xl text-xs font-medium text-gray-500 flex items-center gap-2"
                   >
-                    <FiFile size={14} /> PDF
+                    <FiDownload size={13} /> Export
                   </button>
-                  <button
-                    onClick={() => handleExport('md')}
-                    className="w-full px-4 py-2 text-left text-sm text-text hover:bg-gray-700 flex items-center gap-2"
-                  >
-                    <FiFileText size={14} /> Markdown
-                  </button>
+                  {showExport && (
+                    <div className="absolute right-0 top-full mt-1 bg-gray-900/95 backdrop-blur border border-white/10 rounded-xl overflow-hidden z-20">
+                      <button
+                        onClick={() => handleExport('pdf')}
+                        className="w-full px-4 py-2.5 text-left text-xs text-gray-300 hover:bg-white/5 flex items-center gap-2"
+                      >
+                        <FiFile size={12} /> PDF
+                      </button>
+                      <button
+                        onClick={() => handleExport('md')}
+                        className="w-full px-4 py-2.5 text-left text-xs text-gray-300 hover:bg-white/5 flex items-center gap-2"
+                      >
+                        <FiFileText size={12} /> Markdown
+                      </button>
+                    </div>
+                  )}
                 </div>
+              </div>
+            </div>
+
+            <div className="w-full h-0.5 bg-white/[0.06] rounded-full overflow-hidden mb-7">
+              <div
+                className="progress-fill h-full rounded-full transition-all duration-500"
+                style={{ width: `${((currentQuestion + 1) / totalQuestions) * 100}%` }}
+              />
+            </div>
+
+            {question && (
+              <div className="quiz-card rounded-2xl p-6 mb-5 fade-up">
+                <p className="text-base font-medium text-gray-100 mb-6">
+                  {currentQuestion + 1}. {question.question_text}
+                </p>
+                <div className="space-y-2.5">
+                  {['option_a', 'option_b', 'option_c', 'option_d'].map((opt, i) => {
+                    const letter = ['a', 'b', 'c', 'd'][i];
+                    const label = ['A', 'B', 'C', 'D'][i];
+                    const isSelected = answers[question.id] === letter;
+                    return (
+                      <button
+                        key={opt}
+                        onClick={() => handleAnswer(question.id, letter)}
+                        className={`option-btn relative w-full flex items-start gap-3.5 px-5 py-3.5 rounded-xl text-left overflow-hidden transition-all duration-200 border
+                          ${isSelected
+                            ? 'bg-sky-400/[0.1] border-sky-400/50 shadow-sky-400/10 shadow-md'
+                            : 'bg-white/[0.03] border-white/[0.07] hover:border-sky-400/30'}`}
+                      >
+                        <span
+                          className={`flex-shrink-0 w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold transition-all duration-200
+                            ${isSelected
+                              ? 'bg-sky-400 text-gray-950'
+                              : 'bg-white/[0.06] border border-white/[0.1] text-gray-500'}`}
+                        >
+                          {label}
+                        </span>
+                        <span className={`text-sm leading-relaxed pt-0.5 transition-colors duration-150
+                          ${isSelected ? 'text-gray-100' : 'text-gray-400'}`}>
+                          {question[opt]}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            <div className="flex justify-between">
+              <button
+                onClick={() => setCurrentQuestion(prev => Math.max(0, prev - 1))}
+                disabled={currentQuestion === 0}
+                className="quiz-btn px-4 py-2.5 rounded-xl text-xs font-medium text-gray-500 flex items-center gap-1.5 disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <FiChevronLeft size={14} /> Previous
+              </button>
+              {currentQuestion < totalQuestions - 1 ? (
+                <button
+                  onClick={() => setCurrentQuestion(prev => prev + 1)}
+                  className="glow-sky px-5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all hover:-translate-y-px"
+                >
+                  Next <FiChevronRight size={14} />
+                </button>
+              ) : (
+                <button
+                  onClick={handleSubmit}
+                  disabled={Object.keys(answers).length !== totalQuestions}
+                  className="glow-emerald px-5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all hover:-translate-y-px disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <FiCheck size={14} /> Submit Quiz
+                </button>
               )}
             </div>
-            <button
-              onClick={() => { setSelectedQuiz(null); setCurrentQuestion(0); setAnswers({}); }}
-              className="px-4 py-2 bg-surface hover:bg-gray-700 text-muted font-semibold rounded-xl"
-            >
-              Back to Quizzes
-            </button>
           </div>
-        </div>
-
-        {question && (
-          <div className="bg-card rounded-xl p-6 border border-gray-800">
-            <p className="text-lg font-medium text-text mb-6">
-              {currentQuestion + 1}. {question.question_text}
-            </p>
-            <div className="space-y-3">
-              {['option_a', 'option_b', 'option_c', 'option_d'].map((opt, i) => (
-                <button
-                  key={opt}
-                  onClick={() => handleAnswer(question.id, ['a', 'b', 'c', 'd'][i])}
-                  className={`w-full p-4 rounded-xl text-left transition-all border ${
-                    answers[question.id] === ['a', 'b', 'c', 'd'][i]
-                      ? 'bg-primary/20 border-primary'
-                      : 'bg-surface border-gray-700 hover:border-gray-600'
-                  }`}
-                >
-                  <span className="font-semibold text-muted mr-3">{getOptionLabel(i)}</span>
-                  <span className="text-text">{question[opt]}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div className="w-full bg-surface rounded-full h-2 overflow-hidden">
-          <div
-            className="h-full bg-primary transition-all"
-            style={{ width: `${((currentQuestion + 1) / totalQuestions) * 100}%` }}
-          />
-        </div>
-
-        <div className="flex justify-between">
-          <button
-            onClick={() => setCurrentQuestion(prev => Math.max(0, prev - 1))}
-            disabled={currentQuestion === 0}
-            className="px-4 py-2 bg-surface hover:bg-gray-700 disabled:opacity-50 text-muted font-semibold rounded-xl"
-          >
-            Previous
-          </button>
-          {currentQuestion < totalQuestions - 1 ? (
-            <button
-              onClick={() => setCurrentQuestion(prev => prev + 1)}
-              className="px-4 py-2 bg-primary hover:bg-primary/90 text-white font-semibold rounded-xl"
-            >
-              Next
-            </button>
-          ) : (
-            <button
-              onClick={handleSubmit}
-              disabled={Object.keys(answers).length !== totalQuestions}
-              className="px-4 py-2 bg-success hover:bg-success/90 disabled:opacity-50 text-white font-semibold rounded-xl"
-            >
-              Submit Quiz
-            </button>
-          )}
-        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex gap-3 mb-6">
-        {[15, 30, 50].map((count) => (
-          <button
-            key={count}
-            onClick={() => handleGenerate(count)}
-            disabled={isGenerating}
-            className="px-5 py-2.5 bg-primary hover:bg-primary/90 disabled:opacity-50 text-white font-semibold rounded-xl transition-colors"
-          >
-            {isGenerating ? 'Generating...' : `Generate ${count} Questions`}
-          </button>
-        ))}
-      </div>
+    <div className="quiz-root relative min-h-screen bg-gray-950 text-gray-100 -m-6 p-6 overflow-hidden">
+        <div className="relative z-10 max-w-2xl mx-auto">
+          <div className="flex items-center gap-2.5 mb-7">
+            <span className="block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-xs font-semibold uppercase tracking-widest text-emerald-400">
+              Quizzes
+            </span>
+          </div>
 
-      {projectQuizzes.length === 0 ? (
-        <div className="text-center py-20 text-muted">
-          <FiHelpCircle className="text-5xl mb-4" />
-          <p className="text-lg">No quizzes yet.</p>
-          <p className="text-sm mt-2">Generate one from your documents.</p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-text">Your Quizzes</h3>
-          {projectQuizzes.map((quiz) => (
-            <button
-              key={quiz.id}
-              onClick={() => handleSelectQuiz(quiz)}
-              className="w-full p-4 bg-card rounded-xl flex items-center gap-4 border border-gray-800 hover:border-gray-700 transition-colors text-left"
-            >
-              <FiEdit className="text-3xl" />
-              <div className="flex-1">
-                <div className="font-medium text-text">{quiz.title}</div>
-                <div className="text-sm text-muted">{quiz.question_count} questions</div>
+          <div className="flex gap-2.5 mb-7 fade-up">
+            {[15, 30, 50].map((count) => (
+              <button
+                key={count}
+                onClick={() => handleGenerate(count)}
+                disabled={isGenerating}
+                className="glow-sky flex-1 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all hover:-translate-y-px disabled:opacity-40"
+              >
+                {isGenerating ? <><FiZap size={12} className="inline mr-1" /> Generating...</> : `Generate ${count} Questions`}
+              </button>
+            ))}
+          </div>
+
+          {projectQuizzes.length === 0 ? (
+            <div className="text-center py-20 fade-up">
+              <div className="quiz-icon w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center">
+                <FiHelpCircle size={28} />
               </div>
-              {quiz.score !== null && (
-                <span className={`px-3 py-1 text-sm rounded-full ${
-                  quiz.score >= 70 ? 'bg-success/20 text-success' : 'bg-warning/20 text-warning'
-                }`}>
-                  {quiz.score}%
-                </span>
-              )}
-              <span className="text-sm text-muted">
-                {new Date(quiz.created_at).toLocaleDateString()}
-              </span>
-            </button>
-          ))}
+              <p className="text-gray-100 font-medium">No quizzes yet.</p>
+              <p className="text-gray-500 text-sm mt-2">Generate one from your documents.</p>
+            </div>
+          ) : (
+            <div className="fade-up">
+              <p className="text-xs font-semibold uppercase tracking-widest text-gray-600 mb-3.5 flex items-center gap-2">
+                <FiHelpCircle size={12} /> Your Quizzes
+              </p>
+              <div className="flex flex-col gap-2.5">
+                {projectQuizzes.map((quiz) => (
+                  <button
+                    key={quiz.id}
+                    onClick={() => handleSelectQuiz(quiz)}
+                    className="quiz-card w-full flex items-center gap-4 p-4 rounded-2xl text-left"
+                  >
+                    <div className="quiz-icon w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <FiHelpCircle size={18} />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <div className="font-medium text-gray-100">{quiz.title}</div>
+                      <div className="text-xs text-gray-500 mt-0.5">{quiz.question_count} questions</div>
+                    </div>
+                    {quiz.score !== null && (
+                      <span className={`px-3 py-1 text-xs font-mono-study font-semibold rounded-full ${
+                        quiz.score >= 70 ? 'bg-emerald-400/10 text-emerald-400' : 'bg-orange-400/10 text-orange-400'
+                      }`}>
+                        {quiz.score}%
+                      </span>
+                    )}
+                    <span className="text-xs text-gray-600">
+                      {new Date(quiz.created_at).toLocaleDateString()}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
-      )}
-    </div>
+      </div>
   );
 }

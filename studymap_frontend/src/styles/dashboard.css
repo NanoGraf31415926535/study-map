@@ -1,0 +1,47 @@
+.dashboard-root { font-family: 'Sora', sans-serif; }
+
+.dashboard-root::before {
+  content: '';
+  position: fixed;
+  top: -200px; left: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(99,179,237,0.055) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.35s ease both; }
+
+.project-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  transition: all 0.2s;
+}
+.project-card:hover {
+  border-color: rgba(99,179,237,0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.glow-sky {
+  background: #63b3ed;
+  color: #0f172a;
+  box-shadow: 0 4px 14px rgba(99,179,237,0.3);
+  transition: all 0.2s;
+}
+.glow-sky:hover {
+  background: #38bdf8;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(99,179,237,0.4);
+}
+
+.empty-state {
+  background: rgba(255,255,255,0.02);
+  border: 2px dashed rgba(255,255,255,0.08);
+}
+.empty-state:hover {
+  border-color: rgba(99,179,237,0.2);
+}

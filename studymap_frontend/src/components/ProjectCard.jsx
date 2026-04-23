@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { FiMoreVertical, FiTrash2 } from 'react-icons/fi';
 
 export default function ProjectCard({ project, onClick, onDelete }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -13,15 +14,15 @@ export default function ProjectCard({ project, onClick, onDelete }) {
 
   return (
     <div
-      className="bg-card rounded-2xl shadow-lg hover:shadow-xl transition-shadow cursor-pointer overflow-hidden border-l-4"
-      style={{ borderLeftColor: project.color }}
+      className="project-card relative rounded-2xl cursor-pointer overflow-hidden"
+      style={{ borderLeftColor: project.color, borderLeftWidth: '3px' }}
       onClick={onClick}
     >
-      <div className="p-4">
+      <div className="p-5">
         <div className="flex items-start justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: project.color }}></div>
-            <h3 className="font-semibold text-text truncate">{project.name}</h3>
+          <div className="flex items-center gap-2.5">
+            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: project.color }}></div>
+            <h3 className="font-semibold text-gray-100 truncate">{project.name}</h3>
           </div>
           <div className="relative">
             <button
@@ -29,32 +30,32 @@ export default function ProjectCard({ project, onClick, onDelete }) {
                 e.stopPropagation();
                 setMenuOpen(!menuOpen);
               }}
-              className="p-1 hover:bg-surface rounded-lg transition-colors text-muted"
+              className="p-1.5 rounded-lg transition-colors text-gray-500 hover:text-gray-300 hover:bg-white/[0.06]"
             >
-              ...
+              <FiMoreVertical size={14} />
             </button>
             {menuOpen && (
-              <div className="absolute right-0 top-8 bg-surface rounded-xl shadow-lg border border-gray-700 py-1 z-10">
+              <div className="absolute right-0 top-8 bg-gray-900/95 backdrop-blur rounded-xl shadow-lg border border-white/10 py-1 z-20">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     onDelete();
                     setMenuOpen(false);
                   }}
-                  className="w-full px-4 py-2 text-left hover:bg-card transition-colors text-red-400 text-sm"
+                  className="w-full px-4 py-2.5 text-left hover:bg-white/[0.05] text-red-400 text-sm flex items-center gap-2"
                 >
-                  Delete
+                  <FiTrash2 size={12} /> Delete
                 </button>
               </div>
             )}
           </div>
         </div>
 
-        <p className="text-sm text-muted mt-2 line-clamp-2">
+        <p className="text-sm text-gray-500 mt-2.5 line-clamp-2">
           {project.description || 'No description'}
         </p>
 
-        <div className="flex items-center justify-between mt-4 text-xs text-muted">
+        <div className="flex items-center justify-between mt-4 text-xs text-gray-600">
           <span>{project.document_count} documents</span>
           <span>{formatDate(project.created_at)}</span>
         </div>

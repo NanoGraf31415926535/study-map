@@ -1,10 +1,11 @@
 import { useEffect, useState, useCallback, Suspense, lazy, startTransition } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { FiFile, FiMessageSquare, FiEdit, FiTarget, FiHelpCircle, FiMap, FiList, FiBookOpen } from 'react-icons/fi';
+import { FiFile, FiMessageSquare, FiEdit, FiTarget, FiHelpCircle, FiMap, FiList, FiBookOpen, FiArrowLeft } from 'react-icons/fi';
 import { useProjectStore } from '../../store/useProjectStore';
 import { useGenerationStore } from '../../store/useGenerationStore';
 import { useChatStore } from '../../store/useChatStore';
 import ProjectSidebar from '../../components/ProjectSidebar';
+import '../../styles/project.css';
 
 const DocumentsTab = lazy(() => import('./DocumentsTab'));
 const ChatTab = lazy(() => import('./ChatTab'));
@@ -118,54 +119,54 @@ export default function ProjectView() {
 
   if (isStudyMode) {
     return (
-      <div className="fixed inset-0 z-50 bg-surface">
-        <Suspense fallback={
-          <div className="min-h-screen bg-surface flex items-center justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          </div>
-        }>
-          <StudyModeTab projectId={projectId} onExit={handleExitStudyMode} />
-        </Suspense>
-      </div>
+      <div className="fixed inset-0 z-50 bg-gray-950">
+          <Suspense fallback={
+            <div className="min-h-screen bg-gray-950 flex items-center justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-400"></div>
+            </div>
+          }>
+            <StudyModeTab projectId={projectId} onExit={handleExitStudyMode} />
+          </Suspense>
+        </div>
     );
   }
 
   if (isLoading || !project) {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="min-h-screen bg-gray-950 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-400"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-surface flex">
-      <ProjectSidebar project={project} stats={stats} />
-      <main className="flex-1 ml-64 p-6">
-        <div className="flex gap-2 mb-6 border-b border-gray-800 pb-2 overflow-x-auto">
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg whitespace-nowrap transition-colors ${
-                activeTab === tab.id
-                  ? 'bg-primary text-white'
-                  : 'text-muted hover:text-text hover:bg-surface'
-              }`}
-            >
-              <tab.icon className="w-4 h-4" />
-              <span className="font-medium">{tab.label}</span>
-            </button>
-          ))}
-        </div>
-        <Suspense fallback={
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    <div className="project-view fixed inset-0 flex bg-gray-950">
+        <ProjectSidebar project={project} stats={stats} />
+        <main className="flex-1 ml-64 p-6 overflow-auto">
+          <div className="flex gap-2 mb-6 border-b border-white/[0.08] pb-2 overflow-x-auto">
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setTab(tab.id)}
+                className={`tab-btn flex items-center gap-2 px-4 py-2.5 rounded-lg whitespace-nowrap border transition-all ${
+                  activeTab === tab.id
+                    ? 'active'
+                    : 'border-transparent text-gray-500 hover:text-gray-300'
+                }`}
+              >
+                <tab.icon className="w-4 h-4" />
+                <span className="font-medium text-sm">{tab.label}</span>
+              </button>
+            ))}
           </div>
-        }>
-          {renderTab()}
-        </Suspense>
-      </main>
-    </div>
+          <Suspense fallback={
+            <div className="flex items-center justify-center h-64">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-400"></div>
+            </div>
+          }>
+            <div className="fade-up">{renderTab()}</div>
+          </Suspense>
+        </main>
+      </div>
   );
 }

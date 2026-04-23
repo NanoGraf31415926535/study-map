@@ -11,30 +11,62 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import dagre from 'dagre';
 
+const viewerCss = `
+  .mindmap-node {
+    background: rgba(139,92,246,0.15);
+    border: 1px solid rgba(139,92,246,0.3);
+  }
+  .mindmap-node.selected {
+    border-color: #a78bfa;
+    box-shadow: 0 0 12px rgba(139,92,246,0.4);
+  }
+  .mindmap-controls {
+    background: rgba(17,24,39,0.95) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+  }
+  .mindmap-controls button {
+    background: rgba(255,255,255,0.05) !important;
+    border-color: rgba(255,255,255,0.08) !important;
+  }
+  .mindmap-controls button:hover {
+    background: rgba(255,255,255,0.1) !important;
+  }
+  .mindmap-controls button svg {
+    fill: #94a3b8 !important;
+  }
+  .mindmap-minimap {
+    background: rgba(17,24,39,0.95) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+  }
+`;
+
 const nodeWidth = 140;
 const nodeHeight = 50;
 
 const LayoutedNode = ({ data, selected }) => {
   return (
-    <div
-      className={`px-3 py-2 rounded-lg shadow-lg border-2 transition-all ${
-        selected ? 'border-primary' : 'border-gray-700'
-      }`}
-      style={{
-        backgroundColor: data.color || '#6C63FF',
-        minWidth: nodeWidth,
-        maxWidth: nodeWidth,
-      }}
-    >
-      <Handle type="target" position={Position.Top} className="!bg-gray-400" />
-      <div className="text-white font-semibold text-center text-xs truncate">{data.label}</div>
-      {data.summary && (
-        <div className="text-white/70 text-[10px] text-center truncate">
-          {data.summary}
-        </div>
-      )}
-      <Handle type="source" position={Position.Bottom} className="!bg-gray-400" />
-    </div>
+    <>
+      <style>{viewerCss}</style>
+      <div
+        className={`px-3 py-2 rounded-lg shadow-lg border transition-all mindmap-node ${
+          selected ? 'selected' : ''
+        }`}
+        style={{
+          backgroundColor: data.color || '#8b5cf6',
+          minWidth: nodeWidth,
+          maxWidth: nodeWidth,
+        }}
+      >
+        <Handle type="target" position={Position.Top} className="!bg-white/50" />
+        <div className="text-white font-semibold text-center text-xs truncate">{data.label}</div>
+        {data.summary && (
+          <div className="text-white/70 text-[10px] text-center truncate">
+            {data.summary}
+          </div>
+        )}
+        <Handle type="source" position={Position.Bottom} className="!bg-white/50" />
+      </div>
+    </>
   );
 };
 
@@ -105,7 +137,7 @@ export default function MindMapViewer({ data, onExport }) {
             source: node.id,
             target: child.id,
             type: 'smoothstep',
-            style: { stroke: child.color || '#6C63FF', strokeWidth: 2 },
+            style: { stroke: child.color || '#8b5cf6', strokeWidth: 2 },
           });
           result.push(...buildEdges(child));
         });
@@ -135,14 +167,14 @@ export default function MindMapViewer({ data, onExport }) {
         onInit={setReactFlowInstance}
         fitView
         nodeTypes={nodeTypes}
-        className="bg-surface"
+        className="bg-gray-900"
       >
         <Background color="#374151" gap={20} />
-        <Controls className="!bg-card !border-gray-700 !text-text" />
+        <Controls className="mindmap-controls" />
         <MiniMap
-          nodeColor={(n) => n.data?.color || '#6C63FF'}
-          maskColor="rgba(0,0,0,0.3)"
-          className="!bg-card !border-gray-700"
+          nodeColor={(n) => n.data?.color || '#8b5cf6'}
+          maskColor="rgba(0,0,0,0.5)"
+          className="mindmap-minimap"
         />
       </ReactFlow>
     </div>

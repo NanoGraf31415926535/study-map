@@ -76,7 +76,11 @@ export const useChatStore = create(
             isLoading: false,
           }));
         } catch (error) {
-          set({ error: error.response?.data?.detail || 'Failed to fetch messages', isLoading: false });
+          if (error.response?.status === 404) {
+            set({ activeSession: null, isLoading: false });
+          } else {
+            set({ error: error.response?.data?.detail || 'Failed to fetch messages', isLoading: false });
+          }
         }
       },
 
