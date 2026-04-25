@@ -353,3 +353,289 @@ body {
 [data-theme="light"] .text-gray-600 {
   color: #64748B;
 }
+
+/* ============================================
+   RESPONSIVE STYLES
+   ============================================ */
+
+/* Tablet (iPad) - 768px and below */
+@media (max-width: 768px) {
+  /* Hide desktop nav sidebar */
+  .navbar, .sidebar-bg {
+    display: none;
+  }
+  
+  /* Adjust main content */
+  .project-view main,
+  .dashboard-root .main-content,
+  .settings-root main {
+    margin-left: 0 !important;
+    padding: 0.75rem !important;
+  }
+  
+  /* Make tabs scrollable horizontally */
+  .tab-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 0.5rem;
+  }
+  .tab-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Smaller cards */
+  .project-card, .quiz-card, .mindmap-card, .flash-card, .doc-card {
+    padding: 0.75rem !important;
+  }
+  
+  /* Stack grids on tablet */
+  .grid-cols-2, .grid-cols-3 {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Full width on mobile */
+  .w-full-mobile {
+    width: 100%;
+  }
+  
+  /* Hide on mobile */
+  .hide-mobile {
+    display: none;
+  }
+  
+  /* Bottom padding for mobile nav */
+  .pb-mobile-nav {
+    padding-bottom: 4rem;
+  }
+}
+
+/* Mobile - 480px and below */
+@media (max-width: 480px) {
+  /* Full width containers */
+  .project-view > main,
+  .dashboard-root > div,
+  .chat-root,
+  .quiz-root,
+  .notes-root,
+  .flashcards-root,
+  .mindmap-root,
+  .study-root,
+  .summary-root {
+    padding: 0.75rem !important;
+    margin: -0.5rem !important;
+  }
+  
+  /* Stack everything on mobile */
+  .grid-cols-1, .grid-cols-2, .grid-cols-3, .grid-cols-4 {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Smaller text */
+  .text-xl {
+    font-size: 1.25rem;
+  }
+  .text-lg {
+    font-size: 1rem;
+  }
+  .text-sm {
+    font-size: 0.875rem;
+  }
+  
+  /* Smaller buttons */
+  .p-4, .p-5, .p-6 {
+    padding: 0.75rem !important;
+  }
+  
+  /* Hide on mobile */
+  .hide-mobile {
+    display: none !important;
+  }
+  
+  /* Full width buttons */
+  .w-full-mobile {
+    width: 100%;
+  }
+  
+  /* Adjust input fields */
+  .input-field, input, textarea {
+    font-size: 16px !important; /* Prevent zoom on iOS */
+  }
+}
+
+/* Mobile Navigation (hidden by default) */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+}
+
+.mobile-nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  gap: 0.25rem;
+}
+
+.mobile-nav-btn.active {
+  color: var(--color-accent);
+}
+
+/* Show mobile nav on small screens */
+@media (max-width: 768px) {
+  .mobile-nav {
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  /* Add padding to main content to account for bottom nav */
+  .project-view,
+  .dashboard-root,
+  .chat-root,
+  .quiz-root {
+    padding-bottom: 4rem !important;
+  }
+}
+
+/* Responsive card grid */
+@media (max-width: 640px) {
+  .responsive-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .responsive-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  .responsive-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+/* Tab root utility - consistent mobile responsiveness */
+.tab-root {
+  position: relative;
+  /* Mobile first */
+  margin: -0.5rem;
+  padding: 0.5rem;
+  min-height: calc(100vh - 4rem);
+}
+
+@media (min-width: 768px) {
+  .tab-root {
+    margin: -1.5rem;
+    padding: 1.5rem;
+    min-height: calc(100vh - 5rem);
+  }
+}
+
+@media (min-width: 1024px) {
+  .tab-root {
+    margin: -1.5rem;
+    padding: 1.5rem;
+  }
+}
+
+/* Show on mobile only */
+@media (max-width: 768px) {
+  .mobile-back-btn {
+    display: flex;
+  }
+  .hide-on-mobile {
+    display: none;
+  }
+}
+
+/* Hide on desktop */
+@media (min-width: 769px) {
+  .mobile-only {
+    display: none;
+  }
+}
+
+/* Mobile drawer styles */
+.mobile-drawer {
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+}
+[data-theme="dark"] .mobile-drawer {
+  background: #0f172a;
+  border-color: rgba(255,255,255,0.07);
+}
+[data-theme="light"] .mobile-drawer {
+  background: #FFFFFF;
+  border-color: #E2E8F0;
+}
+
+.mobile-drawer-content {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 200px;
+  border: 2px solid red;
+}
+
+.mobile-drawer-header {
+  border-color: var(--color-border);
+}
+[data-theme="dark"] .mobile-drawer-header {
+  border-color: rgba(255,255,255,0.07);
+}
+[data-theme="light"] .mobile-drawer-header {
+  border-color: #E2E8F0;
+}
+
+/* Mobile menu button */
+.menu-btn {
+  background: var(--color-card);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+[data-theme="dark"] .menu-btn {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.07);
+  color: #e2e8f0;
+}
+[data-theme="light"] .menu-btn {
+  background: #FFFFFF;
+  border-color: #E2E8F0;
+  color: #1E293B;
+}
+
+/* Mobile back button */
+.mobile-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+[data-theme="dark"] .mobile-back-btn {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.07);
+  color: #e2e8f0;
+}
+[data-theme="light"] .mobile-back-btn {
+  background: #FFFFFF;
+  border-color: #E2E8F0;
+  color: #1E293B;
+}

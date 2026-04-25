@@ -134,7 +134,7 @@ const navbarCss = `
   }
 `;
 
-export default function Navbar() {
+export default function Navbar({ embedded = false }) {
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
@@ -189,7 +189,7 @@ export default function Navbar() {
   return (
     <>
       <style>{navbarCss}</style>
-    <nav className="fixed left-0 top-0 h-screen w-64 navbar flex flex-col">
+    <nav className={embedded ? 'w-full navbar flex flex-col' : 'fixed left-0 top-0 h-screen w-64 navbar flex flex-col'} style={embedded ? {display:'block', minHeight:'100%'} : {}}>
       <div className="p-5 border-b section-divider">
         <h1 className="text-xl font-bold logo cursor-pointer" onClick={() => navigate('/dashboard')}>
           StudyMap

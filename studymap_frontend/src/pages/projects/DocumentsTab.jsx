@@ -78,9 +78,9 @@ export default function DocumentsTab({ projectId, documents, onRefresh }) {
   };
 
   return (
-    <div className="docs-root relative min-h-screen bg-gray-950 text-gray-100 -m-6 p-6 overflow-hidden">
+    <div className="docs-root tab-root overflow-hidden">
         <div className="relative z-10">
-          <div className="flex items-center gap-2.5 mb-6">
+          <div className="flex items-center gap-2 mb-4 md:gap-2.5 md:mb-6">
             <span className="block w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
             <span className="text-xs font-semibold uppercase tracking-widest text-sky-400">
               Documents

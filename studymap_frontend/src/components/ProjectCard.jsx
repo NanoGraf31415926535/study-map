@@ -18,9 +18,9 @@ export default function ProjectCard({ project, onClick, onDelete }) {
       style={{ borderLeftColor: project.color, borderLeftWidth: '3px' }}
       onClick={onClick}
     >
-      <div className="p-5">
+      <div className="p-4 md:p-5">
         <div className="flex items-start justify-between">
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
             <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: project.color }}></div>
             <h3 className="font-semibold truncate project-title">{project.name}</h3>
           </div>

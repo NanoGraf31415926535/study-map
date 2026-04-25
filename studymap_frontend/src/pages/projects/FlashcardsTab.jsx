@@ -81,12 +81,12 @@ export default function FlashcardsTab({ projectId }) {
 
   if (selectedDeck && selectedDeck.cards?.length > 0) {
     return (
-      <div className="flashcards-root relative min-h-screen bg-gray-950 text-gray-100 -m-6 p-6 overflow-hidden">
+      <div className="flashcards-root tab-root overflow-hidden">
           <div className="relative z-10 max-w-2xl mx-auto">
-            <div className="flex items-center justify-between mb-7">
+            <div className="flex items-center justify-between mb-4 md:mb-7">
               <div>
-                <h2 className="text-lg font-bold text-gray-100">{selectedDeck.title}</h2>
-                <p className="font-mono-study text-xs text-gray-500 mt-1">
+                <h2 className="text-lg font-bold">{selectedDeck.title}</h2>
+                <p className="font-mono-study text-xs mt-1">
                   Card {currentIndex + 1} of {totalCards} • <span className="text-emerald-400">{reviewed}</span> reviewed
                 </p>
               </div>
@@ -156,10 +156,10 @@ export default function FlashcardsTab({ projectId }) {
   }
 
   return (
-    <div className="flashcards-root relative min-h-screen bg-gray-950 text-gray-100 -m-6 p-6 overflow-hidden">
+    <div className="flashcards-root tab-root overflow-hidden">
         <div className="relative z-10 max-w-2xl mx-auto">
-          <div className="flex items-center justify-between mb-7">
-            <div className="flex items-center gap-2.5">
+          <div className="flex items-center justify-between mb-4 md:mb-7">
+            <div className="flex items-center gap-2">
               <span className="block w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
               <span className="text-xs font-semibold uppercase tracking-widest text-sky-400">
                 Flashcards

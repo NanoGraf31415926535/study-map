@@ -77,16 +77,16 @@ export default function NotesTab({ projectId, notes: initialNotes, onRefresh }) 
   }, [projectId]);
 
   return (
-    <div className="notes-root relative min-h-screen bg-gray-950 text-gray-100 -m-6 p-6 overflow-hidden">
+    <div className="notes-root tab-root overflow-hidden">
         <div className="relative z-10">
-          <div className="flex items-center justify-between mb-7">
-            <h2 className="text-xl font-bold text-gray-100">Notes</h2>
+          <div className="flex items-center justify-between mb-4 md:mb-7">
+            <h2 className="text-lg md:text-xl font-bold">Notes</h2>
             {!isCreating && (
               <button
                 onClick={() => setIsCreating(true)}
-                className="glow-btn flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:-translate-y-px"
+                className="glow-btn flex items-center gap-1.5 px-3 md:px-4 py-2 md:py-2.5 rounded-xl text-sm font-semibold transition-all hover:-translate-y-px"
               >
-                <FiPlus size={14} /> New Note
+                <FiPlus size={14} /> <span className="hide-mobile">New Note</span>
               </button>
             )}
           </div>

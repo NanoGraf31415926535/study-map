@@ -112,9 +112,9 @@ export default function QuizTab({ projectId, isStudyMode = false }) {
   if (showResults && results) {
     const wrong = results.total - results.correct;
     return (
-      <div className="quiz-root relative min-h-screen bg-gray-950 text-gray-100 -m-6 p-6 overflow-hidden">
+      <div className="quiz-root tab-root overflow-hidden">
           <div className="relative z-10 max-w-2xl mx-auto">
-            <div className="flex items-center justify-between mb-7">
+            <div className="flex items-center justify-between mb-4 md:mb-7">
               <span className="text-xs font-semibold uppercase tracking-widest text-emerald-400 flex items-center gap-2">
                 <FiCheck size={12} /> Results
               </span>
@@ -191,12 +191,12 @@ export default function QuizTab({ projectId, isStudyMode = false }) {
 
   if (selectedQuiz && totalQuestions > 0) {
     return (
-      <div className="quiz-root relative min-h-screen bg-gray-950 text-gray-100 -m-6 p-6 overflow-hidden">
+      <div className="quiz-root tab-root overflow-hidden">
           <div className="relative z-10 max-w-2xl mx-auto">
-            <div className="flex items-center justify-between mb-7">
+            <div className="flex items-center justify-between mb-4 md:mb-7">
               <div>
-                <h2 className="text-lg font-bold text-gray-100">{selectedQuiz.title}</h2>
-                <p className="font-mono-study text-xs text-gray-500 mt-1">
+                <h2 className="text-lg font-bold">{selectedQuiz.title}</h2>
+                <p className="font-mono-study text-xs mt-1">
                   Question {currentQuestion + 1} of {totalQuestions}
                 </p>
               </div>
@@ -304,16 +304,16 @@ export default function QuizTab({ projectId, isStudyMode = false }) {
   }
 
   return (
-    <div className="quiz-root relative min-h-screen bg-gray-950 text-gray-100 -m-6 p-6 overflow-hidden">
+    <div className="quiz-root tab-root overflow-hidden">
         <div className="relative z-10 max-w-2xl mx-auto">
-          <div className="flex items-center gap-2.5 mb-7">
+          <div className="flex items-center gap-2 mb-4 md:mb-7">
             <span className="block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             <span className="text-xs font-semibold uppercase tracking-widest text-emerald-400">
               Quizzes
             </span>
           </div>
 
-          <div className="flex gap-2.5 mb-7 fade-up">
+          <div className="flex gap-2 mb-4 md:mb-7 fade-up">
             {[15, 30, 50].map((count) => (
               <button
                 key={count}

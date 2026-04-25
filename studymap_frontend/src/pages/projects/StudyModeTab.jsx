@@ -149,7 +149,7 @@ export default function StudyModeTab({ projectId, onExit }) {
                 : results.score >= 50 ? '📈 Good progress!'
                 : '💪 Keep going!';
     return (
-      <div className="study-root relative min-h-screen bg-gray-950 text-gray-100 -m-6 overflow-hidden">
+      <div className="study-root relative min-h-screen bg-gray-950 text-gray-100 -m-6 overflow-y-auto" style={{minHeight: '100vh', touchAction: 'pan-y'}}>
         <div className="relative z-10 max-w-2xl mx-auto px-6 py-16 flex flex-col items-center text-center fade-up">
           <ScoreRing score={results.score} />
           <h2 className="text-2xl font-bold text-gray-100 mb-2">{label}</h2>
@@ -174,8 +174,8 @@ export default function StudyModeTab({ projectId, onExit }) {
 
   /* ── Main screen ── */
   return (
-    <div className="study-root relative min-h-screen bg-gray-950 text-gray-100 -m-6 overflow-hidden">
-        <div className="relative z-10 max-w-3xl mx-auto px-6 pt-7 pb-16">
+    <div className="study-root relative min-h-screen bg-gray-950 text-gray-100 -m-6 overflow-y-auto" style={{minHeight: '100vh', touchAction: 'pan-y'}}>
+        <div className="relative z-10 max-w-3xl mx-auto px-6 pt-7 pb-24" style={{minHeight: '100vh', paddingBottom: '100px'}}>
 
           {/* ── Header ── */}
           <div className="flex items-center justify-between mb-8">

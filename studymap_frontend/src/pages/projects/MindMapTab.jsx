@@ -51,12 +51,12 @@ export default function MindMapTab({ projectId }) {
 
   if (showViewer && currentMindmap) {
     return (
-      <div className="mindmap-root relative min-h-screen bg-gray-950 text-gray-100 -m-6 p-6 overflow-hidden">
+      <div className="mindmap-root tab-root overflow-hidden">
           <div className="relative z-10 space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-bold text-gray-100">{currentMindmap.title}</h2>
-                <p className="text-xs text-gray-500 mt-1">
+                <h2 className="text-lg font-bold">{currentMindmap.title}</h2>
+                <p className="text-xs mt-1">
                   Generated: {new Date(currentMindmap.generated_at).toLocaleString()}
                 </p>
               </div>
@@ -85,9 +85,9 @@ export default function MindMapTab({ projectId }) {
   }
 
   return (
-    <div className="mindmap-root relative min-h-screen bg-gray-950 text-gray-100 -m-6 p-6 overflow-hidden">
+    <div className="mindmap-root tab-root overflow-hidden">
         <div className="relative z-10 max-w-2xl mx-auto">
-          <div className="flex items-center gap-2.5 mb-6">
+          <div className="flex items-center gap-2 mb-4 md:mb-6">
             <span className="block w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
             <span className="text-xs font-semibold uppercase tracking-widest text-violet-400">
               Mind Maps

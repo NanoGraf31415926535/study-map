@@ -1,4 +1,4 @@
-.study-root { font-family: 'Sora', sans-serif; }
+.study-root { font-family: 'Sora', sans-serif; overflow-y: auto; }
 
 [data-theme="light"] .study-root {
   background: #F8FAFC;

@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { FiFile, FiMessageSquare, FiEdit, FiTarget, FiHelpCircle, FiMap, FiList, FiBookOpen, FiArrowLeft } from 'react-icons/fi';
 
-export default function ProjectSidebar({ project, stats }) {
+export default function ProjectSidebar({ project, stats, embedded = false }) {
   const navigate = useNavigate();
   const { projectId } = useParams();
 
@@ -107,7 +107,7 @@ export default function ProjectSidebar({ project, stats }) {
   return (
     <>
       <style>{sidebarCss}</style>
-      <aside className="fixed left-0 top-0 h-screen w-64 flex flex-col sidebar-bg">
+      <aside className={`${embedded ? 'w-full h-auto' : 'fixed left-0 top-0 h-screen w-64'} flex flex-col sidebar-bg`} style={embedded ? {display:'block', minHeight:'100%'} : {}}>
         <div className="p-5 border-b sidebar-border">
           <button
             onClick={() => navigate('/dashboard')}

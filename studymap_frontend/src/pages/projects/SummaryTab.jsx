@@ -230,9 +230,9 @@ export default function SummaryTab({ projectId }) {
   };
 
 return (
-    <div className="summary-root relative min-h-screen bg-gray-950 text-gray-100 -m-6 p-6 overflow-hidden">
+    <div className="summary-root tab-root overflow-hidden">
         <div className="relative z-10 max-w-3xl mx-auto">
-          <div className="flex items-center gap-2.5 mb-6">
+          <div className="flex items-center gap-2 mb-4 md:mb-6">
             <span className="block w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
             <span className="text-xs font-semibold uppercase tracking-widest text-violet-400">
               Summaries
@@ -240,7 +240,7 @@ return (
           </div>
 
           {projectSummaries.length > 0 && (
-            <div className="flex items-center gap-3 mb-6 fade-up">
+            <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6 fade-up">
               <button
                 onClick={() => setShowList(!showList)}
                 className="ghost-btn px-4 py-2.5 rounded-xl text-xs font-semibold text-gray-400 flex items-center gap-2"

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiFolder, FiPlus, FiZap } from 'react-icons/fi';
+import { FiFolder, FiPlus, FiZap, FiMenu } from 'react-icons/fi';
 import { useAuthStore } from '../store/useAuthStore';
 import { useProjectStore } from '../store/useProjectStore';
 import Navbar from '../components/Navbar';
@@ -12,6 +12,7 @@ export default function Dashboard() {
   const user = useAuthStore((state) => state.user);
   const { projects, fetchProjects, deleteProject, isLoading } = useProjectStore();
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,17 +30,41 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="dashboard-root relative min-h-screen bg-gray-950 text-gray-100">
-        <Navbar />
-        <div className="flex-1 flex flex-col ml-64">
-          <main className="flex-1 p-8">
-            <div className="flex items-center justify-between mb-8">
-              <h1 className="text-2xl font-bold text-gray-100">Your Projects</h1>
+    <div className="dashboard-root relative min-h-screen">
+        <div className="hidden md:block">
+          <Navbar />
+        </div>
+        
+        {/* Mobile nav drawer */}
+        {mobileNavOpen && (
+          <div className="fixed inset-0 z-50 md:hidden">
+            <div className="absolute inset-0 bg-black/60" onClick={() => setMobileNavOpen(false)} />
+            <div className="mobile-drawer absolute left-0 top-0 bottom-0 w-64 flex flex-col">
+              <div className="p-4 flex justify-between items-center border-b mobile-drawer-header shrink-0">
+                <h2 className="font-bold">Menu</h2>
+                <button onClick={() => setMobileNavOpen(false)} className="text-gray-400">✕</button>
+              </div>
+              <div className="flex-1 overflow-y-auto">
+                <Navbar embedded={true} />
+              </div>
+            </div>
+          </div>
+        )}
+        
+        <div className="flex-1 flex flex-col md:ml-64">
+          <main className="flex-1 p-4 md:p-8 pt-16 md:pt-8">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 md:mb-8 gap-4">
+              <div className="flex items-center gap-3 w-full">
+                <button className="md:hidden flex-shrink-0 p-2 rounded-lg shadow-lg menu-btn" onClick={() => setMobileNavOpen(true)}>
+                  <FiMenu size={20} />
+                </button>
+                <h1 className="text-xl md:text-2xl font-bold">Your Projects</h1>
+              </div>
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="glow-sky px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-1.5 transition-all hover:-translate-y-px"
+                className="glow-sky px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-1.5 transition-all hover:-translate-y-px w-full md:w-auto justify-center"
               >
-                <FiPlus size={14} /> New Project
+                <FiPlus size={14} /> <span className="hide-mobile">New Project</span>
               </button>
             </div>
 

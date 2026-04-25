@@ -104,8 +104,8 @@ export default function Admin() {
 
   return (
     <div className="admin-root relative min-h-screen bg-gray-950 text-gray-100">
-        <div className="flex">
-          <div className="flex-1 ml-64 p-8">
+        <div className="flex flex-col md:flex-row">
+          <div className="flex-1 md:ml-64 p-4 md:p-8">
             <button onClick={() => navigate(-1)} className="ghost-btn flex items-center gap-2 px-3 py-2 rounded-xl text-sm mb-6 fade-up">
               <FiArrowLeft size={14} /> Back
             </button>
@@ -121,7 +121,7 @@ export default function Admin() {
               </div>
             )}
 
-            <div className="flex gap-4 mb-8 border-b border-white/[0.07] fade-up">
+            <div className="flex gap-4 mb-8 border-b border-white/[0.07] fade-up overflow-x-auto">
               <button
                 onClick={() => setActiveTab('analytics')}
                 className={`tab-btn px-4 py-3 font-medium transition-colors ${activeTab === 'analytics' ? 'active' : ''}`}
@@ -149,7 +149,7 @@ export default function Admin() {
             ) : (
               <>
                 {activeTab === 'analytics' && analytics && (
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 fade-up">
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 fade-up overflow-x-auto">
                     <div className="admin-card rounded-2xl p-5">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="stat-icon users">
@@ -200,7 +200,7 @@ export default function Admin() {
 
                     <div className="col-span-2 lg:col-span-4 admin-card rounded-2xl p-5 fade-up">
                       <h3 className="text-sm font-semibold text-gray-400 mb-4 uppercase tracking-wider">Growth Overview</h3>
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-2 gap-4 overflow-x-auto">
                         <div className="bg-white/[0.03] rounded-xl p-4">
                           <div className="text-xl font-bold text-sky-400 font-mono">{analytics.new_users_week}</div>
                           <div className="text-xs text-gray-500 mt-1">New users this week</div>

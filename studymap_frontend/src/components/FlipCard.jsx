@@ -24,10 +24,10 @@ export default function FlipCard({ card, onReview, showControls = true, size = '
   }, []);
 
   const sizeClasses = {
-    sm: 'w-64 h-40 text-sm',
-    md: 'w-80 h-52 text-base',
-    lg: 'w-96 h-64 text-lg',
-    xl: 'w-[500px] h-80 text-xl',
+    sm: 'w-64 h-40 text-sm md:w-80 md:h-52 md:text-base',
+    md: 'w-64 h-40 text-sm md:w-80 md:h-52 md:text-base lg:w-96 lg:h-64 lg:text-lg',
+    lg: 'w-64 h-40 text-sm md:w-80 md:h-52 md:text-base lg:w-96 lg:h-64 lg:text-lg',
+    xl: 'w-[90vw] h-56 text-base md:w-[500px] md:h-80 md:text-xl',
   };
 
   const handleReview = (quality) => {

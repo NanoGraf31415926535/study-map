@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, Suspense, lazy, startTransition } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
-import { FiFile, FiMessageSquare, FiEdit, FiTarget, FiHelpCircle, FiMap, FiList, FiBookOpen, FiArrowLeft } from 'react-icons/fi';
+import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
+import { FiFile, FiMessageSquare, FiEdit, FiTarget, FiHelpCircle, FiMap, FiList, FiBookOpen, FiArrowLeft, FiMenu } from 'react-icons/fi';
 import { useProjectStore } from '../../store/useProjectStore';
 import { useGenerationStore } from '../../store/useGenerationStore';
 import { useChatStore } from '../../store/useChatStore';
@@ -35,9 +35,11 @@ export default function ProjectView() {
   const { projects, fetchProjects, selectedProject, fetchDocuments, documents, fetchNotes, notes } = useProjectStore();
   const { decks, quizzes, fetchDecks, fetchQuizzes } = useGenerationStore();
   const { sessions, fetchSessions } = useChatStore();
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(true);
   const [fullscreen, setFullscreen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -119,7 +121,7 @@ export default function ProjectView() {
 
   if (isStudyMode) {
     return (
-      <div className="fixed inset-0 z-50 bg-gray-950">
+      <div className="fixed inset-0 z-50 bg-gray-950 overflow-y-auto">
           <Suspense fallback={
             <div className="min-h-screen bg-gray-950 flex items-center justify-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-400"></div>
@@ -140,18 +142,54 @@ export default function ProjectView() {
   }
 
   return (
-    <div className="project-view fixed inset-0 flex bg-gray-950">
-        <ProjectSidebar project={project} stats={stats} />
-        <main className="flex-1 ml-64 p-6 overflow-auto">
-          <div className="flex gap-2 mb-6 border-b border-white/[0.08] pb-2 overflow-x-auto">
+    <div className="project-view fixed inset-0 flex">
+        {/* Desktop Sidebar */}
+        <div className="hidden md:block">
+          <ProjectSidebar project={project} stats={stats} />
+        </div>
+        
+        {/* Mobile Sidebar Drawer */}
+        {mobileMenuOpen && (
+          <div className="fixed inset-0 z-50 md:hidden">
+            <div className="absolute inset-0 bg-black/60" onClick={() => setMobileMenuOpen(false)} />
+            <div className="mobile-drawer absolute left-0 top-0 bottom-0 w-64 overflow-y-auto">
+              <div className="p-4 flex justify-between items-center border-b mobile-drawer-header">
+                <h2 className="font-bold">Menu</h2>
+                <button onClick={() => setMobileMenuOpen(false)} className="text-gray-400">✕</button>
+              </div>
+              <div className="flex-1 overflow-y-auto">
+                <ProjectSidebar project={project} stats={stats} embedded={true} />
+              </div>
+            </div>
+          </div>
+        )}
+        
+        <main className="flex-1 md:ml-64 p-3 md:p-6 overflow-y-auto pb-24 md:pb-6" style={{height: '100vh'}}>
+          {/* Mobile back button */}
+          <div className="flex items-center gap-2 mb-4 md:mb-6">
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="mobile-back-btn md:hidden flex items-center gap-1.5"
+            >
+              <FiArrowLeft size={16} /> Back
+            </button>
+          </div>
+          
+          <div className="flex gap-2 mb-4 md:mb-6 border-b pb-2 overflow-x-auto tab-scroll">
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="tab-btn md:hidden flex items-center gap-2 px-3 py-2.5 rounded-lg border"
+            >
+              <FiMenu size={16} /><span className="ml-1">Menu</span>
+            </button>
             {TABS.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setTab(tab.id)}
-                className={`tab-btn flex items-center gap-2 px-4 py-2.5 rounded-lg whitespace-nowrap border transition-all ${
+                className={`tab-btn flex items-center gap-2 px-3 md:px-4 py-2.5 rounded-lg whitespace-nowrap border transition-all ${
                   activeTab === tab.id
                     ? 'active'
-                    : 'border-transparent text-gray-500 hover:text-gray-300'
+                    : 'border-transparent'
                 }`}
               >
                 <tab.icon className="w-4 h-4" />
@@ -164,7 +202,7 @@ export default function ProjectView() {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-400"></div>
             </div>
           }>
-            <div className="fade-up">{renderTab()}</div>
+            <div className="fade-up" style={{minHeight: '100%'}}>{renderTab()}</div>
           </Suspense>
         </main>
       </div>

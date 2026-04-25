@@ -112,10 +112,10 @@ export default function ChatTab({ projectId }) {
   };
 
   return (
-    <div className="chat-root relative -m-3 p-3 overflow-hidden">
-        <div className="relative z-10 flex h-[calc(100vh-4.5rem)]">
-          <div className="w-60 flex flex-col">
-            <div className="p-2.5 border-b">
+    <div className="chat-root tab-root overflow-hidden pb-20 md:pb-0">
+        <div className="relative z-10 flex flex-col md:flex-row h-auto md:h-[calc(100vh-4.5rem)]">
+          <div className="w-full md:w-60 flex flex-col border-b md:border-b-0 md:border-r">
+            <div className="p-2 md:p-2.5 border-b">
               <button
                 onClick={() => setShowModeSelector(true)}
                 className="w-full glow-sky px-3 py-2 text-sm font-semibold rounded-xl transition-all hover:-translate-y-px flex items-center justify-center gap-1.5"

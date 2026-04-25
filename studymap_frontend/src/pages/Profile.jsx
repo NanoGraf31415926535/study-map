@@ -78,10 +78,10 @@ export default function Profile() {
     }
   };
 
-  return (
+return (
     <div className="profile-root relative min-h-screen bg-gray-950 text-gray-100">
-        <div className="flex">
-          <div className="flex-1 ml-64 p-8">
+        <div className="flex flex-col md:flex-row">
+          <div className="flex-1 md:ml-64 p-4 md:p-8">
             <button onClick={() => navigate(-1)} className="ghost-btn flex items-center gap-2 px-3 py-2 rounded-xl text-sm mb-6 fade-up">
               <FiArrowLeft size={14} /> Back
             </button>
