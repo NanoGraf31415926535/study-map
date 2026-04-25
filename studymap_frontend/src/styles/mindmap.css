@@ -5,10 +5,6 @@
   color: #1E293B;
 }
 
-[data-theme="light"] .mindmap-root::before {
-  background: radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%);
-}
-
 .mindmap-root::before {
   content: '';
   position: fixed;
@@ -18,12 +14,76 @@
   pointer-events: none; z-index: 0;
 }
 
+[data-theme="light"] .mindmap-root::before {
+  background: radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%);
+}
+
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 .fade-up { animation: fadeUp 0.35s ease both; }
 
+/* ── Viewer screen ──────────────────────────────────────────────────────────── */
+.mindmap-viewer-screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.mindmap-viewer-header {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+[data-theme="light"] .mindmap-viewer-header {
+  border-bottom-color: #E2E8F0;
+}
+
+.mindmap-viewer-title {
+  min-width: 0;
+  flex: 1;
+}
+.mindmap-viewer-title h2 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Canvas fills all remaining space */
+.mindmap-canvas-area {
+  flex: 1 1 0;
+  min-height: 0;
+  position: relative;
+  /* Prevent ANY ancestor from stealing touch gestures */
+  touch-action: none;
+  overflow: hidden;
+}
+
+/* ReactFlow's own layers must also not interfere with touch */
+.mindmap-canvas-area > div,
+.mindmap-canvas-area .react-flow,
+.mindmap-canvas-area .react-flow__renderer,
+.mindmap-canvas-area .react-flow__pane {
+  touch-action: none !important;
+}
+
+/* Fill the canvas container completely */
+.mindmap-canvas-area > div {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ── Shared styles ──────────────────────────────────────────────────────────── */
 .mindmap-card {
   background: var(--color-card);
   border: 1px solid var(--color-border);
@@ -40,19 +100,14 @@
 .mindmap-card:hover {
   border-color: rgba(139,92,246,0.3);
   transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
 .ghost-btn {
-  background: var(--color-input-bg);
-  border: 1px solid var(--color-border);
-  color: var(--color-muted);
-  transition: all 0.2s;
-}
-[data-theme="dark"] .ghost-btn {
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
   color: #94a3b8;
+  transition: all 0.2s;
 }
 [data-theme="light"] .ghost-btn {
   background: #F1F5F9;
@@ -60,39 +115,24 @@
   color: #64748B;
 }
 .ghost-btn:hover {
-  background: var(--color-input-bg);
-  color: var(--color-text);
+  background: rgba(255,255,255,0.08);
+  color: #e2e8f0;
 }
 [data-theme="light"] .ghost-btn:hover {
   background: #E2E8F0;
   color: #1E293B;
-}
-.mindmap-card:hover {
-  border-color: rgba(139,92,246,0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
 .glow-violet {
   background: #8b5cf6;
   color: #fff;
   box-shadow: 0 4px 14px rgba(139,92,246,0.3);
+  transition: all 0.2s;
 }
 .glow-violet:hover {
   background: #a78bfa;
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(139,92,246,0.4);
-}
-
-.ghost-btn {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  color: #94a3b8;
-  transition: all 0.2s;
-}
-.ghost-btn:hover {
-  background: rgba(255,255,255,0.08);
-  color: #e2e8f0;
 }
 
 .mindmap-icon {

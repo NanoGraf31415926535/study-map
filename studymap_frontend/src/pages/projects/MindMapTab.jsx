@@ -13,9 +13,7 @@ export default function MindMapTab({ projectId }) {
   const projectMindmaps = mindmaps[projectId] || [];
 
   useEffect(() => {
-    if (projectId) {
-      fetchMindmaps(projectId);
-    }
+    if (projectId) fetchMindmaps(projectId);
   }, [projectId, fetchMindmaps]);
 
   useEffect(() => {
@@ -26,7 +24,7 @@ export default function MindMapTab({ projectId }) {
 
   const handleGenerate = async () => {
     try {
-      const mindmap = await generateMindmap(projectId);
+      await generateMindmap(projectId);
       setShowViewer(true);
     } catch (error) {
       console.error('Failed to generate:', error);
@@ -49,108 +47,116 @@ export default function MindMapTab({ projectId }) {
     }
   }, [currentMindmap]);
 
+  // ── Viewer ───────────────────────────────────────────────────────────────────
   if (showViewer && currentMindmap) {
     return (
-      <div className="mindmap-root tab-root overflow-hidden">
-          <div className="relative z-10 space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-bold">{currentMindmap.title}</h2>
-                <p className="text-xs mt-1">
-                  Generated: {new Date(currentMindmap.generated_at).toLocaleString()}
-                </p>
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={handleExport}
-                  className="glow-violet px-4 py-2.5 text-sm font-semibold rounded-xl flex items-center gap-1.5 transition-all hover:-translate-y-px"
-                >
-                  <FiDownload size={14} /> Export PNG
-                </button>
-                <button
-                  onClick={() => { setShowViewer(false); }}
-                  className="ghost-btn px-4 py-2.5 text-sm font-medium rounded-xl flex items-center gap-1.5"
-                >
-                  <FiChevronLeft size={14} /> Back
-                </button>
-              </div>
-            </div>
+      // tab-root must have position:relative (or be a sized container)
+      // so that mindmap-viewer-screen (position:absolute inset:0) fills it
+      <div className="mindmap-root tab-root" style={{ position: 'relative' }}>
+        <div className="mindmap-viewer-screen">
 
-            <div ref={viewerRef} className="h-[calc(100vh-12rem)] rounded-2xl overflow-hidden border border-white/[0.07]">
-              <MindMapViewer data={currentMindmap.data} />
+          <div className="mindmap-viewer-header">
+            <div className="mindmap-viewer-title">
+              <h2 className="text-base font-bold leading-tight">{currentMindmap.title}</h2>
+              <p className="text-xs mt-0.5 text-gray-500">
+                {new Date(currentMindmap.generated_at).toLocaleString()}
+              </p>
+            </div>
+            <div className="flex gap-2 flex-shrink-0">
+              <button
+                onClick={handleExport}
+                className="glow-violet px-3 py-2 text-xs font-semibold rounded-xl flex items-center gap-1.5"
+              >
+                <FiDownload size={13} />
+                <span className="hidden sm:inline">Export PNG</span>
+              </button>
+              <button
+                onClick={() => setShowViewer(false)}
+                className="ghost-btn px-3 py-2 text-xs font-medium rounded-xl flex items-center gap-1.5"
+              >
+                <FiChevronLeft size={13} />
+                <span className="hidden sm:inline">Back</span>
+              </button>
             </div>
           </div>
+
+          <div ref={viewerRef} className="mindmap-canvas-area">
+            <MindMapViewer data={currentMindmap.data} />
+          </div>
+
         </div>
-  );
+      </div>
+    );
   }
 
+  // ── List ─────────────────────────────────────────────────────────────────────
   return (
     <div className="mindmap-root tab-root overflow-hidden">
-        <div className="relative z-10 max-w-2xl mx-auto">
-          <div className="flex items-center gap-2 mb-4 md:mb-6">
-            <span className="block w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
-            <span className="text-xs font-semibold uppercase tracking-widest text-violet-400">
-              Mind Maps
-            </span>
-          </div>
+      <div className="relative z-10 max-w-2xl mx-auto">
+        <div className="flex items-center gap-2 mb-4 md:mb-6">
+          <span className="block w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
+          <span className="text-xs font-semibold uppercase tracking-widest text-violet-400">
+            Mind Maps
+          </span>
+        </div>
 
-          <button
-            onClick={handleGenerate}
-            disabled={isGenerating}
-            className="w-full glow-violet px-5 py-3 text-sm font-semibold rounded-xl transition-all hover:-translate-y-px disabled:opacity-40 flex items-center justify-center gap-1.5 mb-6 fade-up"
-          >
-            <FiZap size={16} />
-            {isGenerating ? 'Generating...' : 'Generate Mind Map'}
-          </button>
+        <button
+          onClick={handleGenerate}
+          disabled={isGenerating}
+          className="w-full glow-violet px-5 py-3 text-sm font-semibold rounded-xl transition-all hover:-translate-y-px disabled:opacity-40 flex items-center justify-center gap-1.5 mb-6 fade-up"
+        >
+          <FiZap size={16} />
+          {isGenerating ? 'Generating…' : 'Generate Mind Map'}
+        </button>
 
-          {projectMindmaps.length === 0 ? (
-            <div className="text-center py-20 fade-up">
-              <div className="mindmap-icon w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center">
-                <FiMap size={28} />
-              </div>
-              <p className="text-gray-200 font-medium">No mind maps yet.</p>
-              <p className="text-gray-500 text-sm mt-2">Generate one from your documents.</p>
+        {projectMindmaps.length === 0 ? (
+          <div className="text-center py-20 fade-up">
+            <div className="mindmap-icon w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center">
+              <FiMap size={28} />
             </div>
-          ) : (
-            <div className="fade-up">
-              <p className="text-xs font-semibold uppercase tracking-widest mb-3 flex items-center gap-2 section-header">
-                <FiMap size={12} /> Your Mind Maps
-              </p>
-              <div className="space-y-2.5">
-                {projectMindmaps.map((mm) => (
-                  <div
-                    key={mm.id}
-                    onClick={async () => {
+            <p className="text-gray-200 font-medium">No mind maps yet.</p>
+            <p className="text-gray-500 text-sm mt-2">Generate one from your documents.</p>
+          </div>
+        ) : (
+          <div className="fade-up">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-3 flex items-center gap-2 section-header">
+              <FiMap size={12} /> Your Mind Maps
+            </p>
+            <div className="space-y-2.5">
+              {projectMindmaps.map((mm) => (
+                <div
+                  key={mm.id}
+                  onClick={async () => {
+                    await fetchMindmap(projectId, mm.id);
+                    setShowViewer(true);
+                  }}
+                  className="mindmap-card w-full p-4 rounded-2xl flex items-center gap-4 cursor-pointer"
+                >
+                  <div className="mindmap-icon w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <FiMap size={18} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-gray-100 truncate">{mm.title}</div>
+                    <div className="text-xs text-gray-500 mt-0.5">
+                      {new Date(mm.generated_at).toLocaleString()}
+                    </div>
+                  </div>
+                  <span
+                    onClick={async (e) => {
+                      e.stopPropagation();
                       await fetchMindmap(projectId, mm.id);
                       setShowViewer(true);
                     }}
-                    className="mindmap-card w-full p-4 rounded-2xl flex items-center gap-4 cursor-pointer"
+                    className="ghost-btn px-3 py-1.5 text-xs font-medium rounded-lg cursor-pointer flex items-center gap-1 flex-shrink-0"
                   >
-                    <div className="mindmap-icon w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <FiMap size={18} />
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-medium text-gray-100">{mm.title}</div>
-                      <div className="text-xs text-gray-500 mt-0.5">
-                        {new Date(mm.generated_at).toLocaleString()}
-                      </div>
-                    </div>
-                    <span
-                      onClick={async (e) => {
-                        e.stopPropagation();
-                        await fetchMindmap(projectId, mm.id);
-                        setShowViewer(true);
-                      }}
-                      className="ghost-btn px-3 py-1.5 text-xs font-medium rounded-lg cursor-pointer flex items-center gap-1"
-                    >
-                      <FiEye size={12} /> View
-                    </span>
-                  </div>
-                ))}
-              </div>
+                    <FiEye size={12} /> View
+                  </span>
+                </div>
+              ))}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
+    </div>
   );
 }
