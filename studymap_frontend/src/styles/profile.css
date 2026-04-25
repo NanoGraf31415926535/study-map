@@ -111,14 +111,34 @@
   color: #0f172a;
 }
 
+[data-theme="light"] .avatar-placeholder {
+  background: linear-gradient(135deg, #38BDF8, #0EA5E9);
+  color: #FFFFFF;
+}
+
 .avatar-upload-btn {
-  background: rgba(17,24,39,0.9);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   transition: all 0.2s;
 }
+[data-theme="dark"] .avatar-upload-btn {
+  background: rgba(17,24,39,0.9);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+[data-theme="light"] .avatar-upload-btn {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 .avatar-upload-btn:hover {
-  background: rgba(31,41,55,0.95);
+  background: var(--color-input-bg);
   border-color: rgba(99,179,237,0.3);
+}
+[data-theme="dark"] .avatar-upload-btn:hover {
+  background: rgba(31,41,55,0.95);
+}
+[data-theme="light"] .avatar-upload-btn:hover {
+  background: #F1F5F9;
 }
 
 .admin-badge {

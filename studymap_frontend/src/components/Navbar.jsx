@@ -116,6 +116,10 @@ const navbarCss = `
     background: linear-gradient(135deg, #63b3ed, #38bdf8);
     color: #0f172a;
   }
+  [data-theme="light"] .avatar {
+    background: linear-gradient(135deg, #38BDF8, #0EA5E9);
+    color: #FFFFFF;
+  }
   .admin-dot {
     color: #fbbf24;
   }
