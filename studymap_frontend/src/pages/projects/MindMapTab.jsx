@@ -113,7 +113,7 @@ export default function MindMapTab({ projectId }) {
             </div>
           ) : (
             <div className="fade-up">
-              <p className="text-xs font-semibold uppercase tracking-widest text-gray-600 mb-3 flex items-center gap-2">
+              <p className="text-xs font-semibold uppercase tracking-widest mb-3 flex items-center gap-2 section-header">
                 <FiMap size={12} /> Your Mind Maps
               </p>
               <div className="space-y-2.5">

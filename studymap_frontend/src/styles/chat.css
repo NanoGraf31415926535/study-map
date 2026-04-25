@@ -162,7 +162,47 @@
 .mode-option:hover {
   border-color: rgba(99,179,237,0.3);
   transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+[data-theme="light"] .mode-option:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.session-title {
+  color: var(--color-text);
+}
+[data-theme="dark"] .session-title {
+  color: #e2e8f0;
+}
+[data-theme="light"] .session-title {
+  color: #1E293B;
+}
+
+.session-delete-btn {
+  color: var(--color-muted);
+  transition: all 0.15s;
+}
+[data-theme="dark"] .session-delete-btn {
+  color: #52525b;
+}
+[data-theme="light"] .session-delete-btn {
+  color: #94A3B8;
+}
+[data-theme="dark"] .session-delete-btn:hover {
+  color: #f87171;
+}
+[data-theme="light"] .session-delete-btn:hover {
+  color: #EF4444;
+}
+
+.session-date {
+  color: var(--color-muted);
+}
+[data-theme="dark"] .session-date {
+  color: #52525b;
+}
+[data-theme="light"] .session-date {
+  color: #94A3B8;
 }
 
 .source-badge {

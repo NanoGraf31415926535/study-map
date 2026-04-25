@@ -336,7 +336,7 @@ export default function QuizTab({ projectId, isStudyMode = false }) {
             </div>
           ) : (
             <div className="fade-up">
-              <p className="text-xs font-semibold uppercase tracking-widest text-gray-600 mb-3.5 flex items-center gap-2">
+              <p className="text-xs font-semibold uppercase tracking-widest mb-3.5 flex items-center gap-2 section-header">
                 <FiHelpCircle size={12} /> Your Quizzes
               </p>
               <div className="flex flex-col gap-2.5">

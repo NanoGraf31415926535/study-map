@@ -338,3 +338,18 @@ body {
 [data-theme="light"] .project-meta {
   color: #94A3B8;
 }
+
+/* Section headers like "Your Quizzes", "Your Mind Maps" */
+.section-header {
+  color: var(--color-muted);
+}
+[data-theme="dark"] .section-header {
+  color: #52525b;
+}
+[data-theme="light"] .section-header {
+  color: #64748B;
+}
+
+[data-theme="light"] .text-gray-600 {
+  color: #64748B;
+}

@@ -137,19 +137,19 @@ export default function ChatTab({ projectId }) {
                     }`}
                   >
                     <div className="flex items-center justify-between mb-0.5">
-                      <span className="font-medium truncate text-sm">
+                      <span className="font-medium truncate text-sm session-title">
                         {session.title || 'New Chat'}
                       </span>
                       <button
                         onClick={(e) => { e.stopPropagation(); handleDeleteSession(session.id); }}
-                        className="text-gray-600 hover:text-red-400 text-xs transition-colors"
+                        className="session-delete-btn text-xs transition-colors"
                       >
                         <FiTrash2 size={12} />
                       </button>
                     </div>
                     <div className="flex items-center gap-2">
                       {getModeBadge(session.mode)}
-                      <span className="text-xs text-gray-600">
+                      <span className="text-xs session-date">
                         {new Date(session.created_at).toLocaleDateString()}
                       </span>
                     </div>
