@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { FiFile, FiSearch, FiTrash2, FiMessageSquare, FiZap, FiPlus, FiSend, FiX, FiChevronLeft, FiMenu } from 'react-icons/fi';
+import ReactMarkdown from 'react-markdown';
 import { useChatStore } from '../../store/useChatStore';
 import '../../styles/chat.css';
 
@@ -232,7 +233,11 @@ export default function ChatTab({ projectId }) {
                   style={{ animationDelay: `${i * 20}ms` }}
                 >
                   <div className={`chat-bubble ${msg.role === 'user' ? 'chat-bubble--user' : 'chat-bubble--ai'}`}>
-                    <div className="whitespace-pre-wrap text-sm leading-relaxed">{msg.content}</div>
+                    <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                      {msg.role === 'user' ? msg.content : (
+                        <div className="chat-markdown"><ReactMarkdown>{msg.content}</ReactMarkdown></div>
+                      )}
+                    </div>
 
                     {msg.injected_thought && (
                       <div className="ai-insight mt-2 p-2.5 rounded-xl">
