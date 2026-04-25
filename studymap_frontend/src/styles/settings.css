@@ -1,4 +1,11 @@
-.settings-root { font-family: 'Sora', sans-serif; }
+.settings-root { 
+  font-family: 'Sora', sans-serif; 
+}
+
+[data-theme="light"] .settings-root {
+  background: #F8FAFC;
+  color: #1E293B;
+}
 
 .settings-root::before {
   content: '';
@@ -16,8 +23,19 @@
 .fade-up { animation: fadeUp 0.25s ease both; }
 
 .settings-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+}
+
+[data-theme="dark"] .settings-card {
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.07);
+}
+
+[data-theme="light"] .settings-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .glow-sky {
@@ -31,18 +49,31 @@
 }
 
 .input-field {
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  transition: all 0.2s;
+}
+
+[data-theme="dark"] .input-field {
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
   color: #e2e8f0;
-  transition: all 0.2s;
 }
+
+[data-theme="light"] .input-field {
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  color: #1E293B;
+}
+
 .input-field:focus {
   border-color: #63b3ed;
   outline: none;
   box-shadow: 0 0 0 3px rgba(99,179,237,0.1);
 }
 .input-field::placeholder {
-  color: #64748b;
+  color: var(--color-muted);
 }
 
 .message-success {
@@ -92,4 +123,15 @@
   background: rgba(52,211,153,0.1);
   color: #34d399;
   border: 1px solid rgba(52,211,153,0.2);
+}
+
+.theme-toggle {
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+.theme-toggle:hover {
+  background: #63b3ed;
+  border-color: #63b3ed;
+  color: #0f172a;
 }

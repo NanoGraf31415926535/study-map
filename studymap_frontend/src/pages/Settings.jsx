@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
-import { FiArrowLeft, FiCheck, FiAlertTriangle } from 'react-icons/fi';
+import { useTheme } from '../context/ThemeContext';
+import { FiArrowLeft, FiCheck, FiAlertTriangle, FiMoon, FiSun } from 'react-icons/fi';
 import api from '../api/axios';
 import '../styles/settings.css';
 
 export default function Settings() {
   const { user } = useAuthStore();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   const [passwordData, setPasswordData] = useState({
@@ -42,7 +44,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="settings-root relative min-h-screen bg-gray-950 text-gray-100">
+    <div className="settings-root relative min-h-screen">
         <div className="flex">
           <div className="flex-1 ml-64 p-8">
             <button onClick={() => navigate(-1)} className="ghost-btn flex items-center gap-2 px-3 py-2 rounded-xl text-sm mb-6 fade-up">
@@ -50,9 +52,28 @@ export default function Settings() {
             </button>
 
             <div className="max-w-2xl mx-auto">
-              <h1 className="text-2xl font-bold text-gray-100 mb-8 fade-up">Settings</h1>
+              <h1 className="text-2xl font-bold mb-8 fade-up">Settings</h1>
 
               <div className="space-y-6">
+                <div className="settings-card rounded-2xl p-6 fade-up">
+                  <h2 className="text-lg font-bold mb-4">Appearance</h2>
+                  <div className="flex items-center justify-between py-3">
+                    <div className="flex items-center gap-3">
+                      {theme === 'dark' ? <FiMoon size={20} /> : <FiSun size={20} />}
+                      <div>
+                        <div className="font-medium">Theme</div>
+                        <div className="text-sm opacity-60">Currently using {theme} mode</div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={toggleTheme}
+                      className="theme-toggle px-4 py-2 rounded-xl text-sm font-medium transition-all"
+                    >
+                      Switch to {theme === 'dark' ? 'Light' : 'Dark'}
+                    </button>
+                  </div>
+                </div>
+
                 <div className="settings-card rounded-2xl p-6 fade-up">
                   <h2 className="text-lg font-bold text-gray-100 mb-4">Account</h2>
                   <div className="space-y-4">

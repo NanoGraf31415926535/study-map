@@ -1,5 +1,14 @@
 .chat-root { font-family: 'Sora', sans-serif; }
 
+[data-theme="light"] .chat-root {
+  background: #F8FAFC;
+  color: #1E293B;
+}
+
+[data-theme="light"] .chat-root::before {
+  background: radial-gradient(circle, rgba(99,179,237,0.08) 0%, transparent 70%);
+}
+
 .chat-root::before {
   content: '';
   position: fixed;
@@ -16,9 +25,46 @@
 .fade-up { animation: fadeUp 0.25s ease both; }
 
 .session-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  transition: all 0.2s;
+}
+[data-theme="dark"] .session-card {
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.06);
+}
+[data-theme="light"] .session-card {
+  background: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.session-card:hover {
+  background: var(--color-input-bg);
+  border-color: rgba(99,179,237,0.15);
+}
+[data-theme="light"] .session-card:hover {
+  background: #F1F5F9;
+}
+.session-card.active {
+  background: rgba(99,179,237,0.1);
+  border-color: rgba(99,179,237,0.3);
+}
+
+.ghost-btn {
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-border);
   transition: all 0.2s;
+}
+[data-theme="dark"] .ghost-btn {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+[data-theme="light"] .ghost-btn {
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+}
+.ghost-btn:hover {
+  background: var(--color-input-bg);
+  border-color: var(--color-border);
 }
 .session-card:hover {
   background: rgba(255,255,255,0.06);
@@ -55,15 +101,33 @@
 }
 
 .chat-bubble-ai {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+}
+[data-theme="dark"] .chat-bubble-ai {
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.08);
 }
+[data-theme="light"] .chat-bubble-ai {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+}
 
 .input-field {
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  transition: all 0.2s;
+}
+[data-theme="dark"] .input-field {
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
   color: #e2e8f0;
-  transition: all 0.2s;
+}
+[data-theme="light"] .input-field {
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  color: #1E293B;
 }
 .input-field:focus {
   border-color: #63b3ed;
@@ -71,7 +135,7 @@
   box-shadow: 0 0 0 3px rgba(99,179,237,0.1);
 }
 .input-field::placeholder {
-  color: #64748b;
+  color: var(--color-muted);
 }
 
 .mode-violet {

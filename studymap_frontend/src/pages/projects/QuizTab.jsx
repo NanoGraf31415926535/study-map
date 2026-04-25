@@ -204,21 +204,21 @@ export default function QuizTab({ projectId, isStudyMode = false }) {
                 <div className="relative">
                   <button
                     onClick={() => setShowExport(!showExport)}
-                    className="glow-btn px-3.5 py-2 rounded-xl text-xs font-medium text-gray-500 flex items-center gap-2"
+                    className="glow-btn px-3.5 py-2 rounded-xl text-xs font-medium flex items-center gap-2"
                   >
                     <FiDownload size={13} /> Export
                   </button>
                   {showExport && (
-                    <div className="absolute right-0 top-full mt-1 bg-gray-900/95 backdrop-blur border border-white/10 rounded-xl overflow-hidden z-20">
+                    <div className="absolute right-0 top-full mt-1 rounded-xl overflow-hidden z-20 export-dropdown">
                       <button
                         onClick={() => handleExport('pdf')}
-                        className="w-full px-4 py-2.5 text-left text-xs text-gray-300 hover:bg-white/5 flex items-center gap-2"
+                        className="w-full px-4 py-2.5 text-left text-xs flex items-center gap-2 export-item"
                       >
                         <FiFile size={12} /> PDF
                       </button>
                       <button
                         onClick={() => handleExport('md')}
-                        className="w-full px-4 py-2.5 text-left text-xs text-gray-300 hover:bg-white/5 flex items-center gap-2"
+                        className="w-full px-4 py-2.5 text-left text-xs flex items-center gap-2 export-item"
                       >
                         <FiFileText size={12} /> Markdown
                       </button>

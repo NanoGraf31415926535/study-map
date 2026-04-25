@@ -6,8 +6,17 @@ import api from '../api/axios';
 
 const navbarCss = `
   .navbar {
+    background: var(--color-surface);
+    border-right: 1px solid var(--color-border);
+  }
+  [data-theme="dark"] .navbar {
     background: rgba(17,24,39,0.95);
     border-right: 1px solid rgba(255,255,255,0.07);
+  }
+  [data-theme="light"] .navbar {
+    background: #FFFFFF;
+    border-right: 1px solid #E2E8F0;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.05);
   }
   .navbar::before {
     content: '';
@@ -18,40 +27,80 @@ const navbarCss = `
     pointer-events: none;
   }
   .nav-label {
-    color: #52525b;
+    color: var(--color-muted);
     font-size: 10px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     font-weight: 600;
   }
+  [data-theme="light"] .nav-label {
+    color: #64748B;
+  }
   .nav-btn {
-    color: #71717a;
+    color: var(--color-muted);
     transition: all 0.2s;
   }
+  [data-theme="dark"] .nav-btn {
+    color: #71717a;
+  }
+  [data-theme="light"] .nav-btn {
+    color: #64748B;
+  }
   .nav-btn:hover {
+    color: var(--color-text);
+    background: var(--color-input-bg);
+  }
+  [data-theme="dark"] .nav-btn:hover {
     color: #e2e8f0;
     background: rgba(99,179,237,0.06);
+  }
+  [data-theme="light"] .nav-btn:hover {
+    color: #1E293B;
+    background: #F1F5F9;
   }
   .nav-btn.active {
     color: #38bdf8;
     background: rgba(56,189,248,0.1);
   }
-  .nav-btn.active:hover {
-    background: rgba(56,189,248,0.15);
+  [data-theme="light"] .nav-btn.active {
+    background: rgba(56,189,248,0.1);
   }
   .dropdown-glass {
-    background: rgba(17,24,39,0.98);
+    background: var(--color-card);
     backdrop-filter: blur(12px);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.2);
+  }
+  [data-theme="dark"] .dropdown-glass {
+    background: rgba(17,24,39,0.98);
     border: 1px solid rgba(255,255,255,0.1);
     box-shadow: 0 -4px 24px rgba(0,0,0,0.4);
   }
+  [data-theme="light"] .dropdown-glass {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+  }
   .dropdown-item {
-    color: #a1a1aa;
+    color: var(--color-muted);
     transition: all 0.15s;
   }
+  [data-theme="dark"] .dropdown-item {
+    color: #a1a1aa;
+  }
+  [data-theme="light"] .dropdown-item {
+    color: #64748B;
+  }
   .dropdown-item:hover {
+    background: var(--color-input-bg);
+    color: var(--color-text);
+  }
+  [data-theme="dark"] .dropdown-item:hover {
     background: rgba(255,255,255,0.06);
     color: #e2e8f0;
+  }
+  [data-theme="light"] .dropdown-item:hover {
+    background: #F1F5F9;
+    color: #1E293B;
   }
   .dropdown-item.danger:hover {
     background: rgba(248,113,113,0.1);
@@ -71,7 +120,13 @@ const navbarCss = `
     color: #fbbf24;
   }
   .section-divider {
+    border-color: var(--color-border);
+  }
+  [data-theme="dark"] .section-divider {
     border-color: rgba(255,255,255,0.06);
+  }
+  [data-theme="light"] .section-divider {
+    border-color: #E2E8F0;
   }
 `;
 
@@ -229,12 +284,12 @@ export default function Navbar() {
               )}
             </div>
             <div className="flex-1 min-w-0 text-left">
-              <div className="font-medium text-gray-200 truncate text-sm">{user?.username}</div>
+              <div className="font-medium truncate text-sm">{user?.username}</div>
               {user?.is_staff && (
                 <div className="text-[10px] text-amber-400 font-medium">Admin</div>
               )}
             </div>
-            <FiChevronDown size={14} className={`text-gray-500 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+            <FiChevronDown size={14} className={`transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
           </button>
 
           {dropdownOpen && (

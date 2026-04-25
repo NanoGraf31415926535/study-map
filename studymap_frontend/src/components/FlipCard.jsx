@@ -48,22 +48,22 @@ export default function FlipCard({ card, onReview, showControls = true, size = '
         style={{ transformStyle: 'preserve-3d', transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
       >
         <div
-          className="absolute inset-0 bg-card rounded-2xl p-6 flex items-center justify-center text-center backface-hidden shadow-xl border border-gray-700"
+          className="absolute inset-0 rounded-2xl p-6 flex items-center justify-center text-center backface-hidden shadow-xl theme-card-front"
           style={{ backfaceVisibility: 'hidden' }}
         >
           <div>
-            <div className="text-xs text-muted uppercase tracking-wider mb-2">Question</div>
-            <p className="text-text font-medium">{card.front}</p>
+            <div className="text-xs uppercase tracking-wider mb-2 theme-card-label">Question</div>
+            <p className="font-medium theme-card-text">{card.front}</p>
           </div>
         </div>
 
         <div
-          className="absolute inset-0 bg-primary/20 rounded-2xl p-6 flex items-center justify-center text-center shadow-xl border border-primary/50 rotate-y-180"
+          className="absolute inset-0 rounded-2xl p-6 flex items-center justify-center text-center shadow-xl rotate-y-180 theme-card-back"
           style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
         >
           <div>
-            <div className="text-xs text-primary uppercase tracking-wider mb-2">Answer</div>
-            <p className="text-text font-medium">{card.back}</p>
+            <div className="text-xs uppercase tracking-wider mb-2 theme-card-label">Answer</div>
+            <p className="font-medium theme-card-text">{card.back}</p>
           </div>
         </div>
       </div>
@@ -98,7 +98,7 @@ export default function FlipCard({ card, onReview, showControls = true, size = '
       )}
 
       {!isFlipped && (
-        <p className="text-center text-xs text-muted mt-3">Click or press Space to flip</p>
+        <p className="text-center text-xs mt-3 theme-card-hint">Click or press Space to flip</p>
       )}
     </div>
   );

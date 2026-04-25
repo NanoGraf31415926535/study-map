@@ -1,5 +1,14 @@
 .dashboard-root { font-family: 'Sora', sans-serif; }
 
+[data-theme="light"] .dashboard-root {
+  background: #F8FAFC;
+  color: #1E293B;
+}
+
+[data-theme="light"] .dashboard-root::before {
+  background: radial-gradient(circle, rgba(99,179,237,0.08) 0%, transparent 70%);
+}
+
 .dashboard-root::before {
   content: '';
   position: fixed;
@@ -16,14 +25,22 @@
 .fade-up { animation: fadeUp 0.35s ease both; }
 
 .project-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  transition: all 0.2s;
+}
+[data-theme="dark"] .project-card {
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.07);
-  transition: all 0.2s;
+}
+[data-theme="light"] .project-card {
+  background: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 .project-card:hover {
   border-color: rgba(99,179,237,0.2);
   transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 }
 
 .glow-sky {
@@ -39,8 +56,16 @@
 }
 
 .empty-state {
+  background: var(--color-input-bg);
+  border: 2px dashed var(--color-border);
+}
+[data-theme="dark"] .empty-state {
   background: rgba(255,255,255,0.02);
   border: 2px dashed rgba(255,255,255,0.08);
+}
+[data-theme="light"] .empty-state {
+  background: #F1F5F9;
+  border: 2px dashed #CBD5E1;
 }
 .empty-state:hover {
   border-color: rgba(99,179,237,0.2);

@@ -1,4 +1,17 @@
 .study-root { font-family: 'Sora', sans-serif; }
+
+[data-theme="light"] .study-root {
+  background: #F8FAFC;
+  color: #1E293B;
+}
+
+[data-theme="light"] .study-root::before {
+  background: radial-gradient(circle, rgba(99,179,237,0.08) 0%, transparent 70%);
+}
+[data-theme="light"] .study-root::after {
+  background: radial-gradient(circle, rgba(104,211,145,0.06) 0%, transparent 70%);
+}
+
 .font-mono-study { font-family: 'JetBrains Mono', monospace; }
 
 .study-root::before {

@@ -1,5 +1,10 @@
 .profile-root { font-family: 'Sora', sans-serif; }
 
+[data-theme="light"] .profile-root {
+  background: #F8FAFC;
+  color: #1E293B;
+}
+
 .profile-root::before {
   content: '';
   position: fixed;
@@ -16,8 +21,16 @@
 .fade-up { animation: fadeUp 0.25s ease both; }
 
 .profile-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+}
+[data-theme="dark"] .profile-card {
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.07);
+}
+[data-theme="light"] .profile-card {
+  background: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .glow-sky {
@@ -31,10 +44,20 @@
 }
 
 .input-field {
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  transition: all 0.2s;
+}
+[data-theme="dark"] .input-field {
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
   color: #e2e8f0;
-  transition: all 0.2s;
+}
+[data-theme="light"] .input-field {
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  color: #1E293B;
 }
 .input-field:focus {
   border-color: #63b3ed;
@@ -42,7 +65,7 @@
   box-shadow: 0 0 0 3px rgba(99,179,237,0.1);
 }
 .input-field::placeholder {
-  color: #64748b;
+  color: var(--color-muted);
 }
 
 .message-success {
@@ -58,15 +81,29 @@
 }
 
 .ghost-btn {
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-muted);
+  transition: all 0.2s;
+}
+[data-theme="dark"] .ghost-btn {
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
   color: #94a3b8;
-  transition: all 0.2s;
+}
+[data-theme="light"] .ghost-btn {
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  color: #64748B;
 }
 .ghost-btn:hover {
-  background: rgba(255,255,255,0.08);
-  border-color: rgba(255,255,255,0.14);
-  color: #e2e8f0;
+  background: var(--color-input-bg);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+[data-theme="light"] .ghost-btn:hover {
+  background: #E2E8F0;
+  border-color: #CBD5E1;
 }
 
 .avatar-placeholder {
