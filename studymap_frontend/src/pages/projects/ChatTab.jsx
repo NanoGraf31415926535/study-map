@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { FiFile, FiSearch, FiTrash2, FiMessageSquare, FiZap, FiPlus, FiSend, FiX, FiChevronLeft, FiMenu } from 'react-icons/fi';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { useChatStore } from '../../store/useChatStore';
 import '../../styles/chat.css';
 
@@ -42,8 +43,36 @@ export default function ChatTab({ projectId }) {
   const inputRef = useRef(null);
   const textareaRef = useRef(null);
 
-  const projectSessions = sessions[projectId] || [];
+const projectSessions = sessions[projectId] || [];
   const currentMessages = activeSession ? (messages[activeSession.id] || []) : [];
+
+  const processContent = (content) => {
+    let processed = content.replace(/<br\s*\/?>/gi, '\n');
+    processed = processed.replace(/^([A-D])\.\s+/gm, '$1. ');
+    return processed;
+  };
+
+  const markdownComponents = useMemo(() => ({
+    ol: ({ node, ...props }) => {
+      const items = node?.children || [];
+      const hasLetters = items.every((item) => {
+        const text = item.children?.[0]?.value || '';
+        return /^[A-D]\./.test(text);
+      });
+      if (hasLetters) {
+        return <ol {...props} data-lettered />;
+      }
+      return <ol {...props} />;
+    },
+    li: ({ node, ...props }) => {
+      const text = node?.children?.[0]?.value || '';
+      const match = text.match(/^([A-D])\.\s+(.*)/);
+      if (match) {
+        return <li data-letter={match[1]} {...props}>{match[2]}</li>;
+      }
+      return <li {...props} />;
+    },
+  }), []);
 
   useEffect(() => {
     if (projectId) {
@@ -235,7 +264,7 @@ export default function ChatTab({ projectId }) {
                   <div className={`chat-bubble ${msg.role === 'user' ? 'chat-bubble--user' : 'chat-bubble--ai'}`}>
                     <div className="whitespace-pre-wrap text-sm leading-relaxed">
                       {msg.role === 'user' ? msg.content : (
-                        <div className="chat-markdown"><ReactMarkdown>{msg.content}</ReactMarkdown></div>
+                        <div className="chat-markdown"><ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>{processContent(msg.content)}</ReactMarkdown></div>
                       )}
                     </div>
 

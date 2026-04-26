@@ -85,23 +85,42 @@ export const useChatStore = create(
       },
 
       sendMessage: async (projectId, sessionId, content) => {
-        set({ isSending: true, error: null });
+        const pendingId = `pending-${Date.now()}`;
+        const pendingMessage = {
+          id: pendingId,
+          role: 'user',
+          content,
+          created_at: new Date().toISOString(),
+        };
+
+        set((state) => ({
+          isSending: true,
+          error: null,
+          messages: {
+            ...state.messages,
+            [sessionId]: [...(state.messages[sessionId] || []), pendingMessage],
+          },
+        }));
+
         try {
           const response = await api.post(`/projects/${projectId}/sessions/${sessionId}/message/`, { content });
+
+          set({
+            isSending: false,
+          });
+
+          get().fetchMessages(projectId, sessionId);
+
+          return response.data;
+        } catch (error) {
           set((state) => ({
             messages: {
               ...state.messages,
-              [sessionId]: [
-                ...(state.messages[sessionId] || []),
-                response.data.user_message,
-                response.data.assistant_message,
-              ],
+              [sessionId]: (state.messages[sessionId] || []).filter(m => m.id !== pendingId),
             },
+            error: error.response?.data?.error || 'Failed to send message',
             isSending: false,
           }));
-          return response.data;
-        } catch (error) {
-          set({ error: error.response?.data?.error || 'Failed to send message', isSending: false });
           throw error;
         }
       },

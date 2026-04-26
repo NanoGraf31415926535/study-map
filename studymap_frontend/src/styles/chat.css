@@ -554,6 +554,51 @@
   margin: 0.75em 0;
 }
 
+/* ── Tables ──────────────────────────────────────────────────────────────────────── */
+.chat-markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.75em 0;
+  font-size: 0.8rem;
+}
+.chat-markdown th,
+.chat-markdown td {
+  padding: 0.5em 0.625em;
+  text-align: left;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.chat-markdown th {
+  background: rgba(255,255,255,0.04);
+  font-weight: 600;
+}
+[data-theme="light"] .chat-markdown th {
+  background: rgba(0,0,0,0.04);
+}
+.chat-markdown tr:not(:last-child) td {
+  border-bottom: none;
+}
+.chat-markdown tbody tr:nth-child(even) {
+  background: rgba(255,255,255,0.02);
+}
+[data-theme="light"] .chat-markdown tbody tr:nth-child(even) {
+  background: rgba(0,0,0,0.02);
+}
+
+/* ── Multiple choice / lettered lists ────────────────────────────────── */
+.chat-markdown li { padding-left: 0.25em; }
+.chat-markdown li[data-letter] {
+  list-style: none;
+  position: relative;
+  padding-left: 1.5em;
+}
+.chat-markdown li[data-letter]::before {
+  content: attr(data-letter);
+  position: absolute;
+  left: 0;
+  color: #38bdf8;
+  font-weight: 600;
+}
+
 
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(8px); }
