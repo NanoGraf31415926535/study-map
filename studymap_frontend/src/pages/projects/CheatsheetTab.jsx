@@ -183,7 +183,7 @@ export default function CheatsheetTab({ projectId }) {
           doc.text(lines[0] || '', x, y)
           x += colWidths[i]
         })
-        y += 6
+y += 6
       })
       y += 5
     }
