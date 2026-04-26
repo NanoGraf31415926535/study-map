@@ -1,8 +1,77 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { FiCheck, FiX, FiHelpCircle, FiEdit, FiDownload, FiFileText, FiFile, FiZap, FiChevronLeft, FiChevronRight, FiAlertCircle, FiBookOpen, FiRefreshCw, FiTarget, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { useGenerationStore } from '../../store/useGenerationStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import '../../styles/quiz.css';
+
+
+// Rendered into document.body via portal — never clipped by any ancestor overflow:hidden
+function ExportDropdown({ triggerRef, onExport, onClose }) {
+  useEffect(() => {
+    const handler = (e) => {
+      if (triggerRef.current && !triggerRef.current.contains(e.target)) {
+        onClose();
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    document.addEventListener('touchstart', handler);
+    return () => {
+      document.removeEventListener('mousedown', handler);
+      document.removeEventListener('touchstart', handler);
+    };
+  }, []);
+
+  // Read position synchronously at render time — no state, no lag, no stale coords
+  const rect = triggerRef.current?.getBoundingClientRect();
+  if (!rect) return null;
+
+  const top = rect.bottom + 6;
+  const right = window.innerWidth - rect.right;
+
+  const itemStyle = {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    width: '100%', padding: '13px 20px', textAlign: 'left',
+    fontSize: '14px', color: '#e4e4e7', background: 'transparent',
+    border: 'none', cursor: 'pointer', whiteSpace: 'nowrap',
+  };
+
+  return createPortal(
+    <div style={{
+      position: 'fixed',
+      top: `${top}px`,
+      right: `${right}px`,
+      zIndex: 99999,
+      minWidth: '160px',
+      borderRadius: '12px',
+      overflow: 'hidden',
+      background: '#111827',
+      border: '1px solid rgba(255,255,255,0.14)',
+      boxShadow: '0 12px 32px rgba(0,0,0,0.7)',
+    }}>
+      <button
+        onMouseDown={(e) => { e.preventDefault(); onExport('pdf'); }}
+        style={itemStyle}
+        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
+        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        PDF
+      </button>
+      <div style={{ height: '1px', background: 'rgba(255,255,255,0.07)', margin: '0 12px' }} />
+      <button
+        onMouseDown={(e) => { e.preventDefault(); onExport('md'); }}
+        style={itemStyle}
+        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
+        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Markdown
+      </button>
+    </div>,
+    document.body
+  );
+}
 
 // ─── Bloom level metadata ───────────────────────────────────────────────────
 const BLOOM_META = {
@@ -286,6 +355,9 @@ export default function QuizTab({ projectId, isStudyMode = false }) {
   const [results, setResults] = useState(null);
   const [showResults, setShowResults] = useState(false);
   const [showExport, setShowExport] = useState(false);
+  const exportRef = useRef(null);
+
+  // Export dropdown close is handled inside ExportDropdown portal
   // retake-weak state
   const [retakeMode, setRetakeMode] = useState(false);
   const [retakeQuestions, setRetakeQuestions] = useState([]);
@@ -415,7 +487,7 @@ export default function QuizTab({ projectId, isStudyMode = false }) {
     const isPastResult = !!(selectedQuiz?.completed_at && results.questions?.every(q => q.user_answer));
 
     return (
-      <div className="quiz-root tab-root overflow-hidden">
+      <div className="quiz-root tab-root">
         <div className="relative z-10 max-w-2xl mx-auto">
 
           {/* Header */}
@@ -423,12 +495,30 @@ export default function QuizTab({ projectId, isStudyMode = false }) {
             <span className="text-xs font-semibold uppercase tracking-widest text-emerald-400 flex items-center gap-2">
               <FiCheck size={12} /> {isPastResult ? 'Past Results' : 'Results'}
             </span>
-            <button
-              onClick={() => { setSelectedQuiz(null); setCurrentQuestion(0); setAnswers({}); setResults(null); setShowResults(false); setRetakeMode(false); }}
-              className="quiz-btn px-4 py-2 rounded-xl text-xs font-medium text-gray-500"
-            >
-              ← All Quizzes
-            </button>
+            <div className="flex items-center gap-2">
+              {/* Export dropdown — available on the results screen too */}
+              <div className="relative" ref={exportRef}>
+                <button
+                  onClick={() => setShowExport(!showExport)}
+                  className="glow-btn px-3.5 py-2 rounded-xl text-xs font-medium flex items-center gap-2"
+                >
+                  <FiDownload size={13} /> Export
+                </button>
+                {showExport && (
+                  <ExportDropdown
+                    triggerRef={exportRef}
+                    onExport={handleExport}
+                    onClose={() => setShowExport(false)}
+                  />
+                )}
+              </div>
+              <button
+                onClick={() => { setSelectedQuiz(null); setCurrentQuestion(0); setAnswers({}); setResults(null); setShowResults(false); setRetakeMode(false); }}
+                className="quiz-btn px-4 py-2 rounded-xl text-xs font-medium text-gray-500"
+              >
+                ← All Quizzes
+              </button>
+            </div>
           </div>
 
           {/* Past attempt banner */}
@@ -530,7 +620,7 @@ export default function QuizTab({ projectId, isStudyMode = false }) {
             </div>
             <div className="flex gap-2">
               {!retakeMode && (
-                <div className="relative">
+                <div className="relative" ref={exportRef}>
                   <button
                     onClick={() => setShowExport(!showExport)}
                     className="glow-btn px-3.5 py-2 rounded-xl text-xs font-medium flex items-center gap-2"
@@ -538,14 +628,11 @@ export default function QuizTab({ projectId, isStudyMode = false }) {
                     <FiDownload size={13} /> Export
                   </button>
                   {showExport && (
-                    <div className="absolute right-0 top-full mt-1 rounded-xl overflow-hidden z-20 export-dropdown">
-                      <button onClick={() => handleExport('pdf')} className="w-full px-4 py-2.5 text-left text-xs flex items-center gap-2 export-item">
-                        <FiFile size={12} /> PDF
-                      </button>
-                      <button onClick={() => handleExport('md')} className="w-full px-4 py-2.5 text-left text-xs flex items-center gap-2 export-item">
-                        <FiFileText size={12} /> Markdown
-                      </button>
-                    </div>
+                    <ExportDropdown
+                      triggerRef={exportRef}
+                      onExport={handleExport}
+                      onClose={() => setShowExport(false)}
+                    />
                   )}
                 </div>
               )}
