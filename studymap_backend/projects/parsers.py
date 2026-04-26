@@ -92,11 +92,14 @@ class DocumentParser:
                 for shape in slide.shapes:
                     if hasattr(shape, "text") and shape.text.strip():
                         slide_text.append(shape.text)
-                    if hasattr(shape, "table"):
-                        for row in shape.table.rows:
-                            for cell in row.cells:
-                                if cell.text_frame.text.strip():
-                                    slide_text.append(cell.text_frame.text)
+                    try:
+                        if shape.has_table:
+                            for row in shape.table.rows:
+                                for cell in row.cells:
+                                    if cell.text_frame.text.strip():
+                                        slide_text.append(cell.text_frame.text)
+                    except (AttributeError, ValueError):
+                        pass
                 if slide_text:
                     text_parts.append('\n'.join(slide_text))
 
