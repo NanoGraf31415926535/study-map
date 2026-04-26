@@ -645,7 +645,12 @@ class QuizDetailView(APIView):
                 'question_text': q.question_text,
                 'option_a': q.option_a, 'option_b': q.option_b,
                 'option_c': q.option_c, 'option_d': q.option_d,
-                'bloom_level': q.bloom_level, 'user_answer': q.user_answer,
+                'bloom_level': q.bloom_level,
+                'user_answer': q.user_answer,
+                # Included so the frontend can reconstruct past results without re-submitting
+                'correct_option': q.correct_option,
+                'explanation': q.explanation,
+                'is_correct': q.user_answer == q.correct_option if q.user_answer else None,
             } for q in quiz.questions.all()]
         })
 
