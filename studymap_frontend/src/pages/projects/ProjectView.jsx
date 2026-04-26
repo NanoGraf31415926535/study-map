@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, Suspense, lazy, startTransition } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
-import { FiFile, FiMessageSquare, FiEdit, FiTarget, FiHelpCircle, FiMap, FiList, FiBookOpen, FiArrowLeft, FiMenu } from 'react-icons/fi';
+import { FiFile, FiMessageSquare, FiEdit, FiTarget, FiHelpCircle, FiMap, FiList, FiBookOpen, FiArrowLeft, FiMenu, FiZap } from 'react-icons/fi';
 import { useProjectStore } from '../../store/useProjectStore';
 import { useGenerationStore } from '../../store/useGenerationStore';
 import { useChatStore } from '../../store/useChatStore';
@@ -14,6 +14,7 @@ const FlashcardsTab = lazy(() => import('./FlashcardsTab'));
 const QuizTab = lazy(() => import('./QuizTab'));
 const MindMapTab = lazy(() => import('./MindMapTab'));
 const SummaryTab = lazy(() => import('./SummaryTab'));
+const CheatsheetTab = lazy(() => import('./CheatsheetTab'));
 const StudyModeTab = lazy(() => import('./StudyModeTab'));
 
 const TABS = [
@@ -24,6 +25,7 @@ const TABS = [
   { id: 'quiz', label: 'Quiz', icon: FiHelpCircle },
   { id: 'mindmap', label: 'Mind Map', icon: FiMap },
   { id: 'summary', label: 'Summary', icon: FiList },
+  { id: 'cheatsheet', label: 'Cheatsheet', icon: FiZap },
   { id: 'study', label: 'Study Mode', icon: FiBookOpen },
 ];
 
@@ -33,7 +35,7 @@ export default function ProjectView() {
   const activeTab = searchParams.get('tab') || 'documents';
 
   const { projects, fetchProjects, selectedProject, fetchDocuments, documents, fetchNotes, notes } = useProjectStore();
-  const { decks, quizzes, fetchDecks, fetchQuizzes } = useGenerationStore();
+  const { decks, quizzes, cheatsheets, fetchDecks, fetchQuizzes, fetchCheatsheets } = useGenerationStore();
   const { sessions, fetchSessions } = useChatStore();
   const navigate = useNavigate();
 
@@ -58,6 +60,7 @@ export default function ProjectView() {
         fetchNotes(projectId);
         fetchDecks(projectId);
         fetchQuizzes(projectId);
+        fetchCheatsheets(projectId);
         fetchSessions(projectId);
       }
     }
@@ -82,12 +85,14 @@ export default function ProjectView() {
   const projectDocuments = documents[projectId] || [];
   const projectNotes = notes[projectId] || [];
   const projectQuizzes = quizzes[projectId] || [];
+  const projectCheatsheets = cheatsheets[projectId] || [];
 
   const stats = {
     documents: projectDocuments?.length || 0,
     decks: projectDecks?.length || 0,
     quizzes: projectQuizzes?.length || 0,
     notes: projectNotes?.length || 0,
+    cheatsheets: projectCheatsheets?.length || 0,
   };
 
   const renderTab = () => {
@@ -106,6 +111,8 @@ export default function ProjectView() {
         return <MindMapTab projectId={projectId} />;
       case 'summary':
         return <SummaryTab projectId={projectId} />;
+      case 'cheatsheet':
+        return <CheatsheetTab projectId={projectId} />;
       case 'study':
         return <StudyModeTab projectId={projectId} onExit={() => setSearchParams({ tab: 'documents' })} />;
       default:

@@ -11,6 +11,7 @@ urlpatterns = [
     path('api/', include('generation.urls')),
     path('api/', include('mindmap.urls')),
     path('api/', include('summary.urls')),
+    path('api/', include('cheatsheet.urls')),
 ]
 
 if settings.DEBUG:

@@ -472,5 +472,82 @@ Then your 2-3 sentence summary paragraph here.
 
 ════════════════════════════════════════
 PROJECT DOCUMENTS AND NOTES (for context):
+═══════════════════════════════════════
+{context}"""
+
+
+# ─────────────────────────────────────────────
+# CHEATSHEET
+# ─────────────────────────────────────────────
+
+CHEATSHEET_PROMPT = """You are an expert educator. Your ONLY job is to create a Cheatsheet.
+
+TASK: Read the documents and notes below and produce a dense, exam-ready Cheatsheet as a JSON object.
+
+════════════════════════════════════════
+FIELD RULES:
+════════════════════════════════════════
+- "type":          Must be the exact string "cheatsheet". Nothing else.
+- "title":         A concise title summarizing all documents. Max 10 words.
+- "sections":      Array of 3 to 6 section objects. Each covers one major topic cluster.
+  Each section object has:
+  — "heading":     Short section title. Max 5 words. No punctuation at end.
+  — "facts":       Array of 3 to 8 strings. Each is ONE standalone fact, rule, or formula.
+                   — Write each fact as a complete, self-contained sentence or expression.
+                   — Max 25 words per fact. Be dense and precise — no filler words.
+                   — Prefer formulas, definitions, and rules over vague descriptions.
+  — "key_terms":   Array of 2 to 5 term objects.
+                   Each term object: {{"term": "...", "definition": "..."}}
+                   — "term":       The exact term, symbol, or concept name.
+                   — "definition": One precise sentence. Max 20 words.
+  — "watch_out":   ONE short warning about a common mistake or easy-to-confuse point.
+                   Plain text. Max 20 words. Start with "Don't confuse..." or "Note that..."
+                   or "Common mistake:". If no clear pitfall exists, use null.
+- "quick_ref":     Array of 4 to 8 strings. The absolute must-know items across ALL sections.
+                   These are the facts a student should memorize first. Max 20 words each.
+- "formula_sheet": Array of 0 to 10 formula objects. Include ONLY if the material has formulas,
+                   equations, or notation. Omit the field entirely (do not include it as [])
+                   if no formulas exist in the source material.
+                   Each formula object: {{"label": "...", "formula": "...", "note": "..."}}
+                   — "label":   Short name for the formula. Max 5 words.
+                   — "formula": The formula in plain text or LaTeX-style notation (e.g., E = mc²).
+                   — "note":    One sentence on when/why to use it. Max 15 words.
+
+════════════════════════════════════════
+OUTPUT FORMAT — CRITICAL:
+════════════════════════════════════════
+Return ONLY this JSON object. No markdown fences. No explanation. No text before or after.
+
+{{
+  "type": "cheatsheet",
+  "title": "...",
+  "sections": [
+    {{
+      "heading": "...",
+      "facts": ["...", "...", "..."],
+      "key_terms": [
+        {{"term": "...", "definition": "..."}},
+        {{"term": "...", "definition": "..."}}
+      ],
+      "watch_out": "Common mistake: ..."
+    }}
+  ],
+  "quick_ref": ["...", "...", "...", "..."],
+  "formula_sheet": [
+    {{"label": "...", "formula": "...", "note": "..."}}
+  ]
+}}
+
+SELF-CHECK before responding:
+  ✓ Is "type" exactly the string "cheatsheet"?
+  ✓ Does "sections" have between 3 and 6 items?
+  ✓ Does every section have "heading", "facts", "key_terms", and "watch_out"?
+  ✓ Does every key_term object have both "term" and "definition"?
+  ✓ Does "quick_ref" have between 4 and 8 items?
+  ✓ Is "formula_sheet" omitted entirely if no formulas exist in the source?
+  ✓ Is there any text outside the JSON? (There must NOT be.)
+
+════════════════════════════════════════
+DOCUMENTS AND NOTES:
 ════════════════════════════════════════
 {context}"""

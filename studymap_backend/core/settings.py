@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'generation',
     'mindmap',
     'summary',
+    'cheatsheet',
 ]
 
 MIDDLEWARE = [

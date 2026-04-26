@@ -1,0 +1,266 @@
+.cheatsheet-root { font-family: 'Sora', sans-serif; }
+
+[data-theme="light"] .cheatsheet-root {
+  background: #F8FAFC;
+  color: #1E293B;
+}
+
+.cheatsheet-root::before {
+  content: '';
+  position: fixed;
+  top: -200px; left: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(234,179,8,0.055) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.35s ease both; }
+
+.cheatsheet-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  transition: all 0.2s;
+}
+[data-theme="dark"] .cheatsheet-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+[data-theme="light"] .cheatsheet-card {
+  background: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.cheatsheet-card:hover {
+  border-color: rgba(234,179,8,0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.generate-btn {
+  background: linear-gradient(135deg, #eab308, #facc15);
+  color: #0f172a;
+  box-shadow: 0 0 12px rgba(234,179,8,0.3);
+  transition: all 0.2s;
+}
+.generate-btn:hover {
+  box-shadow: 0 0 20px rgba(234,179,8,0.5);
+  transform: translateY(-1px);
+}
+.generate-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+[data-theme="light"] .generate-btn {
+  background: linear-gradient(135deg, #facc15, #fbbf24);
+  box-shadow: 0 2px 8px rgba(234,179,8,0.25);
+}
+
+.cheatsheet-section {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+[data-theme="dark"] .cheatsheet-section {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+[data-theme="light"] .cheatsheet-section {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+}
+
+.cheatsheet-section-btn {
+  background: var(--color-muted);
+  border: none;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+[data-theme="dark"] .cheatsheet-section-btn {
+  background: rgba(255,255,255,0.04);
+  color: #e2e8f0;
+}
+[data-theme="light"] .cheatsheet-section-btn {
+  background: #F1F5F9;
+  color: #1E293B;
+}
+.cheatsheet-section-btn:hover {
+  background: rgba(255,255,255,0.08);
+}
+[data-theme="light"] .cheatsheet-section-btn:hover {
+  background: #E2E8F0;
+}
+
+.cheatsheet-section-content {
+  padding: 1rem;
+  background: var(--color-bg);
+}
+
+.cheatsheet-fact {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+}
+[data-theme="dark"] .cheatsheet-fact span:first-child {
+  color: #60a5fa;
+}
+[data-theme="light"] .cheatsheet-fact span:first-child {
+  color: #0284c7;
+}
+
+.cheatsheet-term {
+  padding: 0.25rem 0;
+}
+.cheatsheet-term-term {
+  font-weight: 600;
+}
+[data-theme="dark"] .cheatsheet-term-term {
+  color: #fbbf24;
+}
+[data-theme="light"] .cheatsheet-term-term {
+  color: #b45309;
+}
+
+.cheatsheet-warning {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+}
+[data-theme="light"] .cheatsheet-warning {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+}
+.cheatsheet-warning-text {
+  color: #fca5a5;
+}
+[data-theme="light"] .cheatsheet-warning-text {
+  color: #dc2626;
+}
+
+.cheatsheet-quick-ref {
+  background: rgba(234,179,8,0.1);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+[data-theme="dark"] .cheatsheet-quick-ref {
+  background: rgba(234,179,8,0.08);
+}
+[data-theme="light"] .cheatsheet-quick-ref {
+  background: #FEF9C3;
+}
+
+.cheatsheet-formula-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.cheatsheet-formula-table th,
+.cheatsheet-formula-table td {
+  padding: 0.5rem;
+  text-align: left;
+  border: 1px solid var(--color-border);
+}
+[data-theme="dark"] .cheatsheet-formula-table th {
+  background: rgba(255,255,255,0.04);
+}
+[data-theme="light"] .cheatsheet-formula-table th {
+  background: #F1F5F9;
+}
+.cheatsheet-formula-formula {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+.back-btn:hover {
+  opacity: 0.8;
+}
+
+.edit-form-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+  transition: all 0.2s;
+}
+[data-theme="dark"] .edit-form-input {
+  background: rgba(255,255,255,0.05);
+}
+[data-theme="light"] .edit-form-input {
+  background: #FFFFFF;
+}
+.edit-form-input:focus {
+  outline: none;
+  border-color: rgba(234,179,8,0.5);
+}
+
+.save-btn {
+  background: #3b82f6;
+  color: white;
+  transition: all 0.2s;
+}
+.save-btn:hover {
+  background: #2563eb;
+}
+
+.delete-btn {
+  border: 1px solid rgba(239,68,68,0.3);
+  color: #ef4444;
+  transition: all 0.2s;
+}
+.delete-btn:hover {
+  background: rgba(239,68,68,0.1);
+}
+
+.add-section-btn {
+  color: #eab308;
+  font-weight: 500;
+}
+.add-section-btn:hover {
+  text-decoration: underline;
+}
+
+.empty-state-icon {
+  color: #71717a;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .cheatsheet-card {
+    margin-bottom: 0.75rem;
+  }
+
+  .cheatsheet-section-content {
+    padding: 0.75rem;
+  }
+
+  .cheatsheet-formula-table {
+    font-size: 0.75rem;
+  }
+
+  .cheatsheet-quick-ref {
+    margin-bottom: 0.5rem;
+  }
+}

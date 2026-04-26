@@ -9,6 +9,7 @@ export const useGenerationStore = create(
       decks: {},
       quizzes: {},
       notes: {},
+      cheatsheets: {},
       isGenerating: false,
       error: null,
 
@@ -188,6 +189,71 @@ export const useGenerationStore = create(
       },
 
       clearError: () => set({ error: null }),
+
+      fetchCheatsheets: async (projectId) => {
+        try {
+          const response = await api.get(`/projects/${projectId}/cheatsheets/`);
+          set((state) => ({ cheatsheets: { ...state.cheatsheets, [projectId]: response.data } }));
+        } catch (error) {
+          set({ error: error.response?.data?.detail || 'Failed to fetch cheatsheets' });
+        }
+      },
+
+      generateCheatsheet: async (projectId) => {
+        set({ isGenerating: true, error: null });
+        try {
+          const response = await api.post(`/projects/${projectId}/cheatsheets/generate/`);
+          set((state) => ({
+            cheatsheets: { ...state.cheatsheets, [projectId]: [response.data, ...(state.cheatsheets[projectId] || [])] },
+            isGenerating: false,
+          }));
+          return response.data;
+        } catch (error) {
+          set({ error: error.response?.data?.error || 'Failed to generate cheatsheet', isGenerating: false });
+          throw error;
+        }
+      },
+
+      createCheatsheet: async (projectId, data) => {
+        try {
+          const response = await api.post(`/projects/${projectId}/cheatsheets/`, data);
+          set((state) => ({
+            cheatsheets: { ...state.cheatsheets, [projectId]: [response.data, ...(state.cheatsheets[projectId] || [])] },
+          }));
+          return response.data;
+        } catch (error) {
+          throw error;
+        }
+      },
+
+      updateCheatsheet: async (projectId, cheatsheetId, data) => {
+        try {
+          const response = await api.patch(`/projects/${projectId}/cheatsheets/${cheatsheetId}/`, data);
+          set((state) => ({
+            cheatsheets: {
+              ...state.cheatsheets,
+              [projectId]: (state.cheatsheets[projectId] || []).map((c) => (c.id === cheatsheetId ? response.data : c)),
+            },
+          }));
+          return response.data;
+        } catch (error) {
+          throw error;
+        }
+      },
+
+      deleteCheatsheet: async (projectId, cheatsheetId) => {
+        try {
+          await api.delete(`/projects/${projectId}/cheatsheets/${cheatsheetId}/`);
+          set((state) => ({
+            cheatsheets: {
+              ...state.cheatsheets,
+              [projectId]: (state.cheatsheets[projectId] || []).filter((c) => c.id !== cheatsheetId),
+            },
+          }));
+        } catch (error) {
+          throw error;
+        }
+      },
     }),
     {
       name: 'studymap-generation',
