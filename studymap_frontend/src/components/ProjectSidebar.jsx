@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { FiFile, FiMessageSquare, FiEdit, FiTarget, FiHelpCircle, FiMap, FiList, FiBookOpen, FiArrowLeft } from 'react-icons/fi';
+import { FiFile, FiMessageSquare, FiEdit, FiTarget, FiHelpCircle, FiMap, FiList, FiBookOpen, FiArrowLeft, FiFileText } from 'react-icons/fi';
 
 export default function ProjectSidebar({ project, stats, embedded = false }) {
   const navigate = useNavigate();
@@ -201,6 +201,13 @@ export default function ProjectSidebar({ project, stats, embedded = false }) {
               >
                 <FiList size={14} />
                 <span className="text-xs">Summary</span>
+              </button>
+              <button
+                onClick={() => navigate(`/projects/${projectId}?tab=cheatsheet`)}
+                className="quick-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl"
+              >
+                <FiFileText size={14} />
+                <span className="text-xs">Cheatsheet</span>
               </button>
               <button
                 onClick={() => navigate(`/projects/${projectId}?tab=study`)}

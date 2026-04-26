@@ -132,3 +132,47 @@ class SummaryService:
             return json.loads(response)
         except (json.JSONDecodeError, ValueError):
             raise Exception("Failed to parse summary response")
+
+    def format_summary_md(self, summary):
+        data = summary.data or {}
+        md = f"# {summary.title}\n\n"
+
+        if summary.type == 'cornell':
+            md += "## Cue Questions\n"
+            for q in data.get('cue_questions', []) or []:
+                md += f"- {q}\n"
+            md += f"\n## Main Notes\n{data.get('main_notes', '')}\n"
+            md += f"\n## Summary\n{data.get('summary', '')}\n"
+
+        elif summary.type == 'study':
+            for section in data.get('sections', []) or []:
+                md += f"## {section.get('heading', '')}\n\n{section.get('content', '')}\n\n"
+                for kt in section.get('key_terms', []) or []:
+                    md += f"**{kt.get('term', '')}**: {kt.get('definition', '')}\n"
+                md += f"\n> {section.get('remember_this', '')}\n\n"
+            if data.get('overall_summary'):
+                md += f"## Overall Summary\n{data.get('overall_summary')}\n"
+
+        elif summary.type == 'research':
+            if data.get('abstract'):
+                md += f"## Abstract\n{data.get('abstract')}\n\n"
+            if data.get('methodology'):
+                md += f"## Methodology\n{data.get('methodology')}\n\n"
+            if data.get('key_findings'):
+                md += "## Key Findings\n"
+                for f in data.get('key_findings', []):
+                    md += f"- {f}\n"
+                md += "\n"
+            if data.get('limitations'):
+                md += "## Limitations\n"
+                for l in data.get('limitations', []):
+                    md += f"- {l}\n"
+                md += "\n"
+            if data.get('conclusions'):
+                md += f"## Conclusions\n{data.get('conclusions')}\n\n"
+            if data.get('further_reading_topics'):
+                md += "## Further Reading\n"
+                for t in data.get('further_reading_topics', []):
+                    md += f"- {t}\n"
+
+        return md
