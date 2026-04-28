@@ -169,19 +169,112 @@
   border: 1px solid rgba(255,255,255,0.07);
   transition: all 0.2s;
 }
+[data-theme="dark"] .quiz-option {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+[data-theme="light"] .quiz-option {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+}
 .quiz-option:hover {
   background: rgba(255,255,255,0.08);
   border-color: rgba(99,179,237,0.2);
+}
+[data-theme="light"] .quiz-option:hover {
+  background: #E2E8F0;
+  border-color: #93C5FD;
 }
 .quiz-option.selected {
   background: rgba(99,179,237,0.1);
   border-color: rgba(99,179,237,0.3);
 }
+[data-theme="light"] .quiz-option.selected {
+  background: #E0F2FE;
+  border-color: #7DD3FC;
+}
 .quiz-option.correct {
   background: rgba(52,211,153,0.1);
   border-color: rgba(52,211,153,0.3);
 }
+[data-theme="light"] .quiz-option.correct {
+  background: #D1FAE5;
+  border-color: #6EE7B7;
+}
 .quiz-option.incorrect {
   background: rgba(248,113,113,0.1);
   border-color: rgba(248,113,113,0.3);
+}
+[data-theme="light"] .quiz-option.incorrect {
+  background: #FEE2E2;
+  border-color: #FCA5A5;
+}
+
+/* Reflection card - Light theme */
+[data-theme="light"] .reflection-option.correct {
+  background: #d1fae5;
+  border-color: #6ee7b7;
+  color: #065f46;
+}
+[data-theme="light"] .reflection-option.incorrect {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+[data-theme="light"] .reflection-option.default {
+  background: #f9fafb;
+  border-color: #e5e7eb;
+  color: #4b5563;
+}
+
+/* Reflection panel - Light theme */
+[data-theme="light"] .reflection-panel {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+[data-theme="light"] .reflection-number {
+  color: #6b7280;
+}
+[data-theme="light"] .reflection-textarea {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  color: #1f2937;
+}
+[data-theme="light"] .reflection-textarea::placeholder {
+  color: #9ca3af;
+}
+
+/* Past attempt banner - Light theme */
+[data-theme="light"] .past-attempt-banner {
+  background: #e0f2fe;
+  border-color: #7dd3fc;
+}
+[data-theme="light"] .past-attempt-icon {
+  color: #0284c7;
+}
+[data-theme="light"] .past-attempt-text {
+  color: #075985;
+}
+
+/* Stats card - Light theme */
+[data-theme="light"] .stats-card {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+[data-theme="light"] .stats-label {
+  color: #64748b;
+}
+
+/* Bloom breakdown - Light theme */
+[data-theme="light"] .bloom-label {
+  color: inherit;
+}
+[data-theme="light"] .bloom-desc {
+  color: #64748b;
+}
+[data-theme="light"] .bloom-count {
+  color: inherit;
+}
+[data-theme="light"] .bloom-bar-bg {
+  background: #e2e8f0;
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { FiZap, FiPlus, FiEdit2, FiTrash2, FiCopy, FiCheck, FiChevronDown, FiChevronRight, FiDownload, FiFile } from 'react-icons/fi'
+import { FiZap, FiPlus, FiEdit2, FiTrash2, FiCopy, FiCheck, FiChevronDown, FiChevronRight, FiDownload, FiFile, FiAlertTriangle } from 'react-icons/fi'
 import { jsPDF } from 'jspdf'
 import { useGenerationStore } from '../../store/useGenerationStore'
 import '../../styles/cheatsheet.css'
@@ -411,8 +411,9 @@ y += 6
                     )}
 
                     {section.watch_out && (
-                      <div className="cheatsheet-warning">
-                        <span className="cheatsheet-warning-text">⚠️ {section.watch_out}</span>
+                      <div className="cheatsheet-warning flex items-center gap-2">
+                        <FiAlertTriangle className="text-amber-500 flex-shrink-0" />
+                        <span className="cheatsheet-warning-text">{section.watch_out}</span>
                       </div>
                     )}
                   </div>

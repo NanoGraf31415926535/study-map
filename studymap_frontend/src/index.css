@@ -66,11 +66,13 @@ body {
 
 [data-theme="light"] .border-white\/,
 [data-theme="light"] .border-white\[,
-[data-theme="light"] .border-white\/5,
+[data-theme="light"] .border-white\/05,
 [data-theme="light"] .border-white\/07,
 [data-theme="light"] .border-white\/08,
 [data-theme="light"] .border-white\/09,
-[data-theme="light"] .border-white\/1 { border-color: #E2E8F0; }
+[data-theme="light"] .border-white\/1,
+[data-theme="light"] .border-white\/10,
+[data-theme="light"] .border-white\/20 { border-color: #E2E8F0; }
 
 [data-theme="light"] .bg-white\/,
 [data-theme="light"] .bg-white\[,
@@ -80,12 +82,35 @@ body {
 [data-theme="light"] .bg-white\/1 { background-color: #F1F5F9; }
 
 [data-theme="light"] .hover\:bg-white\/,
-[data-theme="light"] .hover\:bg-white\/5:hover { background-color: #E2E8F0; }
+[data-theme="light"] .hover\:bg-white\/5:hover,
+[data-theme="light"] .hover\:bg-white\/10:hover { background-color: #E2E8F0; }
 
 [data-theme="light"] .hover\:text-gray-300:hover,
 [data-theme="light"] .hover\:text-gray-400:hover { color: #1E293B; }
 
 [data-theme="light"] .text-gray-950 { color: #F8FAFC; background-color: #1E293B; }
+
+[data-theme="light"] .bg-gray-800 {
+  background-color: #F1F5F9;
+}
+[data-theme="light"] .bg-gray-700 {
+  background-color: #E2E8F0;
+}
+
+/* Better text color mappings for light mode */
+[data-theme="light"] .text-gray-200 { color: #334155; }
+[data-theme="light"] .text-gray-300 { color: #475569; }
+[data-theme="light"] .text-gray-400 { color: #64748B; }
+[data-theme="light"] .text-gray-500 { color: #64748B; }
+[data-theme="light"] .text-gray-600 { color: #475569; }
+
+/* Cheatsheet & general button hover fixes for light mode */
+[data-theme="light"] .hover\:bg-white\/5:hover,
+[data-theme="light"] .hover\:bg-white\/10:hover { background-color: #E2E8F0; }
+
+/* Border utilities for light mode */
+[data-theme="light"] .border-white\/10,
+[data-theme="light"] .border-white\/20 { border-color: #E2E8F0; }
 
 /* FlipCard theme classes */
 .theme-card-front {
@@ -172,6 +197,81 @@ body {
 }
 .bg-warning\/10 {
   background: rgba(251, 191, 36, 0.08);
+}
+
+/* Light background variants - visible in both themes */
+.bg-theme-subtle {
+  background: rgba(255,255,255,0.03);
+}
+.bg-theme-muted {
+  background: rgba(255,255,255,0.04);
+}
+.bg-theme-hover {
+  background: rgba(255,255,255,0.06);
+}
+.bg-theme-active {
+  background: rgba(255,255,255,0.08);
+}
+
+/* Light border variants - visible in both themes */
+.border-theme-subtle {
+  border-color: rgba(255,255,255,0.07);
+}
+.border-theme-muted {
+  border-color: rgba(255,255,255,0.08);
+}
+.border-theme-hover {
+  border-color: rgba(255,255,255,0.1);
+}
+
+/* Light theme overrides for background classes */
+[data-theme="light"] .bg-theme-subtle {
+  background: #F8FAFC;
+}
+[data-theme="light"] .bg-theme-muted {
+  background: #F1F5F9;
+}
+[data-theme="light"] .bg-theme-hover {
+  background: #E2E8F0;
+}
+[data-theme="light"] .bg-theme-active {
+  background: #CBD5E1;
+}
+
+/* Light theme overrides for border classes */
+[data-theme="light"] .border-theme-subtle {
+  border-color: #E2E8F0;
+}
+[data-theme="light"] .border-theme-muted {
+  border-color: #D1D5DB;
+}
+[data-theme="light"] .border-theme-hover {
+  border-color: #94A3B8;
+}
+
+/* Option button letter badge */
+.option-badge-unselected {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--color-muted);
+}
+[data-theme="dark"] .option-badge-unselected {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #71717a;
+}
+[data-theme="light"] .option-badge-unselected {
+  background: #F1F5F9;
+  border: 1px solid #D1D5DB;
+  color: #64748B;
+}
+
+/* Progress bar background */
+.progress-bar-bg {
+  background: rgba(255,255,255,0.06);
+}
+[data-theme="light"] .progress-bar-bg {
+  background: #E2E8F0;
 }
 
 [data-theme="dark"] .text-text {
@@ -615,6 +715,31 @@ body {
   background: #FFFFFF;
   border-color: #E2E8F0;
   color: #1E293B;
+}
+
+/* Score ring track - visible in both themes */
+.score-ring-track {
+  stroke: rgba(255,255,255,0.06);
+}
+[data-theme="light"] .score-ring-track {
+  stroke: rgba(0,0,0,0.06);
+}
+
+/* Question number indicators - visible in both themes */
+.question-num-unselected {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  color: var(--color-muted);
+}
+[data-theme="dark"] .question-num-unselected {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  color: #71717a;
+}
+[data-theme="light"] .question-num-unselected {
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  color: #64748B;
 }
 
 /* Mobile back button */

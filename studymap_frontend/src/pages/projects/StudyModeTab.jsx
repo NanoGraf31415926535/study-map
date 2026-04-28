@@ -3,6 +3,7 @@ import {
   FiTarget, FiHelpCircle, FiArrowLeft, FiClock,
   FiCheck, FiChevronLeft, FiChevronRight, FiRotateCw,
   FiBookOpen, FiAlertCircle, FiChevronDown, FiChevronUp, FiX,
+  FiAward, FiBarChart2, FiCheckCircle
 } from 'react-icons/fi';
 import FlipCard from '../../components/FlipCard';
 import StudyTimer from '../../components/StudyTimer';
@@ -34,14 +35,14 @@ function ScoreRing({ score }) {
   return (
     <div className="relative w-36 h-36 mx-auto">
       <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
-        <circle cx="60" cy="60" r={radius} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="10" />
+        <circle cx="60" cy="60" r={radius} fill="none" className="score-ring-track" strokeWidth="10" />
         <circle cx="60" cy="60" r={radius} fill="none" stroke={color} strokeWidth="10"
           strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round"
           style={{ transition: 'stroke-dashoffset 1s ease' }} />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="font-mono-study text-3xl font-bold" style={{ color }}>{score}%</span>
-        <span className="text-xs text-gray-500 mt-0.5">score</span>
+        <span className="text-xs text-muted mt-0.5">score</span>
       </div>
     </div>
   );
@@ -50,9 +51,9 @@ function ScoreRing({ score }) {
 // ─── Stat chip ────────────────────────────────────────────────────────────────
 function StatChip({ value, label, color }) {
   return (
-    <div className="px-6 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-center min-w-[80px]">
+    <div className="px-6 py-3 rounded-xl stats-card text-center min-w-[80px]">
       <div className="font-mono-study text-2xl font-bold" style={{ color }}>{value}</div>
-      <div className="text-xs text-gray-500 uppercase tracking-widest mt-1">{label}</div>
+      <div className="text-xs stats-label uppercase tracking-widest mt-1">{label}</div>
     </div>
   );
 }
@@ -61,8 +62,8 @@ function StatChip({ value, label, color }) {
 function ProgressBar({ current, total, label }) {
   return (
     <div className="text-center mb-7">
-      <p className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-2.5">{label}</p>
-      <div className="w-full h-0.5 bg-white/[0.06] rounded-full overflow-hidden">
+      <p className="text-xs font-semibold uppercase tracking-widest text-muted mb-2.5">{label}</p>
+      <div className="w-full h-0.5 bloom-bar-bg rounded-full overflow-hidden">
         <div className="progress-fill h-full rounded-full transition-all duration-500"
           style={{ width: `${(current / total) * 100}%` }} />
       </div>
@@ -84,8 +85,8 @@ function BloomBreakdown({ questions }) {
   );
   if (!entries.length) return null;
   return (
-    <div className="w-full rounded-2xl bg-white/[0.03] border border-white/[0.07] p-5 mb-5 fade-up">
-      <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-4 flex items-center gap-2">
+    <div className="w-full rounded-2xl bg-theme-subtle border border-theme-subtle p-5 mb-5 fade-up">
+      <h3 className="text-xs font-semibold uppercase tracking-widest text-muted mb-4 flex items-center gap-2">
         <FiTarget size={12} /> Skills Breakdown
       </h3>
       <div className="space-y-3">
@@ -96,12 +97,12 @@ function BloomBreakdown({ questions }) {
             <div key={level}>
               <div className="flex items-center justify-between mb-1.5">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold" style={{ color: meta.color }}>{meta.label}</span>
-                  <span className="text-xs text-gray-600">{meta.desc}</span>
+                  <span className="text-xs font-semibold bloom-label" style={{ color: meta.color }}>{meta.label}</span>
+                  <span className="text-xs bloom-desc">{meta.desc}</span>
                 </div>
-                <span className="font-mono-study text-xs font-bold" style={{ color: meta.color }}>{correct}/{total}</span>
+                <span className="font-mono-study text-xs font-bold bloom-count" style={{ color: meta.color }}>{correct}/{total}</span>
               </div>
-              <div className="w-full h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+              <div className="w-full h-1.5 bloom-bar-bg rounded-full overflow-hidden">
                 <div className="h-full rounded-full transition-all duration-700"
                   style={{ width: `${pct}%`, backgroundColor: meta.color }} />
               </div>
@@ -126,8 +127,8 @@ function WhatToReview({ questions }) {
   const entries = Object.entries(wrongByBloom);
   if (!entries.length) return null;
   return (
-    <div className="w-full rounded-2xl bg-white/[0.03] border border-white/[0.07] p-5 mb-5 fade-up">
-      <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-3 flex items-center gap-2">
+    <div className="w-full rounded-2xl bg-theme-subtle border border-theme-subtle p-5 mb-5 fade-up">
+      <h3 className="text-xs font-semibold uppercase tracking-widest text-muted mb-3 flex items-center gap-2">
         <FiBookOpen size={12} /> What to Review
       </h3>
       <div className="space-y-2.5">
@@ -140,7 +141,7 @@ function WhatToReview({ questions }) {
                 <span className="text-xs font-bold" style={{ color: meta.color }}>{meta.label}</span>
                 <ul className="mt-1.5 space-y-1">
                   {qs.map(q => (
-                    <li key={q.id} className="text-xs text-gray-500 leading-snug">
+                    <li key={q.id} className="text-xs text-muted leading-snug">
                       • {q.question_text.length > 80 ? q.question_text.slice(0, 80) + '…' : q.question_text}
                     </li>
                   ))}
@@ -178,10 +179,10 @@ function ReflectionCard({ q, index }) {
           {q.is_correct ? <FiCheck /> : <FiX />}
         </span>
         <div className="flex-1 min-w-0">
-          <p className="font-medium text-gray-100 text-sm leading-snug">
+          <p className="font-medium text-text text-sm leading-snug">
             Q{index + 1}: {q.question_text}
           </p>
-          <div className="flex flex-wrap gap-3 mt-1.5 text-xs text-gray-500">
+          <div className="flex flex-wrap gap-3 mt-1.5 text-xs text-muted">
             <span>Your answer: <span className={`font-semibold ${q.is_correct ? 'text-emerald-400' : 'text-red-400'}`}>
               {q.user_answer?.toUpperCase() ?? '—'}
             </span></span>
@@ -194,7 +195,7 @@ function ReflectionCard({ q, index }) {
           </div>
         </div>
         {!q.is_correct && (
-          <span className="text-gray-600 flex-shrink-0 mt-0.5">
+          <span className="flex-shrink-0 mt-0.5 reflection-number">
             {open ? <FiChevronUp size={14} /> : <FiChevronDown size={14} />}
           </span>
         )}
@@ -205,7 +206,7 @@ function ReflectionCard({ q, index }) {
           {q.explanation && (
             <div className="flex gap-2.5">
               <FiBookOpen size={13} className="text-sky-400 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-gray-400 leading-relaxed">{q.explanation}</p>
+              <p className="text-sm text-muted leading-relaxed">{q.explanation}</p>
             </div>
           )}
           <div className="grid grid-cols-2 gap-2">
@@ -215,12 +216,7 @@ function ReflectionCard({ q, index }) {
               const isCorrect = letter === q.correct_option;
               const wasChosen = letter === q.user_answer;
               return (
-                <div key={letter} className="flex items-start gap-2 px-3 py-2 rounded-xl border text-xs"
-                  style={{
-                    background: isCorrect ? 'rgba(52,211,153,0.1)' : wasChosen ? 'rgba(248,113,113,0.1)' : 'rgba(255,255,255,0.03)',
-                    borderColor: isCorrect ? 'rgba(52,211,153,0.3)' : wasChosen ? 'rgba(248,113,113,0.3)' : 'rgba(255,255,255,0.06)',
-                    color: isCorrect ? '#34d399' : wasChosen ? '#f87171' : '#6b7280',
-                  }}>
+                <div key={letter} className={`flex items-start gap-2 px-3 py-2 rounded-xl border text-xs reflection-option ${isCorrect ? 'correct' : wasChosen ? 'incorrect' : 'default'}`}>
                   <span className="font-bold flex-shrink-0">{letter.toUpperCase()}.</span>
                   <span className="leading-snug">{text}</span>
                   {isCorrect && <FiCheck size={11} className="ml-auto flex-shrink-0 mt-0.5" style={{ color: '#34d399' }} />}
@@ -229,15 +225,15 @@ function ReflectionCard({ q, index }) {
               );
             })}
           </div>
-          <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3">
+          <div className="rounded-xl reflection-panel p-3">
             <p className="text-xs font-semibold uppercase tracking-widest mb-2 flex items-center gap-1.5"
               style={{ color: '#fbbf24' }}>
               <FiAlertCircle size={11} /> Self-Reflection
             </p>
             <ul className="space-y-1.5">
               {REFLECTION_PROMPTS.map((prompt, i) => (
-                <li key={i} className="flex items-start gap-2 text-xs text-gray-500">
-                  <span className="text-gray-700 flex-shrink-0 font-mono-study">{i + 1}.</span>
+                <li key={i} className="flex items-start gap-2 text-xs text-muted">
+                  <span className="reflection-number flex-shrink-0 font-mono-study">{i + 1}.</span>
                   {prompt}
                 </li>
               ))}
@@ -247,7 +243,7 @@ function ReflectionCard({ q, index }) {
               value={notes}
               onChange={e => setNotes(e.target.value)}
               rows={2}
-              className="mt-3 w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-gray-300 placeholder-gray-700 resize-none focus:outline-none transition-colors"
+              className="mt-3 w-full reflection-textarea rounded-lg px-3 py-2 text-xs resize-none focus:outline-none transition-colors"
               style={{ borderColor: notes ? 'rgba(251,191,36,0.3)' : undefined }}
             />
           </div>
@@ -262,7 +258,7 @@ function PickCard({ icon, iconClass, title, meta, badge, onClick }) {
   return (
     <button onClick={onClick}
       className="pick-card relative w-full flex items-center gap-4 p-4 rounded-2xl
-                 bg-white/[0.03] border border-white/[0.07] text-left overflow-hidden
+                 bg-theme-subtle border border-theme-subtle text-left overflow-hidden
                  transition-all duration-200 hover:border-sky-400/30 hover:-translate-y-px
                  hover:shadow-xl hover:shadow-black/40"
     >
@@ -270,8 +266,8 @@ function PickCard({ icon, iconClass, title, meta, badge, onClick }) {
         {icon}
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-sm font-semibold text-gray-100 truncate">{title}</div>
-        <div className="text-xs text-gray-500 mt-0.5">{meta}</div>
+        <div className="text-sm font-semibold text-text truncate">{title}</div>
+        <div className="text-xs text-muted mt-0.5">{meta}</div>
       </div>
       {badge && <span className="text-[10px] font-semibold uppercase tracking-widest flex-shrink-0" style={{ color: badge.color }}>{badge.label}</span>}
     </button>
@@ -350,20 +346,20 @@ export default function StudyModeTab({ projectId, onExit }) {
   /* ── Results screen ── */
   if (results) {
     const wrong = results.total - results.correct;
-    const label = results.score >= 70 ? '🏆 Excellent work!'
-                : results.score >= 50 ? '📈 Good progress!'
-                : '💪 Keep going!';
+    const label = results.score >= 70 ? <><FiAward className="inline mr-2" /> Excellent work!</>
+                : results.score >= 50 ? <><FiBarChart2 className="inline mr-2" /> Good progress!</>
+                : <><FiCheckCircle className="inline mr-2" /> Keep going!</>;
 
     return (
-      <div className="study-root relative min-h-screen bg-gray-950 text-gray-100 overflow-x-hidden" style={{ minHeight: '100vh', touchAction: 'pan-y' }}>
+      <div className="study-root relative min-h-screen bg-gray-950 text-text overflow-x-hidden" style={{ minHeight: '100vh', touchAction: 'pan-y' }}>
         <div className="relative z-10 max-w-2xl mx-auto px-6 py-12 flex flex-col items-center fade-up">
 
           {/* Score + headline */}
           <ScoreRing score={results.score} />
-          <h2 className="text-2xl font-bold text-gray-100 mt-5 mb-1 text-center">{label}</h2>
-          <p className="text-sm text-gray-500 mb-7 text-center">
+          <h2 className="text-2xl font-bold text-text mt-5 mb-1 text-center flex items-center justify-center gap-2">{label}</h2>
+          <p className="text-sm text-muted mb-7 text-center">
             {results.correct} of {results.total} questions correct
-            {elapsed > 0 && <span className="ml-2 text-gray-600">· {Math.floor(elapsed / 60)}m {elapsed % 60}s</span>}
+            {elapsed > 0 && <span className="ml-2 text-muted">· {Math.floor(elapsed / 60)}m {elapsed % 60}s</span>}
           </p>
 
           {/* Stat chips */}
@@ -382,9 +378,9 @@ export default function StudyModeTab({ projectId, onExit }) {
           {/* Per-question reflection */}
           {results.questions && (
             <div className="w-full space-y-2.5 mb-8 fade-up">
-              <p className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-3 flex items-center gap-2">
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted mb-3 flex items-center gap-2">
                 <FiHelpCircle size={12} /> Question Review
-                {wrong > 0 && <span className="text-gray-700 font-normal normal-case tracking-normal">— tap a wrong answer to reflect</span>}
+                {wrong > 0 && <span className="text-muted font-normal normal-case tracking-normal">— tap a wrong answer to reflect</span>}
               </p>
               {results.questions.map((q, i) => (
                 <ReflectionCard key={q.id} q={q} index={i} />
@@ -406,7 +402,7 @@ export default function StudyModeTab({ projectId, onExit }) {
 
   /* ── Main screen ── */
   return (
-    <div className="study-root relative min-h-screen bg-gray-950 text-gray-100 overflow-x-hidden" style={{ minHeight: '100vh', touchAction: 'pan-y' }}>
+    <div className="study-root relative min-h-screen bg-gray-950 text-text overflow-x-hidden" style={{ minHeight: '100vh', touchAction: 'pan-y' }}>
       <div className="relative z-10 max-w-3xl mx-auto px-6 pt-7 pb-24">
 
         {/* ── Header ── */}
@@ -417,8 +413,8 @@ export default function StudyModeTab({ projectId, onExit }) {
           </div>
           <button onClick={handleExit}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold
-                       text-gray-500 bg-white/[0.04] border border-white/[0.08]
-                       transition-all duration-200 hover:bg-white/[0.08] hover:text-gray-300 hover:border-white/[0.14]"
+                       text-muted bg-theme-muted border border-theme-muted
+                       transition-all duration-200 hover:bg-theme-hover hover:text-text hover:border-theme-hover"
           >
             <FiArrowLeft size={12} /> Exit
           </button>
@@ -427,7 +423,7 @@ export default function StudyModeTab({ projectId, onExit }) {
         {/* ── Mode tabs + timer ── */}
         {showTabs && (
           <div className="flex items-center gap-3 mb-9 flex-wrap fade-up">
-            <div className="flex p-1 rounded-xl bg-white/[0.04] border border-white/[0.08]">
+            <div className="flex p-1 rounded-xl bg-theme-muted border border-theme-muted">
               {[
                 { key: 'flashcards', label: 'Flashcards', Icon: FiTarget },
                 { key: 'quiz',       label: 'Quiz',       Icon: FiHelpCircle },
@@ -444,7 +440,7 @@ export default function StudyModeTab({ projectId, onExit }) {
                   }}
                   className={`flex items-center gap-1.5 px-5 py-2 rounded-lg text-xs font-semibold
                               tracking-wide transition-all duration-200
-                              ${mode === key ? 'bg-sky-400 text-gray-950 shadow-md shadow-sky-400/30' : 'text-gray-500 hover:text-gray-300'}`}
+                              ${mode === key ? 'bg-sky-400 text-gray-950 shadow-md shadow-sky-400/30' : 'text-muted hover:text-text'}`}
                 >
                   <Icon size={13} /> {label}
                 </button>
@@ -470,8 +466,8 @@ export default function StudyModeTab({ projectId, onExit }) {
               {currentIndex >= totalCards - 1 && (
                 <button onClick={() => setCurrentIndex(0)}
                   className="mt-6 flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold
-                             text-gray-500 bg-white/[0.04] border border-white/[0.09]
-                             transition-all duration-200 hover:bg-white/[0.08] hover:text-gray-300"
+                             text-muted bg-theme-muted border border-theme-muted
+                             transition-all duration-200 hover:bg-theme-hover hover:text-text"
                 >
                   <FiRotateCw size={12} /> Review Again
                 </button>
@@ -483,10 +479,10 @@ export default function StudyModeTab({ projectId, onExit }) {
         {/* Flashcard — no deck */}
         {mode === 'flashcards' && !selectedDeck && (
           <div className="fade-up">
-            <p className="text-xs font-semibold uppercase tracking-widest text-gray-600 mb-3.5">Choose a Deck</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted mb-3.5">Choose a Deck</p>
             <div className="flex flex-col gap-2.5">
               {projectDecks.length === 0
-                ? <p className="text-sm text-gray-600">No flashcard decks yet.</p>
+                ? <p className="text-sm text-muted">No flashcard decks yet.</p>
                 : projectDecks.map(d => (
                     <PickCard key={d.id} icon={<FiTarget />}
                       iconClass="bg-sky-400/10 border-sky-400/20 text-sky-400"
@@ -514,12 +510,12 @@ export default function StudyModeTab({ projectId, onExit }) {
               <div className="flex flex-wrap gap-1.5 mb-5">
                 {selectedQuiz.questions.map((qq, i) => (
                   <button key={i} onClick={() => setCurrentIndex(i)}
-                    className={`w-6 h-6 rounded-md text-[10px] font-mono-study font-bold transition-all
-                      ${i === currentIndex
-                        ? 'bg-sky-400 text-gray-950'
-                        : answers[qq.id]
-                          ? 'bg-emerald-400/20 border border-emerald-400/30 text-emerald-400'
-                          : 'bg-white/[0.04] border border-white/[0.07] text-gray-600'}`}
+                  className={`w-6 h-6 rounded-md text-[10px] font-mono-study font-bold transition-all
+                    ${i === currentIndex
+                      ? 'bg-sky-400 text-gray-950'
+                      : answers[qq.id]
+                        ? 'bg-emerald-400/20 border border-emerald-400/30 text-emerald-400'
+                        : 'question-num-unselected'}`}
                   >
                     {i + 1}
                   </button>
@@ -527,7 +523,7 @@ export default function StudyModeTab({ projectId, onExit }) {
               </div>
 
               {/* Question card */}
-              <div className="rounded-2xl bg-white/[0.03] border border-white/[0.08] p-8 mb-4 backdrop-blur-sm">
+              <div className="rounded-2xl bg-theme-subtle border border-theme-subtle p-8 mb-4 backdrop-blur-sm">
                 <div className="flex items-center justify-between mb-5">
                   <span className="text-xs font-bold uppercase tracking-widest text-sky-400">Q{currentIndex + 1}</span>
                   {bloom && (
@@ -537,7 +533,7 @@ export default function StudyModeTab({ projectId, onExit }) {
                     </span>
                   )}
                 </div>
-                <p className="text-base font-medium text-gray-100 leading-relaxed">{q.question_text}</p>
+                <p className="text-base font-medium text-text leading-relaxed">{q.question_text}</p>
               </div>
 
               {/* Options */}
@@ -552,15 +548,15 @@ export default function StudyModeTab({ projectId, onExit }) {
                                   rounded-xl text-left overflow-hidden transition-all duration-200 border
                                   ${isSelected
                                     ? 'bg-sky-400/[0.1] border-sky-400/50 shadow-sky-400/10 shadow-md'
-                                    : 'bg-white/[0.03] border-white/[0.07] hover:border-sky-400/30'}`}
+                                    : 'bg-theme-subtle border-theme-subtle hover:border-sky-400/30'}`}
                     >
                       <span className={`flex-shrink-0 w-6 h-6 rounded-lg flex items-center justify-center
-                                        text-xs font-bold transition-all duration-200
-                                        ${isSelected ? 'bg-sky-400 text-gray-950' : 'bg-white/[0.06] border border-white/[0.1] text-gray-500'}`}>
+                                            text-xs font-bold transition-all duration-200
+                                            ${isSelected ? 'bg-sky-400 text-gray-950' : 'option-badge-unselected'}`}>
                         {label}
                       </span>
                       <span className={`text-sm leading-relaxed pt-0.5 transition-colors duration-150
-                                        ${isSelected ? 'text-gray-100' : 'text-gray-400'}`}>
+                                        ${isSelected ? 'text-text' : 'text-muted'}`}>
                         {q[opt]}
                       </span>
                     </button>
@@ -572,13 +568,13 @@ export default function StudyModeTab({ projectId, onExit }) {
               <div className="flex items-center justify-between">
                 <button onClick={() => setCurrentIndex(p => Math.max(0, p - 1))} disabled={currentIndex === 0}
                   className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-semibold
-                             text-gray-500 bg-white/[0.04] border border-white/[0.08]
-                             transition-all duration-200 hover:bg-white/[0.08] hover:text-gray-300
+                             text-muted bg-theme-muted border border-theme-muted
+                             transition-all duration-200 hover:bg-theme-hover hover:text-text
                              disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <FiChevronLeft size={14} /> Previous
                 </button>
-                <span className="font-mono-study text-xs text-gray-600">
+                <span className="font-mono-study text-xs text-muted">
                   <span className="text-emerald-400">{answeredCount}</span> / {total}
                 </span>
                 {currentIndex < total - 1 ? (
@@ -614,10 +610,10 @@ export default function StudyModeTab({ projectId, onExit }) {
         {/* Quiz — no quiz selected */}
         {mode === 'quiz' && !selectedQuiz && (
           <div className="fade-up">
-            <p className="text-xs font-semibold uppercase tracking-widest text-gray-600 mb-3.5">Choose a Quiz</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted mb-3.5">Choose a Quiz</p>
             <div className="flex flex-col gap-2.5">
               {projectQuizzes.length === 0
-                ? <p className="text-sm text-gray-600">No quizzes yet.</p>
+                ? <p className="text-sm text-muted">No quizzes yet.</p>
                 : projectQuizzes.map(q => (
                     <PickCard key={q.id} icon={<FiHelpCircle />}
                       iconClass="bg-emerald-400/10 border-emerald-400/20 text-emerald-400"
@@ -659,12 +655,12 @@ export default function StudyModeTab({ projectId, onExit }) {
               },
             ].map(({ heading, Icon, iconClass, items, empty, getMeta, getBadge, onSelect }) => (
               <div key={heading}>
-                <p className="text-xs font-semibold uppercase tracking-widest text-gray-600 mb-3.5 flex items-center gap-2">
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted mb-3.5 flex items-center gap-2">
                   <Icon size={11} /> {heading}
                 </p>
                 <div className="flex flex-col gap-2.5">
                   {items.length === 0
-                    ? <p className="text-sm text-gray-600">{empty}</p>
+                    ? <p className="text-sm text-muted">{empty}</p>
                     : items.map(item => (
                         <PickCard key={item.id} icon={<Icon />} iconClass={iconClass}
                           title={item.title} meta={getMeta(item)}

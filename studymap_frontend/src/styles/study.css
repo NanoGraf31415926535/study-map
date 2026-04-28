@@ -77,3 +77,72 @@
 .pick-card:hover::after {
   opacity: 1;
 }
+
+/* Reflection card - Light theme */
+[data-theme="light"] .reflection-option.correct {
+  background: #d1fae5;
+  border-color: #6ee7b7;
+  color: #065f46;
+}
+[data-theme="light"] .reflection-option.incorrect {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+[data-theme="light"] .reflection-option.default {
+  background: #f9fafb;
+  border-color: #e5e7eb;
+  color: #4b5563;
+}
+
+/* Reflection panel - Light theme */
+[data-theme="light"] .reflection-panel {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+[data-theme="light"] .reflection-number {
+  color: #6b7280;
+}
+[data-theme="light"] .reflection-textarea {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  color: #1f2937;
+}
+[data-theme="light"] .reflection-textarea::placeholder {
+  color: #9ca3af;
+}
+
+/* Past attempt banner - Light theme */
+[data-theme="light"] .past-attempt-banner {
+  background: #e0f2fe;
+  border-color: #7dd3fc;
+}
+[data-theme="light"] .past-attempt-icon {
+  color: #0284c7;
+}
+[data-theme="light"] .past-attempt-text {
+  color: #075985;
+}
+
+/* Stats card - Light theme */
+[data-theme="light"] .stats-card {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+[data-theme="light"] .stats-label {
+  color: #64748b;
+}
+
+/* Bloom breakdown - Light theme */
+[data-theme="light"] .bloom-label {
+  color: inherit;
+}
+[data-theme="light"] .bloom-desc {
+  color: #64748b;
+}
+[data-theme="light"] .bloom-count {
+  color: inherit;
+}
+[data-theme="light"] .bloom-bar-bg {
+  background: #e2e8f0;
+}

@@ -101,9 +101,9 @@ export default function DocumentsTab({ projectId, documents, onRefresh }) {
               onChange={handleFileSelect}
               className="hidden"
             />
-            {isUploading ? (
+             {isUploading ? (
               <div className="space-y-3">
-                <div className="w-full h-0.5 bg-white/[0.06] rounded-full overflow-hidden">
+                <div className="w-full h-0.5 progress-bar-bg rounded-full overflow-hidden">
                   <div
                     className="progress-fill h-full rounded-full transition-all duration-300"
                     style={{ width: `${uploadProgress}%` }}

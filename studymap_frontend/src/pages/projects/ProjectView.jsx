@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, Suspense, lazy, startTransition } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
-import { FiFile, FiMessageSquare, FiEdit, FiTarget, FiHelpCircle, FiMap, FiList, FiBookOpen, FiArrowLeft, FiMenu, FiZap } from 'react-icons/fi';
+import { FiFile, FiMessageSquare, FiEdit, FiTarget, FiHelpCircle, FiMap, FiList, FiBookOpen, FiArrowLeft, FiMenu, FiZap, FiX } from 'react-icons/fi';
 import { useProjectStore } from '../../store/useProjectStore';
 import { useGenerationStore } from '../../store/useGenerationStore';
 import { useChatStore } from '../../store/useChatStore';
@@ -162,7 +162,9 @@ export default function ProjectView() {
             <div className="mobile-drawer absolute left-0 top-0 bottom-0 w-64 overflow-y-auto">
               <div className="p-4 flex justify-between items-center border-b mobile-drawer-header">
                 <h2 className="font-bold">Menu</h2>
-                <button onClick={() => setMobileMenuOpen(false)} className="text-gray-400">✕</button>
+                <button onClick={() => setMobileMenuOpen(false)} className="text-gray-400">
+                  <FiX size={20} />
+                </button>
               </div>
               <div className="flex-1 overflow-y-auto">
                 <ProjectSidebar project={project} stats={stats} embedded={true} />

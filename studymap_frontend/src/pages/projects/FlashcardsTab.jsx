@@ -143,7 +143,7 @@ export default function FlashcardsTab({ projectId }) {
             </div>
 
             {totalCards > 0 && (
-              <div className="w-full h-0.5 bg-white/[0.06] rounded-full overflow-hidden">
+              <div className="w-full h-0.5 progress-bar-bg rounded-full overflow-hidden">
                 <div
                   className="progress-fill h-full rounded-full transition-all duration-500"
                   style={{ width: `${((currentIndex) / totalCards) * 100}%` }}

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { FiCheck, FiX, FiHelpCircle, FiEdit, FiDownload, FiFileText, FiFile, FiZap, FiChevronLeft, FiChevronRight, FiAlertCircle, FiBookOpen, FiRefreshCw, FiTarget, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { FiCheck, FiX, FiHelpCircle, FiEdit, FiDownload, FiFileText, FiFile, FiZap, FiChevronLeft, FiChevronRight, FiAlertCircle, FiBookOpen, FiRefreshCw, FiTarget, FiChevronDown, FiChevronUp, FiAward, FiCheckCircle } from 'react-icons/fi';
 import { useGenerationStore } from '../../store/useGenerationStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import '../../styles/quiz.css';
@@ -32,7 +32,7 @@ function ExportDropdown({ triggerRef, onExport, onClose }) {
   const itemStyle = {
     display: 'flex', alignItems: 'center', gap: '10px',
     width: '100%', padding: '13px 20px', textAlign: 'left',
-    fontSize: '14px', color: '#e4e4e7', background: 'transparent',
+    fontSize: '14px', color: 'var(--color-text)', background: 'transparent',
     border: 'none', cursor: 'pointer', whiteSpace: 'nowrap',
   };
 
@@ -45,24 +45,24 @@ function ExportDropdown({ triggerRef, onExport, onClose }) {
       minWidth: '160px',
       borderRadius: '12px',
       overflow: 'hidden',
-      background: '#111827',
-      border: '1px solid rgba(255,255,255,0.14)',
-      boxShadow: '0 12px 32px rgba(0,0,0,0.7)',
+      background: 'var(--color-card)',
+      border: '1px solid var(--color-border)',
+      boxShadow: '0 12px 32px rgba(0,0,0,0.15)',
     }}>
       <button
         onMouseDown={(e) => { e.preventDefault(); onExport('pdf'); }}
         style={itemStyle}
-        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
+        onMouseEnter={e => e.currentTarget.style.background = 'var(--color-input-bg)'}
         onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         PDF
       </button>
-      <div style={{ height: '1px', background: 'rgba(255,255,255,0.07)', margin: '0 12px' }} />
+      <div style={{ height: '1px', background: 'var(--color-border)', margin: '0 12px' }} />
       <button
         onMouseDown={(e) => { e.preventDefault(); onExport('md'); }}
         style={itemStyle}
-        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
+        onMouseEnter={e => e.currentTarget.style.background = 'var(--color-input-bg)'}
         onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
@@ -101,7 +101,7 @@ function ScoreRing({ score }) {
   return (
     <div className="relative w-36 h-36 mx-auto">
       <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
-        <circle cx="60" cy="60" r={radius} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="10" />
+        <circle cx="60" cy="60" r={radius} fill="none" className="score-ring-track" strokeWidth="10" />
         <circle
           cx="60" cy="60" r={radius} fill="none"
           stroke={color} strokeWidth="10"
@@ -112,7 +112,7 @@ function ScoreRing({ score }) {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="font-mono-study text-3xl font-bold" style={{ color }}>{score}%</span>
-        <span className="text-xs text-gray-500 mt-0.5">score</span>
+        <span className="text-xs text-muted mt-0.5">score</span>
       </div>
     </div>
   );
@@ -137,7 +137,7 @@ function BloomBreakdown({ questions }) {
 
   return (
     <div className="quiz-card rounded-2xl p-5 mb-5 fade-up">
-      <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-4 flex items-center gap-2">
+      <h3 className="text-xs font-semibold uppercase tracking-widest text-muted mb-4 flex items-center gap-2">
         <FiTarget size={12} /> Skills Breakdown
       </h3>
       <div className="space-y-3">
@@ -148,17 +148,17 @@ function BloomBreakdown({ questions }) {
             <div key={level}>
               <div className="flex items-center justify-between mb-1.5">
                 <div className="flex items-center gap-2">
-                  <span className={`text-xs font-semibold ${meta.color}`}>{meta.label}</span>
-                  <span className="text-xs text-gray-600">{meta.desc}</span>
+                  <span className={`text-xs font-semibold bloom-label ${meta.color}`}>{meta.label}</span>
+                  <span className="text-xs bloom-desc">{meta.desc}</span>
                 </div>
-                <span className={`font-mono-study text-xs font-bold ${meta.color}`}>
+                <span className={`font-mono-study text-xs font-bold bloom-count ${meta.color}`}>
                   {correct}/{total}
                 </span>
               </div>
-              <div className="w-full h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+              <div className="w-full h-1.5 bloom-bar-bg rounded-full overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all duration-700"
-                  style={{ width: `${pct}%`, background: meta.color.replace('text-', '').includes('400') ? undefined : undefined, backgroundColor: getComputedColorHex(meta.color) }}
+                  style={{ width: `${pct}%`, backgroundColor: getComputedColorHex(meta.color) }}
                 />
               </div>
             </div>
@@ -198,10 +198,10 @@ function ReflectionCard({ q, index }) {
           {q.is_correct ? <FiCheck /> : <FiX />}
         </span>
         <div className="flex-1 min-w-0">
-          <p className="font-medium text-gray-100 text-sm leading-snug">
+          <p className="font-medium text-text text-sm leading-snug">
             Q{index + 1}: {q.question_text}
           </p>
-          <div className="flex flex-wrap gap-3 mt-1.5 text-xs text-gray-500">
+          <div className="flex flex-wrap gap-3 mt-1.5 text-xs text-muted">
             <span>
               Your answer:{' '}
               <span className={q.is_correct ? 'text-emerald-400 font-semibold' : 'text-red-400 font-semibold'}>
@@ -216,7 +216,7 @@ function ReflectionCard({ q, index }) {
             {q.bloom_level && (() => {
               const meta = BLOOM_META[q.bloom_level] || {};
               return (
-                <span className={`${meta.color || 'text-gray-400'} font-medium`}>
+                <span className={`${meta.color || 'text-muted'} font-medium`}>
                   {meta.label || q.bloom_level}
                 </span>
               );
@@ -224,7 +224,7 @@ function ReflectionCard({ q, index }) {
           </div>
         </div>
         {!q.is_correct && (
-          <span className="text-gray-600 flex-shrink-0 mt-0.5">
+          <span className="flex-shrink-0 mt-0.5 reflection-number">
             {open ? <FiChevronUp size={14} /> : <FiChevronDown size={14} />}
           </span>
         )}
@@ -237,7 +237,7 @@ function ReflectionCard({ q, index }) {
           {q.explanation && (
             <div className="flex gap-2.5">
               <FiBookOpen size={13} className="text-sky-400 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-gray-400 leading-relaxed">{q.explanation}</p>
+              <p className="text-sm text-muted leading-relaxed">{q.explanation}</p>
             </div>
           )}
 
@@ -252,10 +252,7 @@ function ReflectionCard({ q, index }) {
               return (
                 <div
                   key={letter}
-                  className={`flex items-start gap-2 px-3 py-2 rounded-xl border text-xs
-                    ${isCorrect ? 'bg-emerald-400/10 border-emerald-400/30 text-emerald-300' :
-                      wasChosen ? 'bg-red-400/10 border-red-400/30 text-red-300' :
-                      'bg-white/[0.03] border-white/[0.06] text-gray-500'}`}
+                  className={`flex items-start gap-2 px-3 py-2 rounded-xl border text-xs reflection-option ${isCorrect ? 'correct' : wasChosen ? 'incorrect' : 'default'}`}
                 >
                   <span className="font-bold flex-shrink-0">{letter.toUpperCase()}.</span>
                   <span className="leading-snug">{text}</span>
@@ -267,14 +264,14 @@ function ReflectionCard({ q, index }) {
           </div>
 
           {/* Reflection prompts */}
-          <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3">
+          <div className="rounded-xl reflection-panel p-3">
             <p className="text-xs font-semibold text-amber-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
               <FiAlertCircle size={11} /> Self-Reflection
             </p>
             <ul className="space-y-1.5">
               {REFLECTION_PROMPTS.map((prompt, i) => (
-                <li key={i} className="flex items-start gap-2 text-xs text-gray-500">
-                  <span className="text-gray-700 flex-shrink-0 font-mono-study">{i + 1}.</span>
+                <li key={i} className="flex items-start gap-2 text-xs text-muted">
+                  <span className="reflection-number flex-shrink-0 font-mono-study">{i + 1}.</span>
                   {prompt}
                 </li>
               ))}
@@ -284,7 +281,7 @@ function ReflectionCard({ q, index }) {
               value={notes}
               onChange={e => setNotes(e.target.value)}
               rows={2}
-              className="mt-3 w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-gray-300 placeholder-gray-700 resize-none focus:outline-none focus:border-amber-400/30 transition-colors"
+              className="mt-3 w-full reflection-textarea rounded-lg px-3 py-2 text-xs resize-none focus:outline-none focus:border-amber-400/30 transition-colors"
             />
           </div>
         </div>
@@ -308,19 +305,19 @@ function WhatToReview({ questions }) {
 
   return (
     <div className="quiz-card rounded-2xl p-5 mb-5 fade-up">
-      <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-3 flex items-center gap-2">
+      <h3 className="text-xs font-semibold uppercase tracking-widest text-muted mb-3 flex items-center gap-2">
         <FiBookOpen size={12} /> What to Review
       </h3>
       <div className="space-y-2.5">
         {entries.map(([level, qs]) => {
           const meta = BLOOM_META[level] || BLOOM_META.remember;
           return (
-            <div key={level} className={`flex items-start gap-3 px-3.5 py-3 rounded-xl ${meta.bg} border ${meta.border}`}>
+            <div key={level} className={`flex items-start gap-3 px-3.5 py-3 rounded-xl ${meta.bg} ${meta.border}`}>
               <div className="flex-1">
                 <span className={`text-xs font-bold ${meta.color}`}>{meta.label}</span>
                 <ul className="mt-1.5 space-y-1">
                   {qs.map((q, i) => (
-                    <li key={q.id} className="text-xs text-gray-500 leading-snug">
+                    <li key={q.id} className="text-xs text-muted leading-snug">
                       • {q.question_text.length > 80 ? q.question_text.slice(0, 80) + '…' : q.question_text}
                     </li>
                   ))}
@@ -522,26 +519,26 @@ export default function QuizTab({ projectId, isStudyMode = false }) {
           </div>
 
           {/* Past attempt banner */}
-          {isPastResult && (
-            <div className="mb-5 px-4 py-3 rounded-xl bg-sky-400/5 border border-sky-400/20 flex items-center gap-2.5 fade-up">
-              <FiBookOpen size={13} className="text-sky-400 flex-shrink-0" />
-              <p className="text-xs text-sky-300">
-                Showing your previous attempt from{' '}
-                <span className="font-semibold">
-                  {new Date(selectedQuiz.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                </span>.
-                Retake below to try again.
-              </p>
-            </div>
-          )}
+{isPastResult && (
+             <div className="mb-5 px-4 py-3 rounded-xl past-attempt-banner flex items-center gap-2.5 fade-up">
+               <FiBookOpen size={13} className="past-attempt-icon flex-shrink-0" />
+               <p className="text-xs past-attempt-text">
+                 Showing your previous attempt from{' '}
+                 <span className="font-semibold past-attempt-text">
+                   {new Date(selectedQuiz.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                 </span>.
+                 Retake below to try again.
+               </p>
+             </div>
+           )}
 
           {/* Score ring + headline */}
           <div className="text-center py-6 fade-up">
             <ScoreRing score={results.score} />
-            <h2 className="text-xl font-bold text-gray-100 mt-4 mb-1">
-              {results.score >= 70 ? '🎉 Great job!' : results.score >= 50 ? '💪 Good effort!' : '📚 Keep practicing!'}
+            <h2 className="text-xl font-bold text-text mt-4 mb-1 flex items-center justify-center gap-2">
+              {results.score >= 70 ? <><FiAward /> Great job!</> : results.score >= 50 ? <><FiCheckCircle /> Good effort!</> : <><FiBookOpen /> Keep practicing!</>}
             </h2>
-            <p className="text-gray-500 text-sm">{results.correct} out of {results.total} correct</p>
+             <p className="text-muted text-sm">{results.correct} out of {results.total} correct</p>
           </div>
 
           {/* Summary stats */}
@@ -551,9 +548,9 @@ export default function QuizTab({ projectId, isStudyMode = false }) {
               { label: 'Wrong',   value: wrong,           color: 'text-red-400' },
               { label: 'Total',   value: results.total,   color: 'text-sky-400' },
             ].map(({ label, value, color }) => (
-              <div key={label} className="px-6 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-center min-w-[80px]">
-                <div className={`font-mono-study text-2xl font-bold ${color}`}>{value}</div>
-                <div className="text-xs text-gray-500 uppercase tracking-widest mt-1">{label}</div>
+<div key={label} className="px-6 py-3 rounded-xl stats-card text-center min-w-[80px]">
+                 <div className={`font-mono-study text-2xl font-bold ${color}`}>{value}</div>
+                 <div className="text-xs stats-label uppercase tracking-widest mt-1">{label}</div>
               </div>
             ))}
           </div>
@@ -567,9 +564,9 @@ export default function QuizTab({ projectId, isStudyMode = false }) {
           {/* Per-question breakdown with self-reflection */}
           {results.questions && (
             <div className="space-y-2.5 mb-7 fade-up">
-              <p className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-3 flex items-center gap-2">
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted mb-3 flex items-center gap-2">
                 <FiHelpCircle size={12} /> Question Review
-                {wrong > 0 && <span className="text-gray-700 font-normal normal-case tracking-normal">— tap a wrong answer to reflect</span>}
+                {wrong > 0 && <span className="text-muted font-normal normal-case tracking-normal">— tap a wrong answer to reflect</span>}
               </p>
               {results.questions.map((q, i) => (
                 <ReflectionCard key={q.id} q={q} index={i} />
@@ -581,7 +578,7 @@ export default function QuizTab({ projectId, isStudyMode = false }) {
           <div className="flex flex-wrap gap-3 justify-center fade-up">
             <button
               onClick={() => { setShowResults(false); setAnswers({}); setCurrentQuestion(0); setRetakeMode(false); }}
-              className="quiz-btn px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-400 flex items-center gap-1.5"
+              className="quiz-btn px-5 py-2.5 rounded-xl text-sm font-semibold text-muted flex items-center gap-1.5"
             >
               <FiRefreshCw size={13} /> Retake Full Quiz
             </button>
@@ -610,10 +607,10 @@ export default function QuizTab({ projectId, isStudyMode = false }) {
           {/* Top bar */}
           <div className="flex items-center justify-between mb-4 md:mb-7">
             <div>
-              <h2 className="text-lg font-bold">
-                {retakeMode ? '🎯 Retake: Missed Questions' : selectedQuiz.title}
+              <h2 className="text-lg font-bold text-text flex items-center gap-2">
+                {retakeMode ? <><FiTarget /> Retake: Missed Questions</> : selectedQuiz.title}
               </h2>
-              <p className="font-mono-study text-xs mt-1 text-gray-500">
+              <p className="font-mono-study text-xs mt-1 text-muted">
                 Question {currentQuestion + 1} of {totalQuestions}
                 {retakeMode && <span className="ml-2 text-amber-400">· Weak questions only</span>}
               </p>
@@ -640,7 +637,7 @@ export default function QuizTab({ projectId, isStudyMode = false }) {
           </div>
 
           {/* Progress bar */}
-          <div className="w-full h-0.5 bg-white/[0.06] rounded-full overflow-hidden mb-7">
+          <div className="w-full h-0.5 progress-bar-bg rounded-full overflow-hidden mb-7">
             <div
               className="progress-fill h-full rounded-full transition-all duration-500"
               style={{ width: `${((currentQuestion + 1) / totalQuestions) * 100}%` }}
@@ -659,7 +656,7 @@ export default function QuizTab({ projectId, isStudyMode = false }) {
                   className={`w-6 h-6 rounded-md text-[10px] font-mono-study font-bold transition-all
                     ${i === currentQuestion ? 'bg-sky-400 text-gray-950' :
                       answered ? 'bg-emerald-400/20 border border-emerald-400/30 text-emerald-400' :
-                      'bg-white/[0.04] border border-white/[0.07] text-gray-600'}`}
+                      'question-num-unselected'}`}
                 >
                   {i + 1}
                 </button>
@@ -678,7 +675,7 @@ export default function QuizTab({ projectId, isStudyMode = false }) {
                   </span>
                 );
               })()}
-              <p className="text-base font-medium text-gray-100 mb-6">
+              <p className="text-base font-medium text-text mb-6">
                 {currentQuestion + 1}. {question.question_text}
               </p>
               <div className="space-y-2.5">
@@ -693,10 +690,10 @@ export default function QuizTab({ projectId, isStudyMode = false }) {
                       className={`option-btn relative w-full flex items-start gap-3.5 px-5 py-3.5 rounded-xl text-left overflow-hidden transition-all duration-200 border
                         ${isSelected
                           ? 'bg-sky-400/[0.1] border-sky-400/50 shadow-sky-400/10 shadow-md'
-                          : 'bg-white/[0.03] border-white/[0.07] hover:border-sky-400/30'}`}
+                          : 'bg-theme-subtle border-theme-subtle hover:border-sky-400/30'}`}
                     >
                       <span className={`flex-shrink-0 w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold transition-all duration-200
-                        ${isSelected ? 'bg-sky-400 text-gray-950' : 'bg-white/[0.06] border border-white/[0.1] text-gray-500'}`}>
+                        ${isSelected ? 'bg-sky-400 text-gray-950' : 'option-badge-unselected'}`}>
                         {label}
                       </span>
                       <span className={`text-sm leading-relaxed pt-0.5 transition-colors duration-150 ${isSelected ? 'text-gray-100' : 'text-gray-400'}`}>
