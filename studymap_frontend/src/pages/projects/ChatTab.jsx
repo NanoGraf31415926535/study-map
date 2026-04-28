@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { FiFile, FiSearch, FiTrash2, FiMessageSquare, FiZap, FiPlus, FiSend, FiX, FiChevronLeft, FiMenu } from 'react-icons/fi';
+import {
+  FiFile, FiSearch, FiTrash2, FiMessageSquare,
+  FiZap, FiPlus, FiSend, FiX, FiArrowLeft, FiMenu,
+} from 'react-icons/fi';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useChatStore } from '../../store/useChatStore';
@@ -11,25 +14,25 @@ const CHAT_MODES = [
     name: 'Document Only',
     icon: FiFile,
     modeClass: 'mode-violet',
-    description: 'AI answers exclusively from your uploaded documents. Perfect for exam prep.',
+    description: 'Answers exclusively from your uploaded documents. Perfect for exam prep.',
   },
   {
     id: 'hybrid',
     name: 'Enhanced',
     icon: FiSearch,
     modeClass: 'mode-sky',
-    description: 'AI uses documents as base but enriches with its own knowledge.',
+    description: 'Uses documents as a base and enriches with broader knowledge.',
   },
   {
     id: 'search',
     name: 'Discover',
     icon: FiSearch,
     modeClass: 'mode-amber',
-    description: 'AI recommends external resources and websites.',
+    description: 'Recommends external resources and websites for deeper research.',
   },
 ];
 
-export default function ChatTab({ projectId }) {
+export default function ChatTab({ projectId, onExit }) {
   const {
     sessions, messages, activeSession, isSending,
     fetchSessions, createSession, deleteSession,
@@ -37,56 +40,49 @@ export default function ChatTab({ projectId }) {
   } = useChatStore();
 
   const [showModeSelector, setShowModeSelector] = useState(false);
-  const [showDrawer, setShowDrawer] = useState(false);
-  const [inputValue, setInputValue] = useState('');
-  const messagesEndRef = useRef(null);
-  const inputRef = useRef(null);
-  const textareaRef = useRef(null);
+  const [sidebarOpen, setSidebarOpen]           = useState(false); // mobile only
+  const [inputValue, setInputValue]             = useState('');
 
-const projectSessions = sessions[projectId] || [];
+  const messagesEndRef = useRef(null);
+  const textareaRef    = useRef(null);
+
+  const projectSessions = useMemo(() =>
+    [...(sessions[projectId] || [])].sort(
+      (a, b) => new Date(b.created_at) - new Date(a.created_at)
+    ),
+    [sessions, projectId]
+  );
   const currentMessages = activeSession ? (messages[activeSession.id] || []) : [];
 
-  const processContent = (content) => {
-    let processed = content.replace(/<br\s*\/?>/gi, '\n');
-    processed = processed.replace(/^([A-D])\.\s+/gm, '$1. ');
-    return processed;
-  };
+  /* ── content helpers ── */
+  const processContent = (content) =>
+    content
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/^([A-D])\.\s+/gm, '$1. ');
 
   const markdownComponents = useMemo(() => ({
     ol: ({ node, ...props }) => {
-      const items = node?.children || [];
-      const hasLetters = items.every((item) => {
-        const text = item.children?.[0]?.value || '';
-        return /^[A-D]\./.test(text);
-      });
-      if (hasLetters) {
-        return <ol {...props} data-lettered />;
-      }
-      return <ol {...props} />;
+      const hasLetters = (node?.children || []).every(
+        item => /^[A-D]\./.test(item.children?.[0]?.value || '')
+      );
+      return hasLetters ? <ol {...props} data-lettered /> : <ol {...props} />;
     },
     li: ({ node, ...props }) => {
-      const text = node?.children?.[0]?.value || '';
-      const match = text.match(/^([A-D])\.\s+(.*)/);
-      if (match) {
-        return <li data-letter={match[1]} {...props}>{match[2]}</li>;
-      }
-      return <li {...props} />;
+      const match = (node?.children?.[0]?.value || '').match(/^([A-D])\.\s+(.*)/);
+      return match
+        ? <li data-letter={match[1]} {...props}>{match[2]}</li>
+        : <li {...props} />;
     },
   }), []);
 
+  /* ── effects ── */
   useEffect(() => {
-    if (projectId) {
-      setActiveSession(null);
-      fetchSessions(projectId);
-    }
+    if (projectId) { setActiveSession(null); fetchSessions(projectId); }
   }, [projectId, fetchSessions, setActiveSession]);
 
   useEffect(() => {
     if (projectSessions.length > 0 && !activeSession) {
-      const mostRecent = [...projectSessions].sort(
-        (a, b) => new Date(b.created_at) - new Date(a.created_at)
-      )[0];
-      setActiveSession(mostRecent);
+      setActiveSession(projectSessions[0]);
     }
   }, [projectId, projectSessions, activeSession, setActiveSession]);
 
@@ -103,14 +99,14 @@ const projectSessions = sessions[projectId] || [];
     const ta = textareaRef.current;
     if (!ta) return;
     ta.style.height = 'auto';
-    ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+    ta.style.height = Math.min(ta.scrollHeight, 160) + 'px';
   }, [inputValue]);
 
+  /* ── handlers ── */
   const handleNewChat = (mode) => {
     setShowModeSelector(false);
     createSession(projectId, mode).then((session) => {
       setActiveSession(session);
-      setShowDrawer(false);
     });
   };
 
@@ -123,153 +119,198 @@ const projectSessions = sessions[projectId] || [];
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
   };
 
-  const handleDeleteSession = (sessionId) => {
+  const handleDeleteSession = (e, sessionId) => {
+    e.stopPropagation();
     if (!window.confirm('Delete this chat?')) return;
     deleteSession(projectId, sessionId);
   };
 
-  const getModeBadge = (mode) => {
-    const modeInfo = CHAT_MODES.find(m => m.id === mode);
-    return (
-      <span className={`mode-badge px-2 py-0.5 text-xs rounded-full ${modeInfo?.modeClass || ''}`}>
-        {modeInfo?.name || mode}
-      </span>
-    );
-  };
-
   const selectSession = (session) => {
     setActiveSession(session);
-    setShowDrawer(false);
+    setSidebarOpen(false); // close on mobile after picking
   };
 
-  return (
-    <div className="chat-root chat-shell tab-root">
+  const getModeBadge = (mode) => {
+    const m = CHAT_MODES.find(x => x.id === mode);
+    return m ? (
+      <span className={`mode-badge px-1.5 py-0.5 rounded-full ${m.modeClass}`}>
+        {m.name}
+      </span>
+    ) : null;
+  };
 
-      {/* ── Sidebar (desktop) / Drawer (mobile) ─────────────────────────── */}
-      {/* Backdrop */}
-      {showDrawer && (
+  const activeMode = activeSession
+    ? CHAT_MODES.find(m => m.id === activeSession.mode)
+    : null;
+
+  /* ── render ── */
+  return (
+    <div className="chat-root">
+
+      {/* ══════════════════════════════════════════════
+          LEFT SIDEBAR — sessions list
+          ══════════════════════════════════════════════ */}
+
+      {/* Mobile overlay */}
+      {sidebarOpen && (
         <div
-          className="chat-drawer-backdrop"
-          onClick={() => setShowDrawer(false)}
+          className="chat-sidebar-overlay"
+          onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      <aside className={`chat-sidebar ${showDrawer ? 'chat-sidebar--open' : ''}`}>
+      <aside className={`chat-sidebar ${sidebarOpen ? 'chat-sidebar--open' : ''}`}>
+
+        {/* Sidebar header */}
         <div className="chat-sidebar-header">
-          <span className="text-xs font-semibold uppercase tracking-widest text-sky-400">Chats</span>
+          <span className="chat-sidebar-title">Chats</span>
           <button
             onClick={() => setShowModeSelector(true)}
-            className="glow-sky new-chat-btn"
+            className="sidebar-new-btn"
+            aria-label="New chat"
           >
-            <FiPlus size={14} /> New
+            <FiPlus size={14} />
           </button>
         </div>
 
-        <div className="chat-session-list">
+        {/* Sessions list */}
+        <div className="chat-sidebar-sessions">
           {projectSessions.length === 0 ? (
-            <p className="text-center text-gray-600 py-10 text-sm fade-up">No chats yet</p>
+            <div className="sessions-empty">
+              <p>No chats yet.<br />Start one to begin.</p>
+              <button
+                onClick={() => setShowModeSelector(true)}
+                className="glow-sky mt-2 px-3 py-1.5 text-xs rounded-lg flex items-center gap-1.5"
+              >
+                <FiPlus size={12} /> New Chat
+              </button>
+            </div>
           ) : (
             projectSessions.map((session) => (
               <div
                 key={session.id}
                 onClick={() => selectSession(session)}
-                className={`session-card ${activeSession?.id === session.id ? 'active' : ''}`}
+                className={`session-item ${activeSession?.id === session.id ? 'active' : ''}`}
               >
-                <div className="flex items-center justify-between mb-0.5">
-                  <span className="font-medium truncate text-sm session-title">
+                <div className="session-item-body">
+                  <span className="session-item-title">
                     {session.title || 'New Chat'}
                   </span>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); handleDeleteSession(session.id); }}
-                    className="session-delete-btn"
-                  >
-                    <FiTrash2 size={12} />
-                  </button>
+                  <div className="session-item-meta">
+                    {getModeBadge(session.mode)}
+                    <span>{new Date(session.created_at).toLocaleDateString()}</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  {getModeBadge(session.mode)}
-                  <span className="text-xs session-date">
-                    {new Date(session.created_at).toLocaleDateString()}
-                  </span>
-                </div>
+                <button
+                  onClick={(e) => handleDeleteSession(e, session.id)}
+                  className="session-delete-btn"
+                  aria-label="Delete session"
+                >
+                  <FiTrash2 size={11} />
+                </button>
               </div>
             ))
           )}
         </div>
+
+        {/* Sidebar footer */}
+        <div className="chat-sidebar-footer">
+          <button onClick={onExit || (() => {})} className="sidebar-exit-btn">
+            <FiArrowLeft size={14} />
+            Back to project
+          </button>
+        </div>
       </aside>
 
-      {/* ── Main chat area ───────────────────────────────────────────────── */}
+      {/* ══════════════════════════════════════════════
+          MAIN AREA — topbar + messages + input
+          ══════════════════════════════════════════════ */}
       <div className="chat-main">
 
-        {/* Mobile top bar */}
+        {/* Topbar */}
         <div className="chat-topbar">
+          {/* Mobile sidebar toggle */}
           <button
-            onClick={() => setShowDrawer(true)}
-            className="chat-topbar-btn md:hidden"
-            aria-label="Open chats"
+            className="topbar-sidebar-btn"
+            onClick={() => setSidebarOpen(s => !s)}
+            aria-label="Toggle sessions"
           >
-            <FiMenu size={18} />
+            <FiMenu size={15} />
           </button>
-          <div className="flex-1 min-w-0">
-            {activeSession ? (
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-sm truncate">
-                  {activeSession.title || 'New Chat'}
+
+          {activeSession ? (
+            <>
+              <div className="chat-topbar-indicator" />
+              <span className="chat-topbar-name">
+                {activeSession.title || 'New Chat'}
+              </span>
+              {activeMode && (
+                <span className={`mode-badge px-2 py-0.5 rounded-full ${activeMode.modeClass}`}>
+                  {activeMode.name}
                 </span>
-                {getModeBadge(activeSession.mode)}
-              </div>
-            ) : (
-              <span className="text-sm text-gray-500">Select a chat</span>
-            )}
-          </div>
+              )}
+            </>
+          ) : (
+            <span className="chat-topbar-name" style={{ color: 'var(--c-muted)' }}>
+              Select a chat or start a new one
+            </span>
+          )}
         </div>
 
-        {/* Messages */}
+        {/* ── Messages ── */}
         <div className="chat-messages">
           {!activeSession ? (
-            <div className="flex-1 flex items-center justify-center">
-              <div className="text-center fade-up px-8">
-                <div className="chat-empty-icon">
-                  <FiMessageSquare size={28} />
-                </div>
-                <p className="text-sm text-gray-500 mt-3">Start a new chat or select one</p>
-                <button
-                  onClick={() => setShowModeSelector(true)}
-                  className="glow-sky mt-4 px-5 py-2.5 text-sm font-semibold rounded-xl flex items-center gap-1.5 mx-auto"
-                >
-                  <FiPlus size={14} /> New Chat
-                </button>
+            <div className="chat-welcome">
+              <div className="chat-welcome-icon">
+                <FiMessageSquare size={24} />
               </div>
+              <h2>Start a conversation</h2>
+              <p>Select an existing chat from the sidebar, or start a new one.</p>
+              <button
+                onClick={() => setShowModeSelector(true)}
+                className="glow-sky px-5 py-2.5 text-sm rounded-xl flex items-center gap-1.5"
+              >
+                <FiPlus size={14} /> New Chat
+              </button>
             </div>
+
           ) : currentMessages.length === 0 ? (
-            <div className="flex-1 flex items-center justify-center">
-              <div className="text-center fade-up px-8">
-                <p className="text-sm text-gray-500">Ask anything about your documents</p>
+            <div className="chat-welcome">
+              <div className="chat-welcome-icon">
+                <FiMessageSquare size={24} />
               </div>
+              <h2>Ask anything</h2>
+              <p>Type your question below and I'll answer based on your documents.</p>
             </div>
+
           ) : (
-            <div className="chat-messages-inner">
+            <div className="chat-thread">
               {currentMessages.map((msg, i) => (
                 <div
                   key={msg.id}
                   className={`chat-msg-row ${msg.role === 'user' ? 'chat-msg-row--user' : 'chat-msg-row--ai'}`}
-                  style={{ animationDelay: `${i * 20}ms` }}
+                  style={{ animationDelay: `${i * 16}ms` }}
                 >
                   <div className={`chat-bubble ${msg.role === 'user' ? 'chat-bubble--user' : 'chat-bubble--ai'}`}>
-                    <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                      {msg.role === 'user' ? msg.content : (
-                        <div className="chat-markdown"><ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>{processContent(msg.content)}</ReactMarkdown></div>
-                      )}
-                    </div>
 
+                    {msg.role === 'user' ? (
+                      <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                        {msg.content}
+                      </div>
+                    ) : (
+                      <div className="chat-markdown">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                          {processContent(msg.content)}
+                        </ReactMarkdown>
+                      </div>
+                    )}
+
+                    {/* AI insight */}
                     {msg.injected_thought && (
-                      <div className="ai-insight mt-2 p-2.5 rounded-xl">
+                      <div className="ai-insight mt-2.5 p-2.5 rounded-xl">
                         <div className="text-xs font-semibold mb-1 flex items-center gap-1">
                           <FiZap size={10} /> AI Insight
                         </div>
@@ -277,29 +318,40 @@ const projectSessions = sessions[projectId] || [];
                       </div>
                     )}
 
+                    {/* Document sources */}
                     {msg.sources?.length > 0 && (
-                      <div className="mt-2 flex flex-wrap gap-1.5">
-                        {msg.sources.map((source, i) => (
-                          <span key={i} className="source-badge px-2 py-1 text-xs rounded-full flex items-center gap-1">
-                            <FiFile size={10} /> {source.title}
+                      <div className="mt-2.5 flex flex-wrap gap-1.5">
+                        {msg.sources.map((src, idx) => (
+                          <span key={idx} className="source-badge px-2.5 py-1 flex items-center gap-1">
+                            <FiFile size={9} /> {src.title}
                           </span>
                         ))}
                       </div>
                     )}
 
+                    {/* Web sources */}
                     {msg.web_sources?.length > 0 && (
-                      <div className="mt-2 space-y-1.5">
-                        {msg.web_sources.map((source, i) => (
+                      <div className="mt-2.5 space-y-1.5">
+                        {msg.web_sources.map((src, idx) => (
                           <a
-                            key={i}
-                            href={source.url}
+                            key={idx}
+                            href={src.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="block p-2 source-badge rounded-xl hover:border-sky-400/30 transition-colors"
+                            className="block p-2.5 source-badge rounded-xl"
+                            style={{ borderRadius: 'var(--r-md)' }}
                           >
-                            <div className="font-medium text-sky-400 text-xs">{source.title}</div>
-                            <div className="text-xs text-gray-500 truncate">{source.url}</div>
-                            {source.snippet && <div className="text-xs text-gray-500 mt-0.5">{source.snippet}</div>}
+                            <div className="font-medium text-xs" style={{ color: 'var(--c-blue)' }}>
+                              {src.title}
+                            </div>
+                            <div className="text-xs truncate" style={{ color: 'var(--c-muted)' }}>
+                              {src.url}
+                            </div>
+                            {src.snippet && (
+                              <div className="text-xs mt-0.5" style={{ color: 'var(--c-muted)' }}>
+                                {src.snippet}
+                              </div>
+                            )}
                           </a>
                         ))}
                       </div>
@@ -308,6 +360,7 @@ const projectSessions = sessions[projectId] || [];
                 </div>
               ))}
 
+              {/* Typing indicator */}
               {isSending && (
                 <div className="chat-msg-row chat-msg-row--ai">
                   <div className="chat-bubble chat-bubble--ai">
@@ -319,69 +372,90 @@ const projectSessions = sessions[projectId] || [];
                   </div>
                 </div>
               )}
+
               <div ref={messagesEndRef} />
             </div>
           )}
         </div>
 
-        {/* Input bar — pinned to bottom, above mobile keyboard */}
+        {/* ── Pinned input bar ── */}
         {activeSession && (
           <div className="chat-input-bar">
-            <div className="chat-input-row">
-              <textarea
-                ref={textareaRef}
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Ask a question…"
-                rows={1}
-                className="chat-input"
-              />
-              <button
-                onClick={handleSend}
-                disabled={!inputValue.trim() || isSending}
-                className="chat-send-btn glow-sky"
-                aria-label="Send"
-              >
-                <FiSend size={15} />
-              </button>
+            <div className="chat-input-wrap">
+              <div className="chat-input-row">
+                <textarea
+                  ref={textareaRef}
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Ask a question…"
+                  rows={1}
+                  className="chat-input"
+                />
+                <button
+                  onClick={handleSend}
+                  disabled={!inputValue.trim() || isSending}
+                  className="chat-send-btn"
+                  aria-label="Send"
+                >
+                  <FiSend size={14} />
+                </button>
+              </div>
             </div>
           </div>
         )}
       </div>
 
-      {/* ── Mode selector modal ──────────────────────────────────────────── */}
+      {/* ══════════════════════════════════════════════
+          MODE SELECTOR MODAL
+          ══════════════════════════════════════════════ */}
       {showModeSelector && (
         <div className="chat-modal-overlay" onClick={() => setShowModeSelector(false)}>
           <div className="chat-modal" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-1">
-              <h2 className="text-base font-bold">Choose Chat Mode</h2>
-              <button onClick={() => setShowModeSelector(false)} className="text-gray-500 hover:text-gray-300 p-1">
-                <FiX size={18} />
+              <h2 className="chat-modal-title">Choose Chat Mode</h2>
+              <button
+                onClick={() => setShowModeSelector(false)}
+                className="p-1"
+                style={{ color: 'var(--c-muted)' }}
+              >
+                <FiX size={17} />
               </button>
             </div>
-            <p className="text-gray-500 text-xs mb-4">Select how the AI should respond.</p>
+            <p className="text-xs mb-4" style={{ color: 'var(--c-muted)' }}>
+              Select how the AI should respond
+            </p>
+
             <div className="space-y-2">
               {CHAT_MODES.map((mode) => (
                 <button
                   key={mode.id}
                   onClick={() => handleNewChat(mode.id)}
-                  className="mode-option w-full p-3.5 rounded-xl text-left"
+                  className="mode-option p-3.5"
                 >
                   <div className="flex items-center gap-2.5 mb-0.5">
-                    <mode.icon size={16} className={`flex-shrink-0 ${mode.modeClass.replace('mode-', 'text-')}`} />
-                    <span className="font-semibold text-sm">{mode.name}</span>
-                    <span className={`ml-auto mode-badge px-2 py-0.5 text-xs rounded-full ${mode.modeClass}`}>
+                    <mode.icon
+                      size={15}
+                      style={{ color: `var(--c-${mode.modeClass.replace('mode-', '')})` }}
+                      className="flex-shrink-0"
+                    />
+                    <span className="font-semibold text-sm" style={{ color: 'var(--c-text)' }}>
+                      {mode.name}
+                    </span>
+                    <span className={`ml-auto mode-badge px-2 py-0.5 rounded-full ${mode.modeClass}`}>
                       {mode.id}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500 pl-6">{mode.description}</p>
+                  <p className="text-xs pl-6" style={{ color: 'var(--c-muted)' }}>
+                    {mode.description}
+                  </p>
                 </button>
               ))}
             </div>
+
             <button
               onClick={() => setShowModeSelector(false)}
-              className="w-full mt-3 ghost-btn px-4 py-2.5 text-sm font-medium rounded-xl"
+              className="w-full mt-3 ghost-btn px-4 py-2.5 text-sm rounded-xl"
             >
               Cancel
             </button>

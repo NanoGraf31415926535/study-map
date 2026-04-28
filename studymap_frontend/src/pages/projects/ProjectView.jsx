@@ -129,14 +129,34 @@ export default function ProjectView() {
   if (isStudyMode) {
     return (
       <div className="fixed inset-0 z-50 bg-gray-950 overflow-y-auto overflow-x-hidden">
-          <Suspense fallback={
-            <div className="min-h-screen bg-gray-950 flex items-center justify-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-400"></div>
-            </div>
-          }>
-            <StudyModeTab projectId={projectId} onExit={handleExitStudyMode} />
-          </Suspense>
-        </div>
+        <Suspense fallback={
+          <div className="min-h-screen bg-gray-950 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-400"></div>
+          </div>
+        }>
+          <StudyModeTab projectId={projectId} onExit={handleExitStudyMode} />
+        </Suspense>
+      </div>
+    );
+  }
+
+  const isChatMode = activeTab === 'chat';
+
+  const handleExitChatMode = () => {
+    setSearchParams({ tab: 'documents' });
+  };
+
+  if (isChatMode) {
+    return (
+      <div className="fixed inset-0 z-50 bg-gray-950 overflow-y-auto overflow-x-hidden">
+        <Suspense fallback={
+          <div className="min-h-screen bg-gray-950 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-400"></div>
+          </div>
+        }>
+          <ChatTab projectId={projectId} onExit={handleExitChatMode} />
+        </Suspense>
+      </div>
     );
   }
 
