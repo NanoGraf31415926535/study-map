@@ -128,7 +128,7 @@ export default function ProjectView() {
 
   if (isStudyMode) {
     return (
-      <div className="fixed inset-0 z-50 bg-gray-950 overflow-y-auto">
+      <div className="fixed inset-0 z-50 bg-gray-950 overflow-y-auto overflow-x-hidden">
           <Suspense fallback={
             <div className="min-h-screen bg-gray-950 flex items-center justify-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-400"></div>
@@ -149,7 +149,7 @@ export default function ProjectView() {
   }
 
   return (
-    <div className="project-view fixed inset-0 flex">
+    <div className="project-view fixed inset-0 flex overflow-x-hidden">
         {/* Desktop Sidebar */}
         <div className="hidden md:block">
           <ProjectSidebar project={project} stats={stats} />
@@ -171,7 +171,7 @@ export default function ProjectView() {
           </div>
         )}
         
-        <main className="flex-1 md:ml-64 p-3 md:p-6 overflow-y-auto pb-24 md:pb-6" style={{height: '100vh'}}>
+        <main className="flex-1 md:ml-64 p-3 md:p-6 overflow-y-auto overflow-x-hidden pb-24 md:pb-6" style={{height: '100vh'}}>
           {/* Mobile back button */}
           <div className="flex items-center gap-2 mb-4 md:mb-6">
             <button
@@ -182,7 +182,7 @@ export default function ProjectView() {
             </button>
           </div>
           
-          <div className="flex gap-2 mb-4 md:mb-6 border-b pb-2 overflow-x-auto tab-scroll">
+          <div className="flex gap-2 mb-4 md:mb-6 border-b pb-2 flex-wrap">
             <button
               onClick={() => setMobileMenuOpen(true)}
               className="tab-btn md:hidden flex items-center gap-2 px-3 py-2.5 rounded-lg border"

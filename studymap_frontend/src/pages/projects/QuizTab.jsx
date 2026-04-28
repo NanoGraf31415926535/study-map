@@ -487,7 +487,7 @@ export default function QuizTab({ projectId, isStudyMode = false }) {
     const isPastResult = !!(selectedQuiz?.completed_at && results.questions?.every(q => q.user_answer));
 
     return (
-      <div className="quiz-root tab-root">
+      <div className="quiz-root tab-root overflow-hidden">
         <div className="relative z-10 max-w-2xl mx-auto">
 
           {/* Header */}
