@@ -98,9 +98,13 @@ export default function About() {
             </button>
 
             {/* Hero card */}
-            <div className="about-hero-card rounded-2xl p-6 md:p-8 mb-6 fade-up">
-              <div className="about-avatar">AS</div>
-              <div className="about-hero-text">
+             <div className="about-hero-card rounded-2xl p-6 md:p-8 mb-6 fade-up">
+               <img
+                 src="/artem-avatar.jpg"
+                 alt="Artem Sakhniuk"
+                 className="about-avatar-img"
+               />
+               <div className="about-hero-text">
                 <h1 className="about-name">Artem Sakhniuk</h1>
                 <p className="about-role-label">Full Stack Developer &amp; Creator of <span className="about-accent">StudyMap</span></p>
                 <div className="about-meta">
