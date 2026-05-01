@@ -193,3 +193,41 @@
   color: #f87171;
   border: 1px solid rgba(248,113,113,0.2);
 }
+
+/* AI Config styles */
+.model-badge {
+  background: rgba(99,179,237,0.15);
+  color: #63b3ed;
+  border: 1px solid rgba(99,179,237,0.3);
+}
+
+.status-dot {
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.prompt-section {
+  transition: all 0.2s;
+}
+
+.prompt-section:hover {
+  background: rgba(255,255,255,0.02);
+}
+
+[data-theme="light"] .prompt-section:hover {
+  background: rgba(0,0,0,0.02);
+}
+
+.prompt-section pre {
+  font-size: 0.7rem;
+  line-height: 1.6;
+  overflow-x: auto;
+}
+
+.bg-gray-900\/50 {
+  background: rgba(17, 24, 39, 0.5);
+}
+
+.bg-gray-900\/70 {
+  background: rgba(17, 24, 39, 0.7);
+}

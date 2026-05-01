@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiAward, FiBarChart2, FiUsers, FiFolder, FiTrendingUp, FiActivity, FiArrowLeft, FiChevronDown } from 'react-icons/fi';
+import { FiAward, FiBarChart2, FiUsers, FiFolder, FiTrendingUp, FiActivity, FiArrowLeft, FiChevronDown, FiCpu } from 'react-icons/fi';
 import { useAuthStore } from '../store/useAuthStore';
 import api from '../api/axios';
 import '../styles/admin.css';
@@ -17,6 +17,9 @@ export default function Admin() {
   const [message, setMessage] = useState(null);
   const [logsOffset, setLogsOffset] = useState(0);
   const [logsLoading, setLogsLoading] = useState(false);
+  const [aiConfig, setAiConfig] = useState(null);
+  const [loadingAI, setLoadingAI] = useState(false);
+  const [expandedPrompt, setExpandedPrompt] = useState(null);
 
   useEffect(() => {
     if (!user?.is_staff) {
@@ -30,7 +33,22 @@ export default function Admin() {
     if (activeTab === 'api-logs') {
       fetchApiLogs();
     }
+    if (activeTab === 'ai-config') {
+      fetchAIConfig();
+    }
   }, [activeTab]);
+
+  const fetchAIConfig = async () => {
+    setLoadingAI(true);
+    try {
+      const res = await api.get('/auth/admin/ai-config/');
+      setAiConfig(res.data);
+    } catch (error) {
+      console.error('Failed to fetch AI config:', error);
+    } finally {
+      setLoadingAI(false);
+    }
+  };
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -139,6 +157,12 @@ export default function Admin() {
                 className={`tab-btn px-4 py-3 font-medium transition-colors ${activeTab === 'api-logs' ? 'active' : ''}`}
               >
                 <FiActivity className="inline mr-1.5" size={14} /> API Logs
+              </button>
+              <button
+                onClick={() => setActiveTab('ai-config')}
+                className={`tab-btn px-4 py-3 font-medium transition-colors ${activeTab === 'ai-config' ? 'active' : ''}`}
+              >
+                <FiCpu className="inline mr-1.5" size={14} /> AI Config
               </button>
             </div>
 
@@ -323,7 +347,7 @@ export default function Admin() {
                             </td>
                             <td className="px-4 py-3 text-gray-400 text-xs font-mono max-w-[200px] truncate">{log.endpoint}</td>
                             <td className="px-4 py-3">
-                              <span className={`text-xs font-mono font-medium ${
+                              <span className={`text-xs font-medium ${
                                 log.status_code < 300 ? 'status-2xx' :
                                 log.status_code < 400 ? 'status-3xx' :
                                 log.status_code < 500 ? 'status-4xx' :
@@ -332,7 +356,7 @@ export default function Admin() {
                                 {log.status_code}
                               </span>
                             </td>
-                            <td className="px-4 py-3 text-gray-500 font-mono text-xs">{log.response_time}ms</td>
+                            <td className="px-4 py-3 text-gray-500 text-xs font-mono">{log.response_time}ms</td>
                             <td className="px-4 py-3 text-gray-500 text-xs">{log.ip_address || '-'}</td>
                           </tr>
                         ))}
@@ -347,6 +371,69 @@ export default function Admin() {
                         >
                           {logsLoading ? 'Loading...' : 'Load More'}
                         </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {activeTab === 'ai-config' && (
+                  <div className="fade-in">
+                    {loadingAI ? (
+                      <div className="flex items-center justify-center h-64">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-400"></div>
+                      </div>
+                    ) : aiConfig && (
+                      <div className="space-y-6">
+                        <div className="admin-card rounded-2xl p-6">
+                          <h2 className="text-xl font-bold mb-4">Model Configuration</h2>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="p-4 rounded-xl bg-gray-900/50">
+                              <div className="text-sm text-gray-500 mb-1">Model</div>
+                              <div className="flex items-center gap-2">
+                                <span className="model-badge px-3 py-1 rounded-lg text-sm font-medium">{aiConfig.model}</span>
+                              </div>
+                            </div>
+                            <div className="p-4 rounded-xl bg-gray-900/50">
+                              <div className="text-sm text-gray-500 mb-1">API Key Status</div>
+                              <div className="flex items-center gap-2">
+                                <span className={`status-dot w-2.5 h-2.5 rounded-full ${aiConfig.api_key_configured ? 'bg-emerald-400' : 'bg-red-400'}`}></span>
+                                <span className="text-sm">{aiConfig.api_key_configured ? 'Configured' : 'Not Configured'}</span>
+                              </div>
+                            </div>
+                            <div className="p-4 rounded-xl bg-gray-900/50">
+                              <div className="text-sm text-gray-500 mb-1">Max Tokens</div>
+                              <div className="text-sm font-medium">{aiConfig.max_tokens}</div>
+                            </div>
+                            <div className="p-4 rounded-xl bg-gray-900/50">
+                              <div className="text-sm text-gray-500 mb-1">Temperature</div>
+                              <div className="text-sm font-medium">{aiConfig.temperature}</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="admin-card rounded-2xl p-6">
+                          <h2 className="text-xl font-bold mb-6">AI Prompts</h2>
+                          <div className="space-y-4">
+                            {Object.entries(aiConfig.prompts).map(([key, prompt]) => (
+                              <div key={key} className="prompt-section border-b border-white/5 last:border-b-0 pb-4 last:pb-0">
+                                <button
+                                  onClick={() => setExpandedPrompt(expandedPrompt === key ? null : key)}
+                                  className="w-full text-left flex items-center justify-between py-2 hover:text-sky-400 transition-colors"
+                                >
+                                  <span className="font-medium text-sm">{
+                                    key.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+                                  }</span>
+                                  <FiChevronDown size={14} className={`transition-transform ${expandedPrompt === key ? 'rotate-180' : ''}`} />
+                                </button>
+                                {expandedPrompt === key && (
+                                  <div className="mt-3 p-4 rounded-xl bg-gray-900/70 overflow-x-auto">
+                                    <pre className="text-xs text-gray-300 whitespace-pre-wrap font-mono leading-relaxed">{prompt}</pre>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>

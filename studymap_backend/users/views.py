@@ -128,6 +128,40 @@ class AdminAnalyticsView(APIView):
         })
 
 
+class AdminAIConfigView(APIView):
+    permission_classes = [permissions.IsAdminUser]
+
+    def get(self, request):
+        from core.settings import OPENROUTER_API_KEY, OPENROUTER_MODEL
+        from prompts import (
+            FLASHCARDS_PROMPT, QUIZ_PROMPT, ENHANCE_NOTE_PROMPT,
+            MINDMAP_PROMPT, SUMMARY_CORNELL_PROMPT, SUMMARY_STUDY_PROMPT,
+            SUMMARY_RESEARCH_PROMPT, CHAT_STRICT_SYSTEM_PROMPT,
+            CHAT_HYBRID_SYSTEM_PROMPT, CHAT_SEARCH_SYSTEM_PROMPT,
+            CHEATSHEET_PROMPT,
+        )
+
+        return Response({
+            'model': OPENROUTER_MODEL,
+            'api_key_configured': bool(OPENROUTER_API_KEY),
+            'max_tokens': 4000,
+            'temperature': 0.7,
+            'prompts': {
+                'flashcards': FLASHCARDS_PROMPT,
+                'quiz': QUIZ_PROMPT,
+                'enhance_note': ENHANCE_NOTE_PROMPT,
+                'mindmap': MINDMAP_PROMPT,
+                'summary_cornell': SUMMARY_CORNELL_PROMPT,
+                'summary_study': SUMMARY_STUDY_PROMPT,
+                'summary_research': SUMMARY_RESEARCH_PROMPT,
+                'chat_strict': CHAT_STRICT_SYSTEM_PROMPT,
+                'chat_hybrid': CHAT_HYBRID_SYSTEM_PROMPT,
+                'chat_search': CHAT_SEARCH_SYSTEM_PROMPT,
+                'cheatsheet': CHEATSHEET_PROMPT,
+            }
+        })
+
+
 class AdminUserListView(generics.ListAPIView):
     serializer_class = UserProfileSerializer
     permission_classes = [permissions.IsAdminUser]
