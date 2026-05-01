@@ -387,24 +387,24 @@ export default function Admin() {
                         <div className="admin-card rounded-2xl p-6">
                           <h2 className="text-xl font-bold mb-4">Model Configuration</h2>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="p-4 rounded-xl bg-gray-900/50">
+                            <div className="p-4 rounded-xl config-item">
                               <div className="text-sm text-gray-500 mb-1">Model</div>
                               <div className="flex items-center gap-2">
                                 <span className="model-badge px-3 py-1 rounded-lg text-sm font-medium">{aiConfig.model}</span>
                               </div>
                             </div>
-                            <div className="p-4 rounded-xl bg-gray-900/50">
+                            <div className="p-4 rounded-xl config-item">
                               <div className="text-sm text-gray-500 mb-1">API Key Status</div>
                               <div className="flex items-center gap-2">
                                 <span className={`status-dot w-2.5 h-2.5 rounded-full ${aiConfig.api_key_configured ? 'bg-emerald-400' : 'bg-red-400'}`}></span>
                                 <span className="text-sm">{aiConfig.api_key_configured ? 'Configured' : 'Not Configured'}</span>
                               </div>
                             </div>
-                            <div className="p-4 rounded-xl bg-gray-900/50">
+                            <div className="p-4 rounded-xl config-item">
                               <div className="text-sm text-gray-500 mb-1">Max Tokens</div>
                               <div className="text-sm font-medium">{aiConfig.max_tokens}</div>
                             </div>
-                            <div className="p-4 rounded-xl bg-gray-900/50">
+                            <div className="p-4 rounded-xl config-item">
                               <div className="text-sm text-gray-500 mb-1">Temperature</div>
                               <div className="text-sm font-medium">{aiConfig.temperature}</div>
                             </div>
@@ -426,8 +426,8 @@ export default function Admin() {
                                   <FiChevronDown size={14} className={`transition-transform ${expandedPrompt === key ? 'rotate-180' : ''}`} />
                                 </button>
                                 {expandedPrompt === key && (
-                                  <div className="mt-3 p-4 rounded-xl bg-gray-900/70 overflow-x-auto">
-                                    <pre className="text-xs text-gray-300 whitespace-pre-wrap font-mono leading-relaxed">{prompt}</pre>
+<div className="mt-3 p-4 rounded-xl prompt-display overflow-x-auto">
+                                     <pre className="text-xs whitespace-pre-wrap font-mono leading-relaxed">{prompt}</pre>
                                   </div>
                                 )}
                               </div>

@@ -224,10 +224,31 @@
   overflow-x: auto;
 }
 
-.bg-gray-900\/50 {
+.config-item {
   background: rgba(17, 24, 39, 0.5);
+  border: 1px solid rgba(255,255,255,0.05);
 }
-
-.bg-gray-900\/70 {
+[data-theme="light"] .config-item {
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+}
+.config-item pre {
   background: rgba(17, 24, 39, 0.7);
+}
+[data-theme="light"] .config-item pre {
+  background: #E2E8F0;
+}
+.prompt-display {
+  background: rgba(17, 24, 39, 0.7);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+[data-theme="light"] .prompt-display {
+  background: #E2E8F0;
+  border: 1px solid #E2E8F0;
+}
+.prompt-display pre {
+  color: #d1d5db;
+}
+[data-theme="light"] .prompt-display pre {
+  color: #475569;
 }
