@@ -6,6 +6,9 @@ import ProjectView from './pages/projects/ProjectView';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Admin from './pages/Admin';
+import Contact from './pages/Contact';
+import About from './pages/About';
+import AboutApp from './pages/AboutApp';
 import ProtectedRoute from './components/ProtectedRoute';
 import AuthLayout from './components/AuthLayout';
 
@@ -69,6 +72,9 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/about-app" element={<AboutApp />} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>

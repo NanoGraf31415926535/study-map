@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { FiBarChart2, FiUser, FiSettings, FiAward, FiLogOut, FiChevronDown } from 'react-icons/fi';
+import { FiBarChart2, FiUser, FiSettings, FiAward, FiLogOut, FiChevronDown, FiMail, FiInfo } from 'react-icons/fi';
 import { useAuthStore } from '../store/useAuthStore';
 import api from '../api/axios';
 
@@ -271,6 +271,39 @@ export default function Navbar({ embedded = false }) {
             </button>
           )}
         </div>
+
+        <div className="px-4 mt-6 mb-3">
+          <span className="nav-label">Legal & Info</span>
+        </div>
+        <div className="space-y-1 px-3">
+          <button
+            onClick={() => navigate('/contact')}
+            className={`nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl ${
+              isActive('/contact') ? 'active' : ''
+            }`}
+          >
+            <FiMail size={16} />
+            <span className="font-medium text-sm">Contact</span>
+          </button>
+          <button
+            onClick={() => navigate('/about')}
+            className={`nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl ${
+              isActive('/about') ? 'active' : ''
+            }`}
+          >
+            <FiUser size={16} />
+            <span className="font-medium text-sm">About Creator</span>
+          </button>
+          <button
+            onClick={() => navigate('/about-app')}
+            className={`nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl ${
+              isActive('/about-app') ? 'active' : ''
+            }`}
+          >
+            <FiInfo size={16} />
+            <span className="font-medium text-sm">About StudyMap</span>
+          </button>
+        </div>
       </div>
 
       <div className="p-4 border-t section-divider">
@@ -311,14 +344,32 @@ export default function Navbar({ embedded = false }) {
                 <FiSettings size={14} /> Settings
               </button>
               {user?.is_staff && (
-                <button
-                  onClick={() => { navigate('/admin'); setDropdownOpen(false); }}
-                  className="dropdown-item w-full px-4 py-2 text-left flex items-center gap-2 text-sm"
-                >
-                  <FiAward size={14} /> Admin Panel
-                </button>
-              )}
-              <div className="border-t border-white/5 my-1.5" />
+                 <button
+                   onClick={() => { navigate('/admin'); setDropdownOpen(false); }}
+                   className="dropdown-item w-full px-4 py-2 text-left flex items-center gap-2 text-sm"
+                 >
+                   <FiAward size={14} /> Admin Panel
+                 </button>
+               )}
+               <button
+                 onClick={() => { navigate('/contact'); setDropdownOpen(false); }}
+                 className="dropdown-item w-full px-4 py-2 text-left flex items-center gap-2 text-sm"
+               >
+                 <FiMail size={14} /> Contact
+               </button>
+              <button
+                 onClick={() => { navigate('/about'); setDropdownOpen(false); }}
+                 className="dropdown-item w-full px-4 py-2 text-left flex items-center gap-2 text-sm"
+               >
+                 <FiUser size={14} /> About
+               </button>
+               <button
+                 onClick={() => { navigate('/about-app'); setDropdownOpen(false); }}
+                 className="dropdown-item w-full px-4 py-2 text-left flex items-center gap-2 text-sm"
+               >
+                 <FiInfo size={14} /> About StudyMap
+               </button>
+               <div className="border-t border-white/5 my-1.5" />
               <button
                 onClick={handleLogout}
                 className="dropdown-item danger w-full px-4 py-2 text-left flex items-center gap-2 text-sm"
